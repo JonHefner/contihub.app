@@ -11,9 +11,9 @@ export function Logo({ href = "/", light = true }: LogoProps) {
     <span className="inline-flex items-center gap-3">
       <span
         aria-hidden
-        className="grid h-10 w-10 place-items-center rounded-lg border border-gold/45 bg-charcoal shadow-[inset_0_0_0_1px_rgba(201,163,74,0.12)]"
+        className="grid h-11 w-11 place-items-center rounded-lg border border-gold/45 bg-charcoal shadow-[inset_0_0_0_1px_rgba(201,163,74,0.12)]"
       >
-        <CcMark id="header-logo" size={28} />
+        <CcMark id="header-logo" size={38} />
       </span>
       <span className="leading-none">
         <span

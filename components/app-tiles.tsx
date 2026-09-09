@@ -18,7 +18,7 @@ export function AppTiles() {
             <h2 className="relative mt-4 text-lg font-semibold tracking-wide text-ink-strong">
               {app.name}
             </h2>
-            <span className="relative mt-2 block h-px w-16 bg-gold" />
+            <span className="relative mt-2 block h-0.5 w-16 rounded-full bg-gold" />
             <p className="relative mt-3 text-sm leading-6 text-muted">{app.description}</p>
           </Link>
         </li>
