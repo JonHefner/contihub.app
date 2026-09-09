@@ -29,6 +29,7 @@ Open [http://localhost:3000](http://localhost:3000).
 ## Production build
 
 ```bash
+npm test
 npm run build
 npm start
 ```
@@ -41,25 +42,71 @@ Vercel detects Next.js from `package.json` and `vercel.json` (`framework: nextjs
 | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous / publishable key |
-| `NEXT_PUBLIC_SITE_URL` | Public site origin. Defaults to `https://contihub.app` |
+| `NEXT_PUBLIC_SITE_URL` | Public site origin. Use `https://www.contihub.app`. Apex `https://contihub.app` is canonicalized to www because Vercel 308-redirects apex → www. |
 
 Never commit real secrets. Use `.env.example` as the template.
 
 ## Auth setup
 
-In the Supabase project, add these Redirect URLs:
+Vercel sends `contihub.app` → `www.contihub.app` (308). Confirmation links must land on **www** so the PKCE verifier cookie and session cookies stay on the same host. Do **not** turn off email confirmation.
 
-- `https://contihub.app/auth/callback`
-- `http://localhost:3000/auth/callback`
+In the Supabase Dashboard go to **Authentication → URL Configuration** and set:
 
-Site URL should be `https://contihub.app` (or your preview origin during staging).
+**Site URL**
+
+```
+https://www.contihub.app
+```
+
+**Redirect URLs** (add all of these):
+
+```
+https://www.contihub.app/auth/callback
+https://www.contihub.app/auth/confirm
+https://contihub.app/auth/callback
+https://contihub.app/auth/confirm
+https://www.contihub.app/**
+https://contihub.app/**
+http://localhost:3000/auth/callback
+http://localhost:3000/auth/confirm
+http://localhost:3000/**
+```
+
+Optional Vercel preview deployments:
+
+```
+https://*-*.vercel.app/**
+```
+
+Signup uses `emailRedirectTo=https://www.contihub.app/auth/callback?next=/app`. That exact callback origin must stay on the allowlist.
+
+**Email templates** (Authentication → Email Templates → Confirm signup):
+
+- Preferred: keep the default `{{ .ConfirmationURL }}` link. It verifies on Supabase, then redirects to `emailRedirectTo` with `?code=`.
+- If the template uses `token_hash`, point it at the confirm route (not Site URL + `/auth/callback` appended onto an already-full `RedirectTo`):
+
+```
+{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=signup
+```
+
+If `emailRedirectTo` is already the full callback URL, the href should be `{{ .RedirectTo }}` only — do not append `/auth/confirm`.
+
+In **Vercel → Settings → Environment Variables**, set:
+
+```
+NEXT_PUBLIC_SITE_URL=https://www.contihub.app
+```
+
+Then redeploy. Leave **Authentication → Providers → Email → Confirm email** enabled.
 
 ## Routes
 
 - `/` — public landing page
 - `/login` — sign in
 - `/signup` — create an account
-- `/auth/callback` — Supabase auth code exchange
+- `/auth/callback` — Supabase PKCE `?code=` exchange and `token_hash` OTP verify
+- `/auth/confirm` — same handler for the official `token_hash` email template
+- `/auth/complete` — client fallback when tokens arrive in the URL hash
 - `/app` — protected ops hub (middleware redirects unauthenticated users to `/login`)
 - `/app/crm` — ContiCRM opportunity / lead list
 - `/app/field` — ContiField daily reports
