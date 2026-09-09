@@ -30,11 +30,12 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
       const supabase = createClient();
 
       if (mode === "signup") {
+        const emailRedirectTo = getAuthCallbackUrl(next);
         const { data, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
-            emailRedirectTo: getAuthCallbackUrl(next),
+            emailRedirectTo,
           },
         });
 

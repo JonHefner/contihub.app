@@ -1,10 +1,17 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { firstHeaderValue } from "@/lib/site";
+import { getAuthCookieOptions, mergeCookieOptions } from "@/lib/supabase/cookies";
 import { getSupabaseAnonKey, getSupabaseUrl } from "@/lib/supabase/env";
 
 export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const isProtected = pathname === "/app" || pathname.startsWith("/app/");
+  const hostname =
+    firstHeaderValue(request.headers.get("x-forwarded-host")) ||
+    firstHeaderValue(request.headers.get("host")) ||
+    request.nextUrl.hostname;
+  const cookieOptions = getAuthCookieOptions(hostname);
 
   if (!getSupabaseUrl() || !getSupabaseAnonKey()) {
     if (isProtected) {
@@ -21,6 +28,7 @@ export async function updateSession(request: NextRequest) {
   });
 
   const supabase = createServerClient(getSupabaseUrl(), getSupabaseAnonKey(), {
+    cookieOptions,
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -31,7 +39,7 @@ export async function updateSession(request: NextRequest) {
           request,
         });
         cookiesToSet.forEach(({ name, value, options }) =>
-          supabaseResponse.cookies.set(name, value, options),
+          supabaseResponse.cookies.set(name, value, mergeCookieOptions(options, cookieOptions)),
         );
       },
     },
