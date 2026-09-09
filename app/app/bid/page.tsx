@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CrudBoard } from "@/components/crud-board";
+import { SuiteShell } from "@/components/suite-shell";
 import { listBidChases } from "@/lib/suite/store";
 import { createChase, removeChase, updateChase } from "./actions";
 
@@ -14,6 +15,7 @@ export default async function BidPage() {
   const today = new Date().toISOString().slice(0, 10);
 
   return (
+    <SuiteShell>
     <CrudBoard
       eyebrow="Conti Bid"
       title="Bid chase list"
@@ -41,5 +43,6 @@ export default async function BidPage() {
       updateAction={updateChase}
       deleteAction={removeChase}
     />
+    </SuiteShell>
   );
 }

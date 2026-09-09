@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CrudBoard } from "@/components/crud-board";
+import { SuiteShell } from "@/components/suite-shell";
 import { listCrmLeads } from "@/lib/suite/store";
 import { createLead, removeLead, updateLead } from "./actions";
 
@@ -13,6 +14,7 @@ export default async function CrmPage() {
   const { rows, persist } = await listCrmLeads();
 
   return (
+    <SuiteShell>
     <CrudBoard
       eyebrow="ContiCRM"
       title="Opportunity board"
@@ -32,7 +34,7 @@ export default async function CrmPage() {
         { key: "name", label: "Name", format: "emphasis" },
         { key: "company", label: "Company" },
         { key: "stage", label: "Stage", format: "badge" },
-        { key: "notes", label: "Notes", className: "min-w-56 text-steel-600" },
+        { key: "notes", label: "Notes", className: "min-w-56 text-muted" },
       ]}
       rows={rows}
       defaults={{ name: "", company: "", stage: "Lead", notes: "" }}
@@ -40,5 +42,6 @@ export default async function CrmPage() {
       updateAction={updateLead}
       deleteAction={removeLead}
     />
+    </SuiteShell>
   );
 }

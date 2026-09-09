@@ -2,7 +2,11 @@ import type {
   BidChase,
   CostJob,
   CrmLead,
+  FieldJob,
+  FieldLogStatus,
   FieldReport,
+  FieldRfi,
+  FieldRfiStatus,
   ListResult,
   PersistMode,
   SafetyLog,
@@ -82,14 +86,87 @@ function mapCrm(row: DbRow): CrmLead {
   };
 }
 
+function asLogStatus(value: unknown): FieldLogStatus {
+  return value === "final" ? "final" : "draft";
+}
+
+function asRfiStatus(value: unknown): FieldRfiStatus {
+  return value === "closed" ? "closed" : "open";
+}
+
 function mapField(row: DbRow): FieldReport {
   return {
     id: asString(row.id),
     date: asDate(row.report_date),
     jobName: asString(row.job_name),
     weather: asString(row.weather),
+    weatherPm: asString(row.weather_pm),
+    tempLow: asString(row.temp_low),
+    tempHigh: asString(row.temp_high),
+    precip: asString(row.precip),
+    wind: asString(row.wind),
+    ground: asString(row.ground, "Dry"),
     notes: asString(row.notes),
     crewCount: asNumber(row.crew_count),
+    manHours: asNumber(row.man_hours),
+    workPerformed: asString(row.work_performed),
+    delays: asString(row.delays),
+    materials: asString(row.materials),
+    visitors: asString(row.visitors),
+    preparedBy: asString(row.prepared_by),
+    preparedTitle: asString(row.prepared_title),
+    shiftStart: asString(row.shift_start),
+    shiftEnd: asString(row.shift_end),
+    status: asLogStatus(row.status),
+  };
+}
+
+function mapFieldJob(row: DbRow): FieldJob {
+  return {
+    id: asString(row.id),
+    companyName: asString(row.company_name),
+    jobTitle: asString(row.job_title),
+    jobNumber: asString(row.job_number),
+    address: asString(row.address),
+    client: asString(row.client),
+    superintendent: asString(row.superintendent),
+  };
+}
+
+function mapFieldRfi(row: DbRow): FieldRfi {
+  return {
+    id: asString(row.id),
+    number: asString(row.number),
+    title: asString(row.title),
+    description: asString(row.description),
+    status: asRfiStatus(row.status),
+    dueDate: asDate(row.due_date),
+  };
+}
+
+function fieldReportValues(input: Omit<FieldReport, "id">): DbRow {
+  return {
+    report_date: input.date,
+    job_name: input.jobName,
+    weather: input.weather,
+    weather_pm: input.weatherPm,
+    temp_low: input.tempLow,
+    temp_high: input.tempHigh,
+    precip: input.precip,
+    wind: input.wind,
+    ground: input.ground,
+    notes: input.notes,
+    crew_count: input.crewCount,
+    man_hours: input.manHours,
+    work_performed: input.workPerformed,
+    delays: input.delays,
+    materials: input.materials,
+    visitors: input.visitors,
+    prepared_by: input.preparedBy,
+    prepared_title: input.preparedTitle,
+    shift_start: input.shiftStart,
+    shift_end: input.shiftEnd,
+    status: input.status,
   };
 }
 
@@ -133,13 +210,16 @@ function mapBid(row: DbRow): BidChase {
   };
 }
 
-async function queryRows(table: SuiteTable): Promise<{ rows: DbRow[]; persist: PersistMode }> {
+async function queryRows(
+  table: SuiteTable,
+  options: { orderBy?: string; ascending?: boolean } = {},
+): Promise<{ rows: DbRow[]; persist: PersistMode }> {
   const { supabase, user } = await requireUser();
   const { data, error } = await supabase
     .from(table)
     .select("*")
     .eq("user_id", user.id)
-    .order("created_at", { ascending: false });
+    .order(options.orderBy ?? "created_at", { ascending: options.ascending ?? false });
 
   if (!error) {
     return { rows: data ?? [], persist: "supabase" };
@@ -252,27 +332,107 @@ export async function deleteCrmLead(id: string) {
 }
 
 export async function listFieldReports(): Promise<ListResult<FieldReport>> {
-  const result = await queryRows("field_reports");
-  return { persist: result.persist, rows: result.rows.map(mapField) };
+  const result = await queryRows("field_reports", { orderBy: "report_date", ascending: false });
+  const rows = result.rows.map(mapField).sort((a, b) => b.date.localeCompare(a.date));
+  return { persist: result.persist, rows };
+}
+
+export async function getFieldReportByDate(date: string): Promise<FieldReport | null> {
+  const { supabase, user } = await requireUser();
+  const { data, error } = await supabase
+    .from("field_reports")
+    .select("*")
+    .eq("user_id", user.id)
+    .eq("report_date", date)
+    .order("updated_at", { ascending: false })
+    .limit(1);
+
+  if (!error) {
+    return data?.[0] ? mapField(data[0]) : null;
+  }
+
+  if (!isMissingRelation(error)) {
+    throw new Error(error.message);
+  }
+
+  const row = getMemory("field_reports", user.id).find((item) => asDate(item.report_date) === date);
+  return row ? mapField(row) : null;
 }
 
 export async function saveFieldReport(input: Omit<FieldReport, "id">, id?: string) {
-  const { row } = await writeRow(
-    "field_reports",
-    {
-      report_date: input.date,
-      job_name: input.jobName,
-      weather: input.weather,
-      notes: input.notes,
-      crew_count: input.crewCount,
-    },
-    id,
-  );
+  let targetId = id;
+  if (!targetId) {
+    const existing = await getFieldReportByDate(input.date);
+    if (existing) {
+      targetId = existing.id;
+    }
+  }
+
+  const { row } = await writeRow("field_reports", fieldReportValues(input), targetId);
   return mapField(row);
 }
 
 export async function deleteFieldReport(id: string) {
   await removeRow("field_reports", id);
+}
+
+export async function listFieldJobs(): Promise<ListResult<FieldJob>> {
+  const result = await queryRows("field_jobs", { orderBy: "updated_at", ascending: false });
+  return { persist: result.persist, rows: result.rows.map(mapFieldJob) };
+}
+
+export async function saveFieldJob(input: Omit<FieldJob, "id">, id?: string) {
+  let targetId = id;
+  if (!targetId) {
+    const existing = await listFieldJobs();
+    if (existing.rows[0]) {
+      targetId = existing.rows[0].id;
+    }
+  }
+
+  const { row } = await writeRow(
+    "field_jobs",
+    {
+      company_name: input.companyName,
+      job_title: input.jobTitle,
+      job_number: input.jobNumber,
+      address: input.address,
+      client: input.client,
+      superintendent: input.superintendent,
+    },
+    targetId,
+  );
+  return mapFieldJob(row);
+}
+
+export async function listFieldRfis(): Promise<ListResult<FieldRfi>> {
+  const result = await queryRows("field_rfis", { orderBy: "due_date", ascending: true });
+  const rows = result.rows.map(mapFieldRfi).sort((a, b) => {
+    if (a.status !== b.status) {
+      return a.status === "open" ? -1 : 1;
+    }
+    return a.dueDate.localeCompare(b.dueDate);
+  });
+  return { persist: result.persist, rows };
+}
+
+export async function saveFieldRfi(input: Omit<FieldRfi, "id">, id?: string) {
+  const { row } = await writeRow(
+    "field_rfis",
+    {
+      number: input.number,
+      title: input.title,
+      description: input.description,
+      status: input.status,
+      due_date: input.dueDate,
+    },
+    id,
+  );
+  return mapFieldRfi(row);
+}
+
+export async function deleteFieldRfi(id: string) {
+  await removeRow("field_rfis", id);
 }
 
 export async function listCostJobs(): Promise<ListResult<CostJob>> {

@@ -109,7 +109,9 @@ Then redeploy. Leave **Authentication → Providers → Email → Confirm email*
 - `/auth/complete` — client fallback when tokens arrive in the URL hash
 - `/app` — protected ops hub (middleware redirects unauthenticated users to `/login`)
 - `/app/crm` — ContiCRM opportunity / lead list
-- `/app/field` — ContiField daily reports
+- `/app/field` — ContiField daily construction log (Today / RFIs / Archive)
+- `/app/field/log/[date]` — create or edit a daily log for a date
+- `/app/field/rfis` — ContiField RFI list
 - `/app/cost` — ContiCost job cost summary
 - `/app/safety` — ContiSafety toolbox talks and incidents
 - `/app/trak` — ContiTraK schedule / milestones
@@ -121,6 +123,11 @@ All `/app/**` routes share the suite nav and require a signed-in session.
 
 Suite apps write to Supabase tables when the migration has been applied. If the tables are missing, the UI still works with an in-session memory store and shows a banner.
 
-Apply `supabase/migrations/20260909060000_conti_suite.sql` in the Supabase SQL editor, or with the Supabase CLI (`supabase db push`). No new environment variables are required.
+Apply these files in the Supabase SQL editor (in order), or with the Supabase CLI (`supabase db push`). No new environment variables are required.
+
+1. `supabase/migrations/20260909060000_conti_suite.sql` — CRM, Field, Cost, Safety, TraK, and Bid MVP tables
+2. `supabase/migrations/20260909160000_contifield_daily_log.sql` — ContiField job settings, RFI table, and richer daily-log columns
+
+If the Field daily-log SQL has not been applied yet, ContiField still runs with an in-session memory store and shows a banner.
 
 Row Level Security scopes every row to `auth.uid()`. Next step after this MVP: richer ERP fields, attachments, and shared project records across apps.

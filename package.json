@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test lib/site.test.ts"
+    "test": "node --experimental-strip-types --test lib/site.test.ts lib/field/dates.test.ts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",

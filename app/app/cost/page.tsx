@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CrudBoard } from "@/components/crud-board";
+import { SuiteShell } from "@/components/suite-shell";
 import { listCostJobs } from "@/lib/suite/store";
 import { createJob, removeJob, updateJob } from "./actions";
 
@@ -11,6 +12,7 @@ export default async function CostPage() {
   const { rows, persist } = await listCostJobs();
 
   return (
+    <SuiteShell>
     <CrudBoard
       eyebrow="ContiCost"
       title="Job cost summary"
@@ -39,5 +41,6 @@ export default async function CostPage() {
       updateAction={updateJob}
       deleteAction={removeJob}
     />
+    </SuiteShell>
   );
 }

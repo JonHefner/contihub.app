@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { CcMark } from "@/components/cc-mark";
 import { contiApps } from "@/lib/apps";
 
 export function AppTiles() {
@@ -8,17 +9,17 @@ export function AppTiles() {
         <li key={app.id}>
           <Link
             href={app.href}
-            className="block h-full rounded-sm border border-navy-900 bg-paper p-5 shadow-[0_1px_0_rgba(12,27,42,0.04)] ring-1 ring-navy-900/5 transition hover:-translate-y-0.5 hover:shadow-md"
+            className="group relative flex h-full flex-col items-center overflow-hidden rounded-2xl border border-gold/35 bg-charcoal px-5 py-7 text-center shadow-[0_0_0_1px_rgba(12,12,14,0.8),0_12px_28px_-16px_rgba(0,0,0,0.65)] transition hover:-translate-y-0.5 hover:border-gold/60"
           >
-            <div className="flex items-start justify-between gap-3">
-              <h2 className="font-display text-xl font-semibold tracking-tight text-navy-900">
-                {app.name}
-              </h2>
-              <span className="shrink-0 rounded-sm bg-navy-900 px-2 py-1 text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">
-                Live
-              </span>
-            </div>
-            <p className="mt-3 text-sm leading-6 text-steel-600">{app.description}</p>
+            <span className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_28%,rgba(30,79,163,0.22),transparent_46%)]" />
+            <span className="relative grid size-[5.5rem] place-items-center">
+              <CcMark id={`tile-${app.id}`} size={88} />
+            </span>
+            <h2 className="relative mt-4 text-lg font-semibold tracking-wide text-ink-strong">
+              {app.name}
+            </h2>
+            <span className="relative mt-2 block h-px w-16 bg-gold" />
+            <p className="relative mt-3 text-sm leading-6 text-muted">{app.description}</p>
           </Link>
         </li>
       ))}

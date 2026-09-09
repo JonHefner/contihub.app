@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CrudBoard } from "@/components/crud-board";
+import { SuiteShell } from "@/components/suite-shell";
 import { listSafetyLogs } from "@/lib/suite/store";
 import { createLog, removeLog, updateLog } from "./actions";
 
@@ -14,6 +15,7 @@ export default async function SafetyPage() {
   const today = new Date().toISOString().slice(0, 10);
 
   return (
+    <SuiteShell>
     <CrudBoard
       eyebrow="ContiSafety"
       title="Safety log"
@@ -33,7 +35,7 @@ export default async function SafetyPage() {
         { key: "type", label: "Type", format: "badge" },
         { key: "date", label: "Date", format: "date" },
         { key: "location", label: "Location", format: "emphasis" },
-        { key: "notes", label: "Notes", className: "min-w-56 text-steel-600" },
+        { key: "notes", label: "Notes", className: "min-w-56 text-muted" },
       ]}
       rows={rows}
       defaults={{ type: "Toolbox Talk", date: today, location: "", notes: "" }}
@@ -41,5 +43,6 @@ export default async function SafetyPage() {
       updateAction={updateLog}
       deleteAction={removeLog}
     />
+    </SuiteShell>
   );
 }

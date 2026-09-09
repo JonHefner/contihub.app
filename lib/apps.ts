@@ -28,7 +28,7 @@ export const contiApps: ContiApp[] = [
     id: "contifield",
     name: "ContiField",
     shortName: "Field",
-    description: "Daily reports, photos, and field coordination.",
+    description: "Superintendent daily construction logs and RFIs.",
     status: "live",
     href: "/app/field",
   },

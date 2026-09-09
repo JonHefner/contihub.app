@@ -61,5 +61,5 @@ export function AuthComplete({ nextPath }: AuthCompleteProps) {
     };
   }, [next, router]);
 
-  return <p className="text-sm text-steel-600">{message}</p>;
+  return <p className="text-sm text-muted">{message}</p>;
 }

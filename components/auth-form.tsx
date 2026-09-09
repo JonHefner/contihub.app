@@ -80,7 +80,7 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
   return (
     <form onSubmit={onSubmit} className="space-y-5">
       <div className="space-y-2">
-        <label htmlFor="email" className="text-sm font-medium text-navy-800">
+        <label htmlFor="email" className="text-sm font-medium text-ink">
           Email
         </label>
         <input
@@ -91,11 +91,11 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
           required
           value={email}
           onChange={(event) => setEmail(event.target.value)}
-          className="w-full rounded-sm border border-steel-200 bg-white px-3 py-2.5 text-navy-900 outline-none ring-gold/30 transition focus:border-navy-800 focus:ring-4"
+          className="w-full rounded-sm border border-line bg-surface-2 px-3 py-2.5 text-ink outline-none ring-gold/25 transition focus:border-gold focus:ring-4"
         />
       </div>
       <div className="space-y-2">
-        <label htmlFor="password" className="text-sm font-medium text-navy-800">
+        <label htmlFor="password" className="text-sm font-medium text-ink">
           Password
         </label>
         <input
@@ -107,17 +107,17 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
           minLength={6}
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          className="w-full rounded-sm border border-steel-200 bg-white px-3 py-2.5 text-navy-900 outline-none ring-gold/30 transition focus:border-navy-800 focus:ring-4"
+          className="w-full rounded-sm border border-line bg-surface-2 px-3 py-2.5 text-ink outline-none ring-gold/25 transition focus:border-gold focus:ring-4"
         />
       </div>
 
       {error ? (
-        <p className="rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+        <p className="rounded-sm border border-red-500/30 bg-red-950/40 px-3 py-2 text-sm text-red-200">
           {error}
         </p>
       ) : null}
       {info ? (
-        <p className="rounded-sm border border-navy-200 bg-navy-50 px-3 py-2 text-sm text-navy-800">
+        <p className="rounded-sm border border-royal/40 bg-royal-deep/40 px-3 py-2 text-sm text-ink">
           {info}
         </p>
       ) : null}
@@ -125,23 +125,23 @@ export function AuthForm({ mode, nextPath }: AuthFormProps) {
       <button
         type="submit"
         disabled={pending}
-        className="w-full rounded-sm bg-navy-900 px-4 py-2.5 text-sm font-semibold tracking-wide text-paper transition hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-70"
+        className="w-full rounded-sm bg-gold px-4 py-2.5 text-sm font-semibold tracking-wide text-page transition hover:bg-gold-soft disabled:cursor-not-allowed disabled:opacity-70"
       >
         {pending ? "Please wait…" : isLogin ? "Sign in" : "Create account"}
       </button>
 
-      <p className="text-center text-sm text-steel-500">
+      <p className="text-center text-sm text-muted">
         {isLogin ? (
           <>
             Need access?{" "}
-            <Link href="/signup" className="font-medium text-navy-800 underline-offset-4 hover:underline">
+            <Link href="/signup" className="font-medium text-gold underline-offset-4 hover:underline">
               Request an account
             </Link>
           </>
         ) : (
           <>
             Already have an account?{" "}
-            <Link href="/login" className="font-medium text-navy-800 underline-offset-4 hover:underline">
+            <Link href="/login" className="font-medium text-gold underline-offset-4 hover:underline">
               Sign in
             </Link>
           </>

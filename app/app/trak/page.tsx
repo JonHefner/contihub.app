@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { CrudBoard } from "@/components/crud-board";
+import { SuiteShell } from "@/components/suite-shell";
 import { listTrakMilestones } from "@/lib/suite/store";
 import { createMilestone, removeMilestone, updateMilestone } from "./actions";
 
@@ -12,6 +13,7 @@ export default async function TrakPage() {
   const today = new Date().toISOString().slice(0, 10);
 
   return (
+    <SuiteShell>
     <CrudBoard
       eyebrow="ContiTraK"
       title="Schedule & milestones"
@@ -39,5 +41,6 @@ export default async function TrakPage() {
       updateAction={updateMilestone}
       deleteAction={removeMilestone}
     />
+    </SuiteShell>
   );
 }
