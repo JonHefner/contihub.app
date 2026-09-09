@@ -17,7 +17,7 @@ export function Logo({ href = "/", light = true, size = "sm" }: LogoProps) {
         alt=""
         width={size === "lg" ? 64 : 48}
         height={size === "lg" ? 64 : 48}
-        className={`${markSize} rounded-[0.9rem]`}
+        className={`${markSize} aspect-square rounded-[0.9rem] object-contain`}
       />
       <span className="leading-none">
         <span
