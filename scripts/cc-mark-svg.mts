@@ -50,10 +50,10 @@ function markDefs(prefix: string) {
       <feBlend in="SourceGraphic" in2="clipped" mode="overlay"/>
     </filter>
     <filter id="${prefix}paper" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" seed="11" result="n"/>
+      <feTurbulence type="fractalNoise" baseFrequency="1.15" numOctaves="2" seed="11" result="n"/>
       <feColorMatrix type="saturate" values="0" in="n" result="g"/>
       <feComponentTransfer in="g" result="grain">
-        <feFuncA type="linear" slope="0.22"/>
+        <feFuncA type="linear" slope="0.12"/>
       </feComponentTransfer>
       <feBlend in="SourceGraphic" in2="grain" mode="multiply"/>
     </filter>
@@ -76,10 +76,12 @@ function markLetters(prefix: string) {
   const blue = bluePath();
   const gold = goldPath();
   return `
-    <path fill="#041028" d="${blue}" transform="translate(1.5 2.1)"/>
+    <path fill="#020817" d="${blue}" transform="translate(2.6 2.8)"/>
+    <path fill="#041028" d="${blue}" transform="translate(1.4 1.8)"/>
     <path fill="url(#${prefix}blue)" d="${blue}" filter="url(#${prefix}brush)"/>
     <path fill="url(#${prefix}blue-hi)" d="${blue}"/>
-    <path fill="#3d3208" d="${gold}" transform="translate(1.1 1.6)"/>
+    <path fill="#2a2206" d="${gold}" transform="translate(2 2.2)"/>
+    <path fill="#3d3208" d="${gold}" transform="translate(1 1.2)"/>
     <path fill="url(#${prefix}gold)" d="${gold}" filter="url(#${prefix}brush)"/>
     <path fill="url(#${prefix}gold-hi)" d="${gold}"/>
   `;
@@ -101,7 +103,7 @@ export function ccMarkOnDarkSvg() {
   <defs>${markDefs(prefix)}</defs>
   <rect width="128" height="128" rx="28" fill="url(#${prefix}vignette)" filter="url(#${prefix}paper)"/>
   <rect x="3.2" y="3.2" width="121.6" height="121.6" rx="25" stroke="#d7d2c6" stroke-opacity=".28" stroke-width="1.6"/>
-  <g transform="translate(10 8) scale(1.08)">
+  <g transform="translate(6.5 6) scale(1.15)">
     ${markLetters(prefix)}
   </g>
 </svg>
@@ -114,7 +116,7 @@ export function tileSvg(name: string) {
   <defs>${markDefs(prefix)}</defs>
   <rect width="1024" height="1024" rx="180" fill="url(#${prefix}vignette)" filter="url(#${prefix}paper)"/>
   <rect x="18" y="18" width="988" height="988" rx="164" stroke="#d7d2c6" stroke-opacity=".2" stroke-width="4"/>
-  <g transform="translate(198 92) scale(6.28)">
+  <g transform="translate(162 58) scale(7)">
     ${markLetters(prefix)}
   </g>
   <text x="512" y="820" text-anchor="middle" fill="#fffdf8" font-family="Inter, Arial, Helvetica, sans-serif" font-size="78" font-weight="650">${escapeXml(name)}</text>
@@ -134,7 +136,7 @@ export function faviconSvg() {
   <defs>${markDefs(prefix)}</defs>
   <rect width="32" height="32" rx="7" fill="#0b0b0d"/>
   <rect x="1.1" y="1.1" width="29.8" height="29.8" rx="6" stroke="#d7d2c6" stroke-width="1.05" stroke-opacity=".4"/>
-  <g transform="translate(2.2 1.8) scale(0.276)">
+  <g transform="translate(1.6 1.4) scale(0.288)">
     ${markLetters(prefix)}
   </g>
 </svg>

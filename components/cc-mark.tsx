@@ -56,10 +56,12 @@ export function CcMark({ id, size = 72, className }: CcMarkProps) {
           <feBlend in="SourceGraphic" in2="clipped" mode="overlay" />
         </filter>
       </defs>
-      <path fill="#041028" d={blueD} transform="translate(1.5 2.1)" />
+      <path fill="#020817" d={blueD} transform="translate(2.6 2.8)" />
+      <path fill="#041028" d={blueD} transform="translate(1.4 1.8)" />
       <path fill={`url(#${blue})`} d={blueD} filter={`url(#${brush})`} />
       <path fill={`url(#${blueHi})`} d={blueD} />
-      <path fill="#3d3208" d={goldD} transform="translate(1.1 1.6)" />
+      <path fill="#2a2206" d={goldD} transform="translate(2 2.2)" />
+      <path fill="#3d3208" d={goldD} transform="translate(1 1.2)" />
       <path fill={`url(#${gold})`} d={goldD} filter={`url(#${brush})`} />
       <path fill={`url(#${goldHi})`} d={goldD} />
     </svg>

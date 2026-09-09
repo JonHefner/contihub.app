@@ -31,10 +31,10 @@
       <feBlend in="SourceGraphic" in2="clipped" mode="overlay"/>
     </filter>
     <filter id="t-paper" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" seed="11" result="n"/>
+      <feTurbulence type="fractalNoise" baseFrequency="1.15" numOctaves="2" seed="11" result="n"/>
       <feColorMatrix type="saturate" values="0" in="n" result="g"/>
       <feComponentTransfer in="g" result="grain">
-        <feFuncA type="linear" slope="0.22"/>
+        <feFuncA type="linear" slope="0.12"/>
       </feComponentTransfer>
       <feBlend in="SourceGraphic" in2="grain" mode="multiply"/>
     </filter>
@@ -53,14 +53,16 @@
   </defs>
   <rect width="1024" height="1024" rx="180" fill="url(#t-vignette)" filter="url(#t-paper)"/>
   <rect x="18" y="18" width="988" height="988" rx="164" stroke="#d7d2c6" stroke-opacity=".2" stroke-width="4"/>
-  <g transform="translate(198 92) scale(6.28)">
+  <g transform="translate(162 58) scale(7)">
     
-    <path fill="#041028" d="M80.577 29.538 A34 34 0 1 0 80.577 70.462 L70.195 62.638 A21 21 0 1 1 70.195 37.362 Z" transform="translate(1.5 2.1)"/>
-    <path fill="url(#t-blue)" d="M80.577 29.538 A34 34 0 1 0 80.577 70.462 L70.195 62.638 A21 21 0 1 1 70.195 37.362 Z" filter="url(#t-brush)"/>
-    <path fill="url(#t-blue-hi)" d="M80.577 29.538 A34 34 0 1 0 80.577 70.462 L70.195 62.638 A21 21 0 1 1 70.195 37.362 Z"/>
-    <path fill="#3d3208" d="M69.419 39.178 A17.4 17.4 0 1 0 69.419 60.122 L61.513 54.164 A7.5 7.5 0 1 1 61.513 45.136 Z" transform="translate(1.1 1.6)"/>
-    <path fill="url(#t-gold)" d="M69.419 39.178 A17.4 17.4 0 1 0 69.419 60.122 L61.513 54.164 A7.5 7.5 0 1 1 61.513 45.136 Z" filter="url(#t-brush)"/>
-    <path fill="url(#t-gold-hi)" d="M69.419 39.178 A17.4 17.4 0 1 0 69.419 60.122 L61.513 54.164 A7.5 7.5 0 1 1 61.513 45.136 Z"/>
+    <path fill="#020817" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" transform="translate(2.6 2.8)"/>
+    <path fill="#041028" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" transform="translate(1.4 1.8)"/>
+    <path fill="url(#t-blue)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" filter="url(#t-brush)"/>
+    <path fill="url(#t-blue-hi)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z"/>
+    <path fill="#2a2206" d="M68.215 41.643 A17.8 17.8 0 1 0 68.215 58.357 L59.385 53.662 A7.8 7.8 0 1 1 59.385 46.338 Z" transform="translate(2 2.2)"/>
+    <path fill="#3d3208" d="M68.215 41.643 A17.8 17.8 0 1 0 68.215 58.357 L59.385 53.662 A7.8 7.8 0 1 1 59.385 46.338 Z" transform="translate(1 1.2)"/>
+    <path fill="url(#t-gold)" d="M68.215 41.643 A17.8 17.8 0 1 0 68.215 58.357 L59.385 53.662 A7.8 7.8 0 1 1 59.385 46.338 Z" filter="url(#t-brush)"/>
+    <path fill="url(#t-gold-hi)" d="M68.215 41.643 A17.8 17.8 0 1 0 68.215 58.357 L59.385 53.662 A7.8 7.8 0 1 1 59.385 46.338 Z"/>
   
   </g>
   <text x="512" y="820" text-anchor="middle" fill="#fffdf8" font-family="Inter, Arial, Helvetica, sans-serif" font-size="78" font-weight="650">ContiSafety</text>

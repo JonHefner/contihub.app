@@ -31,10 +31,10 @@
       <feBlend in="SourceGraphic" in2="clipped" mode="overlay"/>
     </filter>
     <filter id="d-paper" x="0" y="0" width="100%" height="100%">
-      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="4" seed="11" result="n"/>
+      <feTurbulence type="fractalNoise" baseFrequency="1.15" numOctaves="2" seed="11" result="n"/>
       <feColorMatrix type="saturate" values="0" in="n" result="g"/>
       <feComponentTransfer in="g" result="grain">
-        <feFuncA type="linear" slope="0.22"/>
+        <feFuncA type="linear" slope="0.12"/>
       </feComponentTransfer>
       <feBlend in="SourceGraphic" in2="grain" mode="multiply"/>
     </filter>
@@ -53,14 +53,16 @@
   </defs>
   <rect width="128" height="128" rx="28" fill="url(#d-vignette)" filter="url(#d-paper)"/>
   <rect x="3.2" y="3.2" width="121.6" height="121.6" rx="25" stroke="#d7d2c6" stroke-opacity=".28" stroke-width="1.6"/>
-  <g transform="translate(10 8) scale(1.08)">
+  <g transform="translate(6.5 6) scale(1.15)">
     
-    <path fill="#041028" d="M80.577 29.538 A34 34 0 1 0 80.577 70.462 L70.195 62.638 A21 21 0 1 1 70.195 37.362 Z" transform="translate(1.5 2.1)"/>
-    <path fill="url(#d-blue)" d="M80.577 29.538 A34 34 0 1 0 80.577 70.462 L70.195 62.638 A21 21 0 1 1 70.195 37.362 Z" filter="url(#d-brush)"/>
-    <path fill="url(#d-blue-hi)" d="M80.577 29.538 A34 34 0 1 0 80.577 70.462 L70.195 62.638 A21 21 0 1 1 70.195 37.362 Z"/>
-    <path fill="#3d3208" d="M69.419 39.178 A17.4 17.4 0 1 0 69.419 60.122 L61.513 54.164 A7.5 7.5 0 1 1 61.513 45.136 Z" transform="translate(1.1 1.6)"/>
-    <path fill="url(#d-gold)" d="M69.419 39.178 A17.4 17.4 0 1 0 69.419 60.122 L61.513 54.164 A7.5 7.5 0 1 1 61.513 45.136 Z" filter="url(#d-brush)"/>
-    <path fill="url(#d-gold-hi)" d="M69.419 39.178 A17.4 17.4 0 1 0 69.419 60.122 L61.513 54.164 A7.5 7.5 0 1 1 61.513 45.136 Z"/>
+    <path fill="#020817" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" transform="translate(2.6 2.8)"/>
+    <path fill="#041028" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" transform="translate(1.4 1.8)"/>
+    <path fill="url(#d-blue)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" filter="url(#d-brush)"/>
+    <path fill="url(#d-blue-hi)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z"/>
+    <path fill="#2a2206" d="M68.215 41.643 A17.8 17.8 0 1 0 68.215 58.357 L59.385 53.662 A7.8 7.8 0 1 1 59.385 46.338 Z" transform="translate(2 2.2)"/>
+    <path fill="#3d3208" d="M68.215 41.643 A17.8 17.8 0 1 0 68.215 58.357 L59.385 53.662 A7.8 7.8 0 1 1 59.385 46.338 Z" transform="translate(1 1.2)"/>
+    <path fill="url(#d-gold)" d="M68.215 41.643 A17.8 17.8 0 1 0 68.215 58.357 L59.385 53.662 A7.8 7.8 0 1 1 59.385 46.338 Z" filter="url(#d-brush)"/>
+    <path fill="url(#d-gold-hi)" d="M68.215 41.643 A17.8 17.8 0 1 0 68.215 58.357 L59.385 53.662 A7.8 7.8 0 1 1 59.385 46.338 Z"/>
   
   </g>
 </svg>

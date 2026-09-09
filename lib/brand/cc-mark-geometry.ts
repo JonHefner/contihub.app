@@ -1,16 +1,16 @@
-/** Shared nested-CC geometry. Both letters are true circles about one center. */
+/** Shared nested-CC geometry matched to Jon’s ContiCost reference. */
 
 export const CC_VIEWBOX = 100;
-export const CC_OPENING_DEG = 37;
+/** Tighter opening so the circular C reads closer to a 1:1 glyph. */
+export const CC_OPENING_DEG = 28;
 
-/** Outer radius of the blue C. Padding left for drop shadow. */
-export const BLUE_OUTER = 34;
-export const BLUE_INNER = 21;
-export const GOLD_OUTER = 17.4;
-export const GOLD_INNER = 7.5;
-/** Nudge gold toward the opening so it reads centered in the C’s interior. */
-export const GOLD_OFFSET_X = 2.1;
-export const GOLD_OFFSET_Y = -0.35;
+export const BLUE_OUTER = 35;
+export const BLUE_INNER = 22.8;
+export const GOLD_OUTER = 17.8;
+export const GOLD_INNER = 7.8;
+/** Tiny optical nudge toward the opening — ContiCost sits ~5% right, not in the mouth. */
+export const GOLD_OFFSET_X = 0.45;
+export const GOLD_OFFSET_Y = 0;
 
 export type CcCenter = { cx: number; cy: number };
 
