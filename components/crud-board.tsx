@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState, useTransition, type ReactNode } from "react";
+import { useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
+import { formatDate, formatMoneyExact } from "@/lib/suite/form";
 import type { PersistMode } from "@/lib/suite/types";
 
 export type FieldType = "text" | "textarea" | "number" | "date" | "select";
@@ -18,11 +19,13 @@ export type CrudField = {
   placeholder?: string;
 };
 
-export type CrudColumn<T> = {
+export type ColumnFormat = "text" | "emphasis" | "badge" | "date" | "money" | "variance" | "percent";
+
+export type CrudColumn = {
   key: string;
   label: string;
   className?: string;
-  render?: (row: T) => ReactNode;
+  format?: ColumnFormat;
 };
 
 type CrudBoardProps<T extends { id: string }> = {
@@ -35,10 +38,9 @@ type CrudBoardProps<T extends { id: string }> = {
   emptyBody: string;
   persist: PersistMode;
   fields: CrudField[];
-  columns: CrudColumn<T>[];
+  columns: CrudColumn[];
   rows: T[];
   defaults: Record<string, string>;
-  toFormValues: (row: T) => Record<string, string>;
   createAction: (formData: FormData) => Promise<void>;
   updateAction: (id: string, formData: FormData) => Promise<void>;
   deleteAction: (id: string) => Promise<void>;
@@ -46,6 +48,93 @@ type CrudBoardProps<T extends { id: string }> = {
 
 const inputClass =
   "w-full rounded-sm border border-steel-200 bg-white px-3 py-2.5 text-navy-900 outline-none ring-gold/30 transition focus:border-navy-800 focus:ring-4";
+
+function asRecord(row: { id: string }): Record<string, unknown> {
+  return row as Record<string, unknown>;
+}
+
+function rowToFormValues(
+  row: { id: string },
+  fields: CrudField[],
+  defaults: Record<string, string>,
+): Record<string, string> {
+  const source = asRecord(row);
+  const values = { ...defaults };
+
+  for (const field of fields) {
+    const value = source[field.name];
+    if (value !== undefined && value !== null) {
+      values[field.name] = String(value);
+    }
+  }
+
+  return values;
+}
+
+function cellText(row: Record<string, unknown>, key: string) {
+  const value = row[key];
+  if (value === undefined || value === null || value === "") {
+    return "—";
+  }
+  return String(value);
+}
+
+function asNumber(value: unknown) {
+  const n = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(n) ? n : 0;
+}
+
+function ColumnCell({ column, row }: { column: CrudColumn; row: Record<string, unknown> }) {
+  const format = column.format ?? "text";
+  const raw = row[column.key];
+
+  if (format === "emphasis") {
+    return <span className="font-semibold">{cellText(row, column.key)}</span>;
+  }
+
+  if (format === "badge") {
+    return (
+      <span className="rounded-sm bg-navy-50 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-navy-800">
+        {cellText(row, column.key)}
+      </span>
+    );
+  }
+
+  if (format === "date") {
+    return <>{formatDate(typeof raw === "string" ? raw : "")}</>;
+  }
+
+  if (format === "money") {
+    return <>{formatMoneyExact(asNumber(raw))}</>;
+  }
+
+  if (format === "variance") {
+    const variance = asNumber(row.budget) - asNumber(row.actual);
+    const over = variance < 0;
+    return (
+      <span className={over ? "font-semibold text-red-800" : "font-semibold text-emerald-800"}>
+        {over ? "−" : "+"}
+        {formatMoneyExact(Math.abs(variance))}
+      </span>
+    );
+  }
+
+  if (format === "percent") {
+    const pct = Math.min(100, Math.max(0, asNumber(raw)));
+    return (
+      <div className="min-w-32">
+        <div className="flex items-center justify-between text-xs font-semibold text-navy-800">
+          <span>{pct}%</span>
+        </div>
+        <div className="mt-1 h-1.5 overflow-hidden rounded-sm bg-steel-100">
+          <div className="h-full bg-navy-900" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+    );
+  }
+
+  return <>{cellText(row, column.key)}</>;
+}
 
 export function CrudBoard<T extends { id: string }>({
   eyebrow,
@@ -60,7 +149,6 @@ export function CrudBoard<T extends { id: string }>({
   columns,
   rows,
   defaults,
-  toFormValues,
   createAction,
   updateAction,
   deleteAction,
@@ -94,7 +182,7 @@ export function CrudBoard<T extends { id: string }>({
   }
 
   function startEdit(row: T) {
-    setValues({ ...defaults, ...toFormValues(row) });
+    setValues(rowToFormValues(row, fields, defaults));
     setEditingId(row.id);
     setError(null);
     setOpen(true);
@@ -272,9 +360,7 @@ export function CrudBoard<T extends { id: string }>({
                 <tr key={row.id} className="border-t border-steel-100 align-top">
                   {columns.map((column) => (
                     <td key={column.key} className={`px-4 py-3 text-navy-900 ${column.className ?? ""}`}>
-                      {column.render
-                        ? column.render(row)
-                        : String((row as Record<string, unknown>)[column.key] ?? "—")}
+                      <ColumnCell column={column} row={asRecord(row)} />
                     </td>
                   ))}
                   <td className="px-4 py-3 text-right whitespace-nowrap">
