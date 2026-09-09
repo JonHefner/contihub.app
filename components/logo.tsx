@@ -21,7 +21,7 @@ export function Logo({ href = "/", light = true, size = "sm" }: LogoProps) {
       />
       <span className="leading-none">
         <span
-          className={`block font-display font-semibold tracking-tight ${titleSize} ${
+          className={`block font-semibold tracking-tight ${titleSize} ${
             light ? "text-ink" : "text-page"
           }`}
         >

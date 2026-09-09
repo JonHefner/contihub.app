@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { AppTiles } from "@/components/app-tiles";
-import { Logo } from "@/components/logo";
+import { PublicHeader } from "@/components/public-header";
 
 const pillars = [
   {
@@ -20,72 +20,44 @@ const pillars = [
 export default function HomePage() {
   return (
     <div className="min-h-screen bg-page text-ink">
-      <header className="border-b border-white/8">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
-          <Logo light />
-          <nav className="flex items-center gap-3 text-sm">
-            <Link
-              href="/login"
-              className="rounded-sm px-3 py-2 font-medium text-muted transition hover:text-ink"
-            >
-              Sign in
-            </Link>
-            <Link
-              href="/signup"
-              className="rounded-sm bg-gold px-3.5 py-2 font-semibold text-page transition hover:bg-gold-soft"
-            >
-              Request access
-            </Link>
-          </nav>
-        </div>
-      </header>
+      <PublicHeader />
 
       <main>
         <section className="relative overflow-hidden">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(30,79,163,0.32),transparent_36%),radial-gradient(circle_at_88%_8%,rgba(201,163,74,0.16),transparent_28%)]" />
-          <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
-            <div>
-              <img
-                src="/brand/cc-mark-on-dark.png"
-                alt="Conti nested CC mark"
-                width={128}
-                height={128}
-                className="h-28 w-28 rounded-[1.35rem] shadow-[0_16px_32px_-18px_rgba(0,0,0,0.75)]"
-              />
-              <h1 className="mt-6 font-display text-5xl leading-none font-semibold tracking-tight text-ink-strong sm:text-7xl">
-                ContiHub
-              </h1>
-              <span className="mt-5 block h-0.5 w-24 rounded-full bg-gold" />
-              <p className="mt-5 text-xs font-semibold uppercase tracking-[0.28em] text-gold">
-                The Conti Way · Akron, Ohio
-              </p>
-              <p className="mt-5 max-w-xl text-lg leading-8 text-muted">
-                The ops portal for Continental Construction of Ohio. Projects, field logs, cost,
-                CRM, safety, tracking, and bid — one dark, secure home on{" "}
-                <span className="text-ink">contihub.app</span>.
-              </p>
-              <div className="mt-8 flex flex-wrap gap-3">
-                <Link
-                  href="/login"
-                  className="rounded-sm bg-gold px-5 py-2.5 text-sm font-semibold text-page transition hover:bg-gold-soft"
-                >
-                  Sign in to ContiHub
-                </Link>
-                <Link
-                  href="#suite"
-                  className="rounded-sm border border-gold/35 px-5 py-2.5 text-sm font-semibold text-ink transition hover:border-gold"
-                >
-                  View the suite
-                </Link>
-              </div>
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(30,79,163,0.34),transparent_42%),radial-gradient(circle_at_88%_18%,rgba(201,163,74,0.14),transparent_30%)]" />
+          <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 py-16 text-center lg:py-24">
+            <img
+              src="/brand/tiles/contihub.png"
+              alt="ContiHub — nested blue and gold CC mark"
+              width={320}
+              height={320}
+              className="h-52 w-52 rounded-[2rem] shadow-[0_24px_48px_-20px_rgba(0,0,0,0.85)] sm:h-64 sm:w-64"
+            />
+            <h1 className="mt-8 text-5xl font-semibold tracking-tight text-ink-strong sm:text-7xl">
+              ContiHub
+            </h1>
+            <span className="mt-5 block h-px w-28 bg-gradient-to-r from-transparent via-gold to-transparent" />
+            <p className="mt-5 text-xs font-semibold uppercase tracking-[0.32em] text-gold">
+              The Conti Way
+            </p>
+            <p className="mt-5 max-w-xl text-lg leading-8 text-muted">
+              The ops portal for Continental Construction of Ohio. Sign in to Projects, Field, Cost,
+              CRM, Safety, TraK, and Bid.
+            </p>
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
+              <Link
+                href="/login"
+                className="rounded-sm bg-gold px-6 py-2.5 text-sm font-semibold text-page transition hover:bg-gold-soft"
+              >
+                Sign in to ContiHub
+              </Link>
+              <Link
+                href="#suite"
+                className="rounded-sm border border-gold/35 px-6 py-2.5 text-sm font-semibold text-ink transition hover:border-gold"
+              >
+                View the suite
+              </Link>
             </div>
-            <aside className="mx-auto w-full max-w-sm">
-              <img
-                src="/brand/tiles/contihub.png"
-                alt="ContiHub app tile"
-                className="w-full drop-shadow-[0_24px_40px_rgba(0,0,0,0.45)]"
-              />
-            </aside>
           </div>
         </section>
 
@@ -93,7 +65,7 @@ export default function HomePage() {
           <div className="mx-auto grid max-w-6xl gap-6 px-6 py-16 md:grid-cols-3">
             {pillars.map((pillar) => (
               <article key={pillar.title} className="border-t-2 border-gold pt-5">
-                <h2 className="font-display text-2xl font-semibold text-ink-strong">{pillar.title}</h2>
+                <h2 className="text-2xl font-semibold tracking-tight text-ink-strong">{pillar.title}</h2>
                 <p className="mt-3 text-sm leading-6 text-muted">{pillar.body}</p>
               </article>
             ))}
@@ -103,12 +75,11 @@ export default function HomePage() {
         <section id="suite" className="bg-page">
           <div className="mx-auto max-w-6xl px-6 py-16">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">Conti suite</p>
-            <h2 className="mt-3 font-display text-3xl font-semibold text-ink-strong">
+            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink-strong">
               Built for how CCO works.
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-              Each tile is the Conti mark: dark matte, nested blue and gold CCs, white wordmark, gold
-              underline. Open any app after sign-in.
+              Every app uses the same Conti mark. Open any tile after sign-in.
             </p>
             <div className="mt-10">
               <AppTiles />
