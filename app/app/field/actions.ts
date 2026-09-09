@@ -1,23 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { readInt, readNumber, readRequired, readString } from "@/lib/suite/form";
-import {
-  deleteFieldReport,
-  deleteFieldRfi,
-  saveFieldJob,
-  saveFieldReport,
-  saveFieldRfi,
-} from "@/lib/suite/store";
+import { readProjectId, revalidateSuite } from "@/lib/suite/revalidate";
+import { deleteFieldReport, deleteFieldRfi, saveFieldReport, saveFieldRfi } from "@/lib/suite/store";
 import type { FieldLogStatus, FieldRfiStatus } from "@/lib/suite/types";
-
-function revalidateField(date?: string) {
-  revalidatePath("/app/field");
-  revalidatePath("/app/field/rfis");
-  if (date) {
-    revalidatePath(`/app/field/log/${date}`);
-  }
-}
 
 function readLog(formData: FormData) {
   const manHours = readNumber(formData, "manHours", "Man-hours");
@@ -28,6 +14,7 @@ function readLog(formData: FormData) {
   const status: FieldLogStatus = formData.get("markFinal") ? "final" : "draft";
 
   return {
+    projectId: readProjectId(formData) ?? "",
     date: readRequired(formData, "date", "Date"),
     jobName: readString(formData, "jobName"),
     weather: readString(formData, "weather", "Clear"),
@@ -52,40 +39,26 @@ function readLog(formData: FormData) {
   };
 }
 
-export async function saveJob(formData: FormData) {
-  const id = readString(formData, "id") || undefined;
-  await saveFieldJob(
-    {
-      companyName: readString(formData, "companyName", "Continental Construction of Ohio"),
-      jobTitle: readString(formData, "jobTitle"),
-      jobNumber: readString(formData, "jobNumber"),
-      address: readString(formData, "address"),
-      client: readString(formData, "client"),
-      superintendent: readString(formData, "superintendent"),
-    },
-    id,
-  );
-  revalidateField();
-}
-
 export async function saveLog(formData: FormData) {
   const id = readString(formData, "id") || undefined;
   const log = readLog(formData);
   await saveFieldReport(log, id);
-  revalidateField(log.date);
+  revalidateSuite("field", log.projectId);
 }
 
 export async function removeLog(id: string) {
   await deleteFieldReport(id);
-  revalidateField();
+  revalidateSuite("field");
 }
 
 export async function saveRfi(formData: FormData) {
   const id = readString(formData, "id") || undefined;
   const statusValue = readString(formData, "status", "open");
   const status: FieldRfiStatus = statusValue === "closed" ? "closed" : "open";
+  const projectId = readProjectId(formData) ?? "";
   await saveFieldRfi(
     {
+      projectId,
       number: readRequired(formData, "number", "Number"),
       title: readRequired(formData, "title", "Title"),
       description: readString(formData, "description"),
@@ -94,12 +67,10 @@ export async function saveRfi(formData: FormData) {
     },
     id,
   );
-  revalidatePath("/app/field");
-  revalidatePath("/app/field/rfis");
+  revalidateSuite("field", projectId);
 }
 
 export async function removeRfi(id: string) {
   await deleteFieldRfi(id);
-  revalidatePath("/app/field");
-  revalidatePath("/app/field/rfis");
+  revalidateSuite("field");
 }

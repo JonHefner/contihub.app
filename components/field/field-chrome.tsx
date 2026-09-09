@@ -5,19 +5,20 @@ import { usePathname } from "next/navigation";
 import { CcMark } from "@/components/cc-mark";
 import { ClipboardListIcon, FileQuestionIcon } from "@/components/field/icons";
 
-const tabs = [
-  { href: "/app/field", label: "Daily logs", icon: ClipboardListIcon },
-  { href: "/app/field/rfis", label: "RFIs", icon: FileQuestionIcon },
-];
-
 export function FieldChrome({
   children,
   headerAction,
+  fieldBase,
 }: {
   children: React.ReactNode;
   headerAction?: React.ReactNode;
+  fieldBase: string;
 }) {
   const pathname = usePathname();
+  const tabs = [
+    { href: fieldBase, label: "Daily logs", match: "logs" as const },
+    { href: `${fieldBase}/rfis`, label: "RFIs", match: "rfis" as const },
+  ];
 
   return (
     <div className="field-app min-h-[calc(100vh-8.5rem)]">
@@ -43,10 +44,11 @@ export function FieldChrome({
       <nav className="no-print fixed inset-x-0 bottom-0 z-30 border-t border-field-line bg-field-bg/95 pt-1 pb-[max(0.4rem,env(safe-area-inset-bottom))] backdrop-blur-sm">
         <div className="mx-auto grid max-w-3xl grid-cols-2">
           {tabs.map((tab) => {
-            const active = tab.href === "/app/field"
-              ? pathname === "/app/field" || pathname.startsWith("/app/field/log")
-              : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
-            const Icon = tab.icon;
+            const Icon = tab.match === "logs" ? ClipboardListIcon : FileQuestionIcon;
+            const active =
+              tab.match === "logs"
+                ? pathname === fieldBase || pathname.startsWith(`${fieldBase}/log`)
+                : pathname === tab.href || pathname.startsWith(`${tab.href}/`);
             return (
               <Link
                 key={tab.href}

@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 
-export function DatePickerLink({ defaultDate }: { defaultDate: string }) {
+export function DatePickerLink({ defaultDate, fieldBase }: { defaultDate: string; fieldBase: string }) {
   const router = useRouter();
 
   return (
@@ -16,7 +16,7 @@ export function DatePickerLink({ defaultDate }: { defaultDate: string }) {
         onChange={(event) => {
           const value = event.target.value;
           if (value) {
-            router.push(`/app/field/log/${value}`);
+            router.push(`${fieldBase}/log/${value}`);
           }
         }}
       />

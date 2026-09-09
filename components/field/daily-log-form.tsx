@@ -17,6 +17,7 @@ const areaClass =
 
 function emptyLog(date: string, job: FieldJob): Omit<FieldReport, "id"> {
   return {
+    projectId: job.projectId,
     date,
     jobName: job.jobTitle || job.companyName,
     weather: "Clear",
@@ -74,10 +75,14 @@ export function DailyLogForm({
   date,
   job,
   log,
+  fieldBase,
+  projectId,
 }: {
   date: string;
   job: FieldJob;
   log: FieldReport | null;
+  fieldBase: string;
+  projectId: string;
 }) {
   const router = useRouter();
   const initial = log ?? { id: "", ...emptyLog(date, job) };
@@ -109,7 +114,7 @@ export function DailyLogForm({
     startTransition(async () => {
       try {
         await removeLog(log.id);
-        router.push("/app/field");
+        router.push(fieldBase);
         router.refresh();
       } catch (caught) {
         setError(caught instanceof Error ? caught.message : "Unable to delete this log.");
@@ -120,7 +125,7 @@ export function DailyLogForm({
   return (
     <form onSubmit={onSubmit} className="flex flex-col gap-4">
       <div className="no-print flex items-center justify-between gap-3">
-        <Link href="/app/field" className="text-sm font-medium text-field-primary">
+        <Link href={fieldBase} className="text-sm font-medium text-field-primary">
           Back to daily logs
         </Link>
         <div className="flex gap-2">
@@ -161,6 +166,7 @@ export function DailyLogForm({
 
       <input type="hidden" name="id" value={log?.id ?? ""} />
       <input type="hidden" name="date" value={date} />
+      <input type="hidden" name="projectId" value={projectId} />
       <input type="hidden" name="jobName" value={job.jobTitle || job.companyName} />
 
       <Section number="01" title="Report header">

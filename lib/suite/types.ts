@@ -1,6 +1,7 @@
 export type PersistMode = "supabase" | "memory";
 
 export type SuiteTable =
+  | "projects"
   | "crm_leads"
   | "field_reports"
   | "field_jobs"
@@ -10,8 +11,20 @@ export type SuiteTable =
   | "trak_milestones"
   | "bid_chases";
 
+export type ProjectStatus = "Active" | "Bidding" | "On Hold" | "Closed";
+
+export type Project = {
+  id: string;
+  name: string;
+  jobNumber: string;
+  address: string;
+  status: ProjectStatus;
+  createdBy: string;
+};
+
 export type CrmLead = {
   id: string;
+  projectId: string;
   name: string;
   company: string;
   stage: string;
@@ -22,6 +35,7 @@ export type FieldLogStatus = "draft" | "final";
 
 export type FieldReport = {
   id: string;
+  projectId: string;
   date: string;
   jobName: string;
   weather: string;
@@ -47,6 +61,7 @@ export type FieldReport = {
 
 export type FieldJob = {
   id: string;
+  projectId: string;
   companyName: string;
   jobTitle: string;
   jobNumber: string;
@@ -59,6 +74,7 @@ export type FieldRfiStatus = "open" | "closed";
 
 export type FieldRfi = {
   id: string;
+  projectId: string;
   number: string;
   title: string;
   description: string;
@@ -68,6 +84,7 @@ export type FieldRfi = {
 
 export type CostJob = {
   id: string;
+  projectId: string;
   job: string;
   budget: number;
   committed: number;
@@ -76,6 +93,7 @@ export type CostJob = {
 
 export type SafetyLog = {
   id: string;
+  projectId: string;
   type: string;
   date: string;
   location: string;
@@ -84,6 +102,7 @@ export type SafetyLog = {
 
 export type TrakMilestone = {
   id: string;
+  projectId: string;
   activity: string;
   start: string;
   finish: string;
@@ -92,6 +111,7 @@ export type TrakMilestone = {
 
 export type BidChase = {
   id: string;
+  projectId: string;
   project: string;
   dueDate: string;
   status: string;
@@ -99,6 +119,7 @@ export type BidChase = {
 };
 
 export type SuiteRecord =
+  | Project
   | CrmLead
   | FieldReport
   | FieldJob

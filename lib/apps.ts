@@ -17,6 +17,14 @@ export const contiApps: ContiApp[] = [
     href: "/app",
   },
   {
+    id: "projects",
+    name: "Projects",
+    shortName: "Projects",
+    description: "Jobs and project homes. Field, CRM, Cost, Safety, TraK, and Bid stay scoped to one job.",
+    status: "live",
+    href: "/app/projects",
+  },
+  {
     id: "conticrm",
     name: "ContiCRM",
     shortName: "CRM",

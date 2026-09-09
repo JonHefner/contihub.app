@@ -41,6 +41,7 @@ type CrudBoardProps<T extends { id: string }> = {
   columns: CrudColumn[];
   rows: T[];
   defaults: Record<string, string>;
+  hiddenValues?: Record<string, string>;
   createAction: (formData: FormData) => Promise<void>;
   updateAction: (id: string, formData: FormData) => Promise<void>;
   deleteAction: (id: string) => Promise<void>;
@@ -149,6 +150,7 @@ export function CrudBoard<T extends { id: string }>({
   columns,
   rows,
   defaults,
+  hiddenValues = {},
   createAction,
   updateAction,
   deleteAction,
@@ -256,6 +258,9 @@ export function CrudBoard<T extends { id: string }>({
           onSubmit={onSubmit}
           className="mt-6 rounded-sm border border-line bg-surface p-5"
         >
+          {Object.entries(hiddenValues).map(([name, value]) => (
+            <input key={name} type="hidden" name={name} value={value} />
+          ))}
           <div className="flex items-center justify-between gap-3">
             <h2 className="font-display text-xl font-semibold text-ink-strong">{heading}</h2>
             <button

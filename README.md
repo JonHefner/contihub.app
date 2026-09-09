@@ -2,7 +2,7 @@
 
 Continental Construction of Ohio (CCO) operations portal for [contihub.app](https://contihub.app).
 
-ContiHub is the live home for the Conti suite: ContiHub, ContiCRM, ContiField, ContiCost, ContiSafety, ContiTraK, and Conti Bid.
+ContiHub is the live home for the Conti suite: Projects, ContiHub, ContiCRM, ContiField, ContiCost, ContiSafety, ContiTraK, and Conti Bid. Suite boards are scoped to an individual project.
 
 ## Stack
 
@@ -108,14 +108,17 @@ Then redeploy. Leave **Authentication → Providers → Email → Confirm email*
 - `/auth/confirm` — same handler for the official `token_hash` email template
 - `/auth/complete` — client fallback when tokens arrive in the URL hash
 - `/app` — protected ops hub (middleware redirects unauthenticated users to `/login`)
-- `/app/crm` — ContiCRM opportunity / lead list
-- `/app/field` — ContiField daily construction log (Today / RFIs / Archive)
-- `/app/field/log/[date]` — create or edit a daily log for a date
-- `/app/field/rfis` — ContiField RFI list
-- `/app/cost` — ContiCost job cost summary
-- `/app/safety` — ContiSafety toolbox talks and incidents
-- `/app/trak` — ContiTraK schedule / milestones
-- `/app/bid` — Conti Bid chase list
+- `/app/projects` — list and create jobs
+- `/app/projects/[id]` — project home (summary + links into suite apps for that job)
+- `/app/projects/[id]/field` — ContiField daily construction log for that project
+- `/app/projects/[id]/field/log/[date]` — create or edit a daily log for a date
+- `/app/projects/[id]/field/rfis` — ContiField RFI list for that project
+- `/app/projects/[id]/crm` — ContiCRM opportunities for that project
+- `/app/projects/[id]/cost` — ContiCost job cost summary for that project
+- `/app/projects/[id]/safety` — ContiSafety log for that project
+- `/app/projects/[id]/trak` — ContiTraK milestones for that project
+- `/app/projects/[id]/bid` — Conti Bid chase list for that project
+- `/app/crm`, `/app/field`, `/app/cost`, `/app/safety`, `/app/trak`, `/app/bid` — project pickers (redirect when only one project exists)
 
 All `/app/**` routes share the suite nav and require a signed-in session.
 
@@ -127,7 +130,8 @@ Apply these files in the Supabase SQL editor (in order), or with the Supabase CL
 
 1. `supabase/migrations/20260909060000_conti_suite.sql` — CRM, Field, Cost, Safety, TraK, and Bid MVP tables
 2. `supabase/migrations/20260909160000_contifield_daily_log.sql` — ContiField job settings, RFI table, and richer daily-log columns
+3. `supabase/migrations/20260909180000_projects.sql` — `projects` table, nullable `project_id` on suite tables, and a per-user **Data Center** seed that attaches existing unassigned / “Data Center” sample rows
 
-If the Field daily-log SQL has not been applied yet, ContiField still runs with an in-session memory store and shows a banner.
+Run all three in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner.
 
-Row Level Security scopes every row to `auth.uid()`. Next step after this MVP: richer ERP fields, attachments, and shared project records across apps.
+Row Level Security scopes every row to `auth.uid()`. Suite boards filter by `project_id` so Data Center and the next chase stay separate.

@@ -16,10 +16,14 @@ export function RfiBoard({
   rfis,
   initialOpen = false,
   editingId = "",
+  fieldBase,
+  projectId,
 }: {
   rfis: FieldRfi[];
   initialOpen?: boolean;
   editingId?: string;
+  fieldBase: string;
+  projectId: string;
 }) {
   const router = useRouter();
   const editing = useMemo(
@@ -53,7 +57,7 @@ export function RfiBoard({
         await saveRfi(formData);
         setOpen(false);
         setCurrent(null);
-        router.replace("/app/field/rfis");
+        router.replace(`${fieldBase}/rfis`);
         router.refresh();
       } catch (caught) {
         setError(caught instanceof Error ? caught.message : "Unable to save RFI.");
@@ -151,6 +155,7 @@ export function RfiBoard({
             </button>
           </div>
           <input type="hidden" name="id" value={current?.id ?? ""} />
+          <input type="hidden" name="projectId" value={projectId} />
           <div className="grid gap-3">
             <label className="grid gap-1.5">
               <span className="text-[0.7rem] font-semibold uppercase tracking-[0.14em] text-field-muted">
@@ -227,7 +232,7 @@ export function RfiBoard({
       ) : null}
 
       <p className="mt-4 text-center">
-        <Link href="/app/field" className="text-sm font-medium text-field-primary">
+        <Link href={fieldBase} className="text-sm font-medium text-field-primary">
           Back to daily logs
         </Link>
       </p>

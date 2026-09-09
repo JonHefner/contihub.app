@@ -3,6 +3,20 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { suiteNav } from "@/lib/apps";
+import { suiteAppFromPath } from "@/lib/projects";
+
+function isNavActive(pathname: string, href: string) {
+  if (href === "/app") {
+    return pathname === "/app";
+  }
+
+  if (href === "/app/projects") {
+    return pathname === "/app/projects" || /^\/app\/projects\/[^/]+$/.test(pathname);
+  }
+
+  const key = href.replace("/app/", "");
+  return suiteAppFromPath(pathname) === key;
+}
 
 export function SuiteNav() {
   const pathname = usePathname();
@@ -11,9 +25,7 @@ export function SuiteNav() {
     <nav aria-label="Conti suite" className="no-print border-b border-white/8 bg-charcoal">
       <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2 sm:px-6">
         {suiteNav.map((item) => {
-          const active = item.exact
-            ? pathname === item.href
-            : pathname === item.href || pathname.startsWith(`${item.href}/`);
+          const active = isNavActive(pathname, item.href);
 
           return (
             <Link

@@ -1,7 +1,7 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { readInt, readRequired } from "@/lib/suite/form";
+import { readProjectId, revalidateSuite } from "@/lib/suite/revalidate";
 import { deleteTrakMilestone, saveTrakMilestone } from "@/lib/suite/store";
 
 function readMilestone(formData: FormData) {
@@ -13,6 +13,7 @@ function readMilestone(formData: FormData) {
   }
 
   return {
+    projectId: readProjectId(formData) ?? "",
     activity: readRequired(formData, "activity", "Activity"),
     start,
     finish,
@@ -21,16 +22,18 @@ function readMilestone(formData: FormData) {
 }
 
 export async function createMilestone(formData: FormData) {
-  await saveTrakMilestone(readMilestone(formData));
-  revalidatePath("/app/trak");
+  const milestone = readMilestone(formData);
+  await saveTrakMilestone(milestone);
+  revalidateSuite("trak", milestone.projectId);
 }
 
 export async function updateMilestone(id: string, formData: FormData) {
-  await saveTrakMilestone(readMilestone(formData), id);
-  revalidatePath("/app/trak");
+  const milestone = readMilestone(formData);
+  await saveTrakMilestone(milestone, id);
+  revalidateSuite("trak", milestone.projectId);
 }
 
 export async function removeMilestone(id: string) {
   await deleteTrakMilestone(id);
-  revalidatePath("/app/trak");
+  revalidateSuite("trak");
 }

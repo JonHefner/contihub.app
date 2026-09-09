@@ -1,11 +1,15 @@
 import { DEFAULT_FIELD_JOB } from "@/lib/field/constants";
-import { listFieldJobs } from "@/lib/suite/store";
-import type { FieldJob, PersistMode } from "@/lib/suite/types";
+import type { FieldJob, Project } from "@/lib/suite/types";
 
-export async function getActiveFieldJob(): Promise<{ job: FieldJob; persist: PersistMode }> {
-  const result = await listFieldJobs();
+export function fieldJobFromProject(project: Project): FieldJob {
   return {
-    persist: result.persist,
-    job: result.rows[0] ?? { id: "", ...DEFAULT_FIELD_JOB },
+    id: project.id,
+    projectId: project.id,
+    companyName: DEFAULT_FIELD_JOB.companyName,
+    jobTitle: project.name,
+    jobNumber: project.jobNumber,
+    address: project.address,
+    client: "",
+    superintendent: "",
   };
 }
