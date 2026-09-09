@@ -20,8 +20,8 @@ describe("cc-mark geometry", () => {
     const { center, goldCenter: gold, gap, blueStroke, goldStroke } = ccMetrics();
     assert.equal(center.cx, ccCenter().cx);
     assert.equal(center.cy, CC_VIEWBOX / 2);
-    assert.ok(gold.cx >= center.cx, "gold may sit slightly toward the opening");
-    assert.ok(GOLD_OFFSET_X < 1, "gold must not sit in the mouth");
+    assert.equal(gold.cx, center.cx);
+    assert.equal(GOLD_OFFSET_X, 0);
     assert.equal(gold.cy, center.cy);
     assert.ok(gap > 3.5 && gap < 5.5, `gap ${gap}`);
     assert.ok(blueStroke > goldStroke, "blue stroke should be heavier than gold");

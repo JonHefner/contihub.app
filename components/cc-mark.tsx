@@ -47,10 +47,10 @@ export function CcMark({ id, size = 72, className }: CcMarkProps) {
           <stop offset="100%" stopColor="#c9a34a" stopOpacity="0" />
         </linearGradient>
         <filter id={brush} x="-8%" y="-8%" width="116%" height="116%">
-          <feTurbulence type="fractalNoise" baseFrequency="0.85 0.06" numOctaves="3" seed="3" result="noise" />
+          <feTurbulence type="fractalNoise" baseFrequency="0.06 0.8" numOctaves="3" seed="3" result="noise" />
           <feColorMatrix type="saturate" values="0" in="noise" result="gray" />
           <feComponentTransfer in="gray" result="grain">
-            <feFuncA type="linear" slope="0.42" />
+            <feFuncA type="linear" slope="0.28" />
           </feComponentTransfer>
           <feComposite in="grain" in2="SourceAlpha" operator="in" result="clipped" />
           <feBlend in="SourceGraphic" in2="clipped" mode="overlay" />

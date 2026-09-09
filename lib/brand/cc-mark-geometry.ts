@@ -9,7 +9,7 @@ export const BLUE_INNER = 22.8;
 export const GOLD_OUTER = 17.8;
 export const GOLD_INNER = 7.8;
 /** Tiny optical nudge toward the opening — ContiCost sits ~5% right, not in the mouth. */
-export const GOLD_OFFSET_X = 0.45;
+export const GOLD_OFFSET_X = 0;
 export const GOLD_OFFSET_Y = 0;
 
 export type CcCenter = { cx: number; cy: number };
