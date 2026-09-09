@@ -104,18 +104,23 @@ export default function HomePage() {
             </p>
             <h2 className="mt-3 font-display text-3xl font-semibold">Built for how CCO works.</h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-steel-600">
-              ContiHub is live. The rest of the suite is coming online behind the same sign-in.
+              The full Conti suite is live behind the same sign-in. Open any app to start working.
             </p>
             <ul className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {contiApps.map((app) => (
-                <li key={app.id} className="rounded-sm border border-navy-900/10 bg-white p-4">
-                  <div className="flex items-center justify-between gap-2">
-                    <span className="font-semibold">{app.name}</span>
-                    <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-steel-500">
-                      {app.status === "live" ? "Live" : "Coming soon"}
-                    </span>
-                  </div>
-                  <p className="mt-2 text-sm text-steel-600">{app.description}</p>
+                <li key={app.id}>
+                  <Link
+                    href={app.href}
+                    className="block h-full rounded-sm border border-navy-900/10 bg-white p-4 transition hover:-translate-y-0.5 hover:border-navy-900/25 hover:shadow-sm"
+                  >
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-semibold">{app.name}</span>
+                      <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-navy-800">
+                        Live
+                      </span>
+                    </div>
+                    <p className="mt-2 text-sm text-steel-600">{app.description}</p>
+                  </Link>
                 </li>
               ))}
             </ul>

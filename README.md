@@ -2,7 +2,7 @@
 
 Continental Construction of Ohio (CCO) operations portal for [contihub.app](https://contihub.app).
 
-ContiHub is the live home for the Conti suite: ContiHub, ContiCost, ContiField, ContiCRM, ContiSafety, ContiTraK, and Conti Bid.
+ContiHub is the live home for the Conti suite: ContiHub, ContiCRM, ContiField, ContiCost, ContiSafety, ContiTraK, and Conti Bid.
 
 ## Stack
 
@@ -61,3 +61,19 @@ Site URL should be `https://contihub.app` (or your preview origin during staging
 - `/signup` — create an account
 - `/auth/callback` — Supabase auth code exchange
 - `/app` — protected ops hub (middleware redirects unauthenticated users to `/login`)
+- `/app/crm` — ContiCRM opportunity / lead list
+- `/app/field` — ContiField daily reports
+- `/app/cost` — ContiCost job cost summary
+- `/app/safety` — ContiSafety toolbox talks and incidents
+- `/app/trak` — ContiTraK schedule / milestones
+- `/app/bid` — Conti Bid chase list
+
+All `/app/**` routes share the suite nav and require a signed-in session.
+
+## Suite data
+
+Suite apps write to Supabase tables when the migration has been applied. If the tables are missing, the UI still works with an in-session memory store and shows a banner.
+
+Apply `supabase/migrations/20260909060000_conti_suite.sql` in the Supabase SQL editor, or with the Supabase CLI (`supabase db push`). No new environment variables are required.
+
+Row Level Security scopes every row to `auth.uid()`. Next step after this MVP: richer ERP fields, attachments, and shared project records across apps.

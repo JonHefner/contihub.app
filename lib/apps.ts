@@ -1,53 +1,73 @@
 export type ContiApp = {
   id: string;
   name: string;
+  shortName: string;
   description: string;
-  status: "live" | "coming-soon";
-  href?: string;
+  status: "live";
+  href: string;
 };
 
 export const contiApps: ContiApp[] = [
   {
     id: "contihub",
     name: "ContiHub",
+    shortName: "Hub",
     description: "Ops portal and home for the Conti suite.",
     status: "live",
     href: "/app",
   },
   {
-    id: "conticost",
-    name: "ContiCost",
-    description: "Estimating, budgets, and job cost control.",
-    status: "coming-soon",
+    id: "conticrm",
+    name: "ContiCRM",
+    shortName: "CRM",
+    description: "Owners, architects, and opportunity tracking.",
+    status: "live",
+    href: "/app/crm",
   },
   {
     id: "contifield",
     name: "ContiField",
+    shortName: "Field",
     description: "Daily reports, photos, and field coordination.",
-    status: "coming-soon",
+    status: "live",
+    href: "/app/field",
   },
   {
-    id: "conticrm",
-    name: "ContiCRM",
-    description: "Owners, architects, and opportunity tracking.",
-    status: "coming-soon",
+    id: "conticost",
+    name: "ContiCost",
+    shortName: "Cost",
+    description: "Estimating, budgets, and job cost control.",
+    status: "live",
+    href: "/app/cost",
   },
   {
     id: "contisafety",
     name: "ContiSafety",
+    shortName: "Safety",
     description: "Incidents, toolbox talks, and compliance.",
-    status: "coming-soon",
+    status: "live",
+    href: "/app/safety",
   },
   {
     id: "contitrak",
     name: "ContiTraK",
+    shortName: "TraK",
     description: "Schedule, production, and project tracking.",
-    status: "coming-soon",
+    status: "live",
+    href: "/app/trak",
   },
   {
     id: "contibid",
     name: "Conti Bid",
+    shortName: "Bid",
     description: "Bid invitations, takeoff, and proposal workflow.",
-    status: "coming-soon",
+    status: "live",
+    href: "/app/bid",
   },
 ];
+
+export const suiteNav = contiApps.map((app) => ({
+  name: app.shortName,
+  href: app.href,
+  exact: app.href === "/app",
+}));
