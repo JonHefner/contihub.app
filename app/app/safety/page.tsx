@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { CrudBoard } from "@/components/crud-board";
-import { formatDate } from "@/lib/suite/form";
 import { listSafetyLogs } from "@/lib/suite/store";
 import { createLog, removeLog, updateLog } from "./actions";
 
@@ -31,27 +30,13 @@ export default async function SafetyPage() {
         { name: "notes", label: "Notes", type: "textarea", placeholder: "Topic, people present, follow-up" },
       ]}
       columns={[
-        {
-          key: "type",
-          label: "Type",
-          render: (row) => (
-            <span className="rounded-sm bg-navy-50 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-navy-800">
-              {row.type}
-            </span>
-          ),
-        },
-        { key: "date", label: "Date", render: (row) => formatDate(row.date) },
-        { key: "location", label: "Location", render: (row) => <span className="font-semibold">{row.location}</span> },
+        { key: "type", label: "Type", format: "badge" },
+        { key: "date", label: "Date", format: "date" },
+        { key: "location", label: "Location", format: "emphasis" },
         { key: "notes", label: "Notes", className: "min-w-56 text-steel-600" },
       ]}
       rows={rows}
       defaults={{ type: "Toolbox Talk", date: today, location: "", notes: "" }}
-      toFormValues={(row) => ({
-        type: row.type,
-        date: row.date,
-        location: row.location,
-        notes: row.notes,
-      })}
       createAction={createLog}
       updateAction={updateLog}
       deleteAction={removeLog}

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { CrudBoard } from "@/components/crud-board";
-import { formatDate } from "@/lib/suite/form";
 import { listFieldReports } from "@/lib/suite/store";
 import { createReport, removeReport, updateReport } from "./actions";
 
@@ -32,21 +31,14 @@ export default async function FieldPage() {
         { name: "notes", label: "Notes", type: "textarea", placeholder: "Work completed, delays, visitors" },
       ]}
       columns={[
-        { key: "date", label: "Date", render: (row) => formatDate(row.date) },
-        { key: "jobName", label: "Job", render: (row) => <span className="font-semibold">{row.jobName}</span> },
+        { key: "date", label: "Date", format: "date" },
+        { key: "jobName", label: "Job", format: "emphasis" },
         { key: "weather", label: "Weather" },
         { key: "crewCount", label: "Crew" },
         { key: "notes", label: "Notes", className: "min-w-56 text-steel-600" },
       ]}
       rows={rows}
       defaults={{ date: today, jobName: "", weather: "Clear", notes: "", crewCount: "0" }}
-      toFormValues={(row) => ({
-        date: row.date,
-        jobName: row.jobName,
-        weather: row.weather,
-        notes: row.notes,
-        crewCount: String(row.crewCount),
-      })}
       createAction={createReport}
       updateAction={updateReport}
       deleteAction={removeReport}

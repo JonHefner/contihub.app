@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { CrudBoard } from "@/components/crud-board";
-import { formatDate, formatMoneyExact } from "@/lib/suite/form";
 import { listBidChases } from "@/lib/suite/store";
 import { createChase, removeChase, updateChase } from "./actions";
 
@@ -31,27 +30,13 @@ export default async function BidPage() {
         { name: "estimateValue", label: "Estimate value", type: "number", required: true, min: 0, step: "0.01" },
       ]}
       columns={[
-        { key: "project", label: "Project", render: (row) => <span className="font-semibold">{row.project}</span> },
-        { key: "dueDate", label: "Due date", render: (row) => formatDate(row.dueDate) },
-        {
-          key: "status",
-          label: "Status",
-          render: (row) => (
-            <span className="rounded-sm bg-navy-50 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-navy-800">
-              {row.status}
-            </span>
-          ),
-        },
-        { key: "estimateValue", label: "Estimate", render: (row) => formatMoneyExact(row.estimateValue) },
+        { key: "project", label: "Project", format: "emphasis" },
+        { key: "dueDate", label: "Due date", format: "date" },
+        { key: "status", label: "Status", format: "badge" },
+        { key: "estimateValue", label: "Estimate", format: "money" },
       ]}
       rows={rows}
       defaults={{ project: "", dueDate: today, status: "Tracking", estimateValue: "0" }}
-      toFormValues={(row) => ({
-        project: row.project,
-        dueDate: row.dueDate,
-        status: row.status,
-        estimateValue: String(row.estimateValue),
-      })}
       createAction={createChase}
       updateAction={updateChase}
       deleteAction={removeChase}

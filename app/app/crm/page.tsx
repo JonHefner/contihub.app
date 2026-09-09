@@ -29,27 +29,13 @@ export default async function CrmPage() {
         { name: "notes", label: "Notes", type: "textarea", placeholder: "Next step, decision maker, context" },
       ]}
       columns={[
-        { key: "name", label: "Name", render: (row) => <span className="font-semibold">{row.name}</span> },
+        { key: "name", label: "Name", format: "emphasis" },
         { key: "company", label: "Company" },
-        {
-          key: "stage",
-          label: "Stage",
-          render: (row) => (
-            <span className="rounded-sm bg-navy-50 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-navy-800">
-              {row.stage}
-            </span>
-          ),
-        },
+        { key: "stage", label: "Stage", format: "badge" },
         { key: "notes", label: "Notes", className: "min-w-56 text-steel-600" },
       ]}
       rows={rows}
       defaults={{ name: "", company: "", stage: "Lead", notes: "" }}
-      toFormValues={(row) => ({
-        name: row.name,
-        company: row.company,
-        stage: row.stage,
-        notes: row.notes,
-      })}
       createAction={createLead}
       updateAction={updateLead}
       deleteAction={removeLead}
