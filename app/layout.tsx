@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Source_Sans_3, Source_Serif_4 } from "next/font/google";
+import { Barlow, Barlow_Condensed, Source_Sans_3, Source_Serif_4 } from "next/font/google";
 import { getSiteUrl } from "@/lib/site";
 import "./globals.css";
 
@@ -11,6 +11,18 @@ const sourceSans = Source_Sans_3({
 const sourceSerif = Source_Serif_4({
   variable: "--font-source-serif",
   subsets: ["latin"],
+});
+
+const barlow = Barlow({
+  variable: "--font-barlow",
+  subsets: ["latin"],
+  weight: ["400", "500", "600", "700"],
+});
+
+const barlowCondensed = Barlow_Condensed({
+  variable: "--font-barlow-condensed",
+  subsets: ["latin"],
+  weight: ["500", "600", "700"],
 });
 
 export const metadata: Metadata = {
@@ -31,7 +43,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${sourceSans.variable} ${sourceSerif.variable} antialiased font-sans`}>
+      <body
+        className={`${sourceSans.variable} ${sourceSerif.variable} ${barlow.variable} ${barlowCondensed.variable} antialiased font-sans`}
+      >
         {children}
       </body>
     </html>

@@ -1,11 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { readMoney, readRequired } from "@/lib/suite/form";
+import { readProjectId, revalidateSuite } from "@/lib/suite/revalidate";
 import { deleteCostJob, saveCostJob } from "@/lib/suite/store";
 
 function readJob(formData: FormData) {
   return {
+    projectId: readProjectId(formData) ?? "",
     job: readRequired(formData, "job", "Job"),
     budget: readMoney(formData, "budget", "Budget"),
     committed: readMoney(formData, "committed", "Committed"),
@@ -14,16 +15,18 @@ function readJob(formData: FormData) {
 }
 
 export async function createJob(formData: FormData) {
-  await saveCostJob(readJob(formData));
-  revalidatePath("/app/cost");
+  const job = readJob(formData);
+  await saveCostJob(job);
+  revalidateSuite("cost", job.projectId);
 }
 
 export async function updateJob(id: string, formData: FormData) {
-  await saveCostJob(readJob(formData), id);
-  revalidatePath("/app/cost");
+  const job = readJob(formData);
+  await saveCostJob(job, id);
+  revalidateSuite("cost", job.projectId);
 }
 
 export async function removeJob(id: string) {
   await deleteCostJob(id);
-  revalidatePath("/app/cost");
+  revalidateSuite("cost");
 }

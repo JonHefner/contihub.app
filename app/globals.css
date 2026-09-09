@@ -1,20 +1,46 @@
 @import "tailwindcss";
 
 @theme inline {
+  --color-page: #0b0b0d;
+  --color-charcoal: #121214;
+  --color-surface: #18181c;
+  --color-surface-2: #222228;
+  --color-ink: #f4f0e6;
+  --color-ink-strong: #fffdf8;
+  --color-muted: #9a9388;
+  --color-line: #2c2c33;
+  --color-royal: #1e4fa3;
+  --color-royal-deep: #153778;
+  --color-gold: #c9a34a;
+  --color-gold-soft: #e8d7a8;
   --color-navy-950: #08131d;
   --color-navy-900: #0c1b2a;
   --color-navy-800: #13283c;
   --color-navy-50: #eef3f7;
-  --color-gold: #c4a35a;
-  --color-gold-soft: #e8d7a8;
-  --color-paper: #f6f2ea;
-  --color-steel-100: #e7e2d8;
-  --color-steel-200: #d3cdc2;
+  --color-paper: #f4f0e6;
+  --color-steel-100: #2a2a32;
+  --color-steel-200: #3a3a44;
   --color-steel-300: #b7c0c9;
-  --color-steel-500: #6b7785;
-  --color-steel-600: #4d5966;
+  --color-steel-500: #8b8478;
+  --color-steel-600: #b7b1a6;
+  --color-field-bg: #efece4;
+  --color-field-surface: #f7f4ec;
+  --color-field-surface-2: #fffdf7;
+  --color-field-ink: #1c1915;
+  --color-field-muted: #6b655c;
+  --color-field-faint: #948d82;
+  --color-field-line: #d4cec2;
+  --color-field-primary: #1f3d4d;
+  --color-field-primary-fg: #f4f0e6;
+  --color-field-primary-hover: #16303c;
+  --color-field-danger: #8f3d36;
+  --color-field-ok: #2f5b45;
+  --color-field-warn: #7a5a2e;
+  --color-field-chip: #e8e2d6;
   --font-sans: var(--font-source-sans), ui-sans-serif, system-ui, sans-serif;
   --font-display: var(--font-source-serif), ui-serif, Georgia, serif;
+  --font-field: var(--font-barlow), "Segoe UI", system-ui, sans-serif;
+  --font-field-display: var(--font-barlow-condensed), var(--font-barlow), "Segoe UI", sans-serif;
 }
 
 html {
@@ -22,12 +48,42 @@ html {
 }
 
 body {
-  background: var(--color-paper);
-  color: var(--color-navy-900);
+  background: var(--color-page);
+  color: var(--color-ink);
   font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
 }
 
 ::selection {
-  background: #c4a35a;
-  color: #0c1b2a;
+  background: #c9a34a;
+  color: #0b0b0d;
+}
+
+.field-app {
+  background: var(--color-field-bg);
+  color: var(--color-field-ink);
+  font-family: var(--font-field), "Segoe UI", system-ui, sans-serif;
+}
+
+.field-app .font-display,
+.field-app h1,
+.field-app h2 {
+  font-family: var(--font-field-display), var(--font-field), "Segoe UI", sans-serif;
+}
+
+.field-shadow {
+  box-shadow:
+    0 0 0 1px rgb(28 25 21 / 0.06),
+    0 1px 2px -1px rgb(28 25 21 / 0.06),
+    0 2px 8px -2px rgb(28 25 21 / 0.05);
+}
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+
+  body,
+  .field-app {
+    background: white;
+  }
 }

@@ -1,47 +1,24 @@
 import type { Metadata } from "next";
-import { CrudBoard } from "@/components/crud-board";
-import { listFieldReports } from "@/lib/suite/store";
-import { createReport, removeReport, updateReport } from "./actions";
+import { ProjectPicker } from "@/components/projects/project-picker";
+import { SuiteShell } from "@/components/suite-shell";
+import { listOrRedirectToProject } from "@/lib/suite/project-route";
 
 export const metadata: Metadata = {
   title: "ContiField",
 };
 
-const weather = ["Clear", "Overcast", "Rain", "Snow", "Wind", "Mixed"];
-
 export default async function FieldPage() {
-  const { rows, persist } = await listFieldReports();
-  const today = new Date().toISOString().slice(0, 10);
+  const { projects, persist } = await listOrRedirectToProject("field");
 
   return (
-    <CrudBoard
-      eyebrow="ContiField"
-      title="Daily reports"
-      description="Log the day on each job — date, job name, weather, crew count, and notes."
-      addLabel="New daily report"
-      editLabel="Edit daily report"
-      emptyTitle="No field reports yet"
-      emptyBody="Create the first daily report for a job. Photos and richer coordination can layer on later."
-      persist={persist}
-      fields={[
-        { name: "date", label: "Date", type: "date", required: true },
-        { name: "jobName", label: "Job name", type: "text", required: true, placeholder: "Project or site" },
-        { name: "weather", label: "Weather", type: "select", required: true, options: weather },
-        { name: "crewCount", label: "Crew count", type: "number", required: true, min: 0, max: 500, step: "1" },
-        { name: "notes", label: "Notes", type: "textarea", placeholder: "Work completed, delays, visitors" },
-      ]}
-      columns={[
-        { key: "date", label: "Date", format: "date" },
-        { key: "jobName", label: "Job", format: "emphasis" },
-        { key: "weather", label: "Weather" },
-        { key: "crewCount", label: "Crew" },
-        { key: "notes", label: "Notes", className: "min-w-56 text-steel-600" },
-      ]}
-      rows={rows}
-      defaults={{ date: today, jobName: "", weather: "Clear", notes: "", crewCount: "0" }}
-      createAction={createReport}
-      updateAction={updateReport}
-      deleteAction={removeReport}
-    />
+    <SuiteShell>
+      <ProjectPicker
+        app="field"
+        projects={projects}
+        persist={persist}
+        title="Choose a project"
+        description="ContiField daily logs are scoped per job. Open a project to file today’s report."
+      />
+    </SuiteShell>
   );
 }

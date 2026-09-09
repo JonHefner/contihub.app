@@ -41,13 +41,14 @@ type CrudBoardProps<T extends { id: string }> = {
   columns: CrudColumn[];
   rows: T[];
   defaults: Record<string, string>;
+  hiddenValues?: Record<string, string>;
   createAction: (formData: FormData) => Promise<void>;
   updateAction: (id: string, formData: FormData) => Promise<void>;
   deleteAction: (id: string) => Promise<void>;
 };
 
 const inputClass =
-  "w-full rounded-sm border border-steel-200 bg-white px-3 py-2.5 text-navy-900 outline-none ring-gold/30 transition focus:border-navy-800 focus:ring-4";
+  "w-full rounded-sm border border-line bg-surface-2 px-3 py-2.5 text-ink outline-none ring-gold/25 transition focus:border-gold focus:ring-4";
 
 function asRecord(row: { id: string }): Record<string, unknown> {
   return row as Record<string, unknown>;
@@ -94,7 +95,7 @@ function ColumnCell({ column, row }: { column: CrudColumn; row: Record<string, u
 
   if (format === "badge") {
     return (
-      <span className="rounded-sm bg-navy-50 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-navy-800">
+      <span className="rounded-sm bg-royal-deep px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gold-soft">
         {cellText(row, column.key)}
       </span>
     );
@@ -123,11 +124,11 @@ function ColumnCell({ column, row }: { column: CrudColumn; row: Record<string, u
     const pct = Math.min(100, Math.max(0, asNumber(raw)));
     return (
       <div className="min-w-32">
-        <div className="flex items-center justify-between text-xs font-semibold text-navy-800">
+        <div className="flex items-center justify-between text-xs font-semibold text-ink">
           <span>{pct}%</span>
         </div>
-        <div className="mt-1 h-1.5 overflow-hidden rounded-sm bg-steel-100">
-          <div className="h-full bg-navy-900" style={{ width: `${pct}%` }} />
+        <div className="mt-1 h-1.5 overflow-hidden rounded-sm bg-surface-2">
+          <div className="h-full bg-gold" style={{ width: `${pct}%` }} />
         </div>
       </div>
     );
@@ -149,6 +150,7 @@ export function CrudBoard<T extends { id: string }>({
   columns,
   rows,
   defaults,
+  hiddenValues = {},
   createAction,
   updateAction,
   deleteAction,
@@ -228,40 +230,43 @@ export function CrudBoard<T extends { id: string }>({
 
   return (
     <div>
-      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-steel-500">{eyebrow}</p>
+      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">{eyebrow}</p>
       <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <h1 className="font-display text-4xl font-semibold tracking-tight text-navy-900">{title}</h1>
-          <p className="mt-3 max-w-2xl text-sm leading-6 text-steel-600">{description}</p>
+          <h1 className="font-display text-4xl font-semibold tracking-tight text-ink-strong">{title}</h1>
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">{description}</p>
         </div>
         <button
           type="button"
           onClick={startCreate}
-          className="shrink-0 rounded-sm bg-navy-900 px-4 py-2.5 text-sm font-semibold text-paper transition hover:bg-navy-800"
+          className="shrink-0 rounded-sm bg-gold px-4 py-2.5 text-sm font-semibold text-page transition hover:bg-gold-soft"
         >
           {addLabel}
         </button>
       </div>
 
       {persist === "memory" ? (
-        <p className="mt-5 rounded-sm border border-gold/40 bg-gold-soft/40 px-3 py-2 text-sm text-navy-800">
-          Using an in-session store because the Supabase suite tables are not available yet. Apply{" "}
-          <code className="font-mono text-xs">supabase/migrations/20260909060000_conti_suite.sql</code>{" "}
-          to persist records per user.
+        <p className="mt-5 rounded-sm border border-gold/35 bg-gold/10 px-3 py-2 text-sm text-gold-soft">
+          Using an in-session store because the Supabase suite tables are not available yet. Apply the
+          SQL files in <code className="font-mono text-xs">supabase/migrations/</code> to persist
+          records per user.
         </p>
       ) : null}
 
       {open ? (
         <form
           onSubmit={onSubmit}
-          className="mt-6 rounded-sm border border-navy-900/10 bg-white p-5 shadow-[0_1px_0_rgba(12,27,42,0.04)]"
+          className="mt-6 rounded-sm border border-line bg-surface p-5"
         >
+          {Object.entries(hiddenValues).map(([name, value]) => (
+            <input key={name} type="hidden" name={name} value={value} />
+          ))}
           <div className="flex items-center justify-between gap-3">
-            <h2 className="font-display text-xl font-semibold text-navy-900">{heading}</h2>
+            <h2 className="font-display text-xl font-semibold text-ink-strong">{heading}</h2>
             <button
               type="button"
               onClick={resetForm}
-              className="text-sm font-medium text-steel-500 hover:text-navy-900"
+              className="text-sm font-medium text-muted hover:text-ink"
             >
               Cancel
             </button>
@@ -272,7 +277,7 @@ export function CrudBoard<T extends { id: string }>({
                 key={field.name}
                 className={`space-y-2 ${field.type === "textarea" ? "md:col-span-2" : ""}`}
               >
-                <span className="text-sm font-medium text-navy-800">{field.label}</span>
+                <span className="text-sm font-medium text-ink">{field.label}</span>
                 {field.type === "textarea" ? (
                   <textarea
                     name={field.name}
@@ -321,7 +326,7 @@ export function CrudBoard<T extends { id: string }>({
             ))}
           </div>
           {error ? (
-            <p className="mt-4 rounded-sm border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-800">
+            <p className="mt-4 rounded-sm border border-red-500/30 bg-red-950/40 px-3 py-2 text-sm text-red-200">
               {error}
             </p>
           ) : null}
@@ -329,7 +334,7 @@ export function CrudBoard<T extends { id: string }>({
             <button
               type="submit"
               disabled={pending}
-              className="rounded-sm bg-navy-900 px-4 py-2.5 text-sm font-semibold text-paper transition hover:bg-navy-800 disabled:opacity-70"
+              className="rounded-sm bg-gold px-4 py-2.5 text-sm font-semibold text-page transition hover:bg-gold-soft disabled:opacity-70"
             >
               {pending ? "Saving…" : editing ? "Save changes" : "Save record"}
             </button>
@@ -338,14 +343,14 @@ export function CrudBoard<T extends { id: string }>({
       ) : null}
 
       {rows.length === 0 ? (
-        <div className="mt-8 rounded-sm border border-dashed border-navy-900/20 bg-white px-6 py-14 text-center">
-          <p className="font-display text-2xl text-navy-900">{emptyTitle}</p>
-          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-steel-600">{emptyBody}</p>
+        <div className="mt-8 rounded-sm border border-dashed border-line bg-surface px-6 py-14 text-center">
+          <p className="font-display text-2xl text-ink-strong">{emptyTitle}</p>
+          <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-muted">{emptyBody}</p>
         </div>
       ) : (
-        <div className="mt-8 overflow-x-auto rounded-sm border border-navy-900/10 bg-white">
+        <div className="mt-8 overflow-x-auto rounded-sm border border-line bg-surface">
           <table className="min-w-full text-left text-sm">
-            <thead className="bg-navy-900 text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">
+            <thead className="bg-charcoal text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">
               <tr>
                 {columns.map((column) => (
                   <th key={column.key} className={`px-4 py-3 ${column.className ?? ""}`}>
@@ -357,9 +362,9 @@ export function CrudBoard<T extends { id: string }>({
             </thead>
             <tbody>
               {rows.map((row) => (
-                <tr key={row.id} className="border-t border-steel-100 align-top">
+                <tr key={row.id} className="border-t border-line align-top">
                   {columns.map((column) => (
-                    <td key={column.key} className={`px-4 py-3 text-navy-900 ${column.className ?? ""}`}>
+                    <td key={column.key} className={`px-4 py-3 text-ink ${column.className ?? ""}`}>
                       <ColumnCell column={column} row={asRecord(row)} />
                     </td>
                   ))}
@@ -367,14 +372,14 @@ export function CrudBoard<T extends { id: string }>({
                     <button
                       type="button"
                       onClick={() => startEdit(row)}
-                      className="text-sm font-semibold text-navy-800 underline-offset-4 hover:underline"
+                      className="text-sm font-semibold text-gold underline-offset-4 hover:underline"
                     >
                       Edit
                     </button>
                     <button
                       type="button"
                       onClick={() => onDelete(row.id)}
-                      className="ml-3 text-sm font-semibold text-steel-500 underline-offset-4 hover:text-red-800 hover:underline"
+                      className="ml-3 text-sm font-semibold text-muted underline-offset-4 hover:text-red-300 hover:underline"
                     >
                       Delete
                     </button>

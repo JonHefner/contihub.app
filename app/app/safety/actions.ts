@@ -1,11 +1,12 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { readRequired, readString } from "@/lib/suite/form";
+import { readProjectId, revalidateSuite } from "@/lib/suite/revalidate";
 import { deleteSafetyLog, saveSafetyLog } from "@/lib/suite/store";
 
 function readLog(formData: FormData) {
   return {
+    projectId: readProjectId(formData) ?? "",
     type: readRequired(formData, "type", "Type"),
     date: readRequired(formData, "date", "Date"),
     location: readRequired(formData, "location", "Location"),
@@ -14,16 +15,18 @@ function readLog(formData: FormData) {
 }
 
 export async function createLog(formData: FormData) {
-  await saveSafetyLog(readLog(formData));
-  revalidatePath("/app/safety");
+  const log = readLog(formData);
+  await saveSafetyLog(log);
+  revalidateSuite("safety", log.projectId);
 }
 
 export async function updateLog(id: string, formData: FormData) {
-  await saveSafetyLog(readLog(formData), id);
-  revalidatePath("/app/safety");
+  const log = readLog(formData);
+  await saveSafetyLog(log, id);
+  revalidateSuite("safety", log.projectId);
 }
 
 export async function removeLog(id: string) {
   await deleteSafetyLog(id);
-  revalidatePath("/app/safety");
+  revalidateSuite("safety");
 }
