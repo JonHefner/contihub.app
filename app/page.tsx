@@ -112,7 +112,7 @@ export default function HomePage() {
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-semibold">{app.name}</span>
                     <span className="text-[10px] font-semibold uppercase tracking-[0.14em] text-steel-500">
-                      {app.status === "live" ? "Live" : "Soon"}
+                      {app.status === "live" ? "Live" : "Coming soon"}
                     </span>
                   </div>
                   <p className="mt-2 text-sm text-steel-600">{app.description}</p>
