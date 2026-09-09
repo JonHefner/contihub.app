@@ -13,11 +13,11 @@ export function Logo({ href = "/", light = true, size = "sm" }: LogoProps) {
   const mark = (
     <span className="inline-flex items-center gap-3">
       <img
-        src="/brand/cc-mark-on-dark.svg"
+        src="/brand/cc-mark-on-dark.png"
         alt=""
         width={size === "lg" ? 64 : 48}
         height={size === "lg" ? 64 : 48}
-        className={`${markSize} rounded-[0.9rem] shadow-[0_0_0_1px_rgba(201,163,74,0.28)]`}
+        className={`${markSize} rounded-[0.9rem]`}
       />
       <span className="leading-none">
         <span

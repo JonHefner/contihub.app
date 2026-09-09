@@ -46,11 +46,11 @@ export default function HomePage() {
           <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
             <div>
               <img
-                src="/brand/cc-mark.svg"
+                src="/brand/cc-mark-on-dark.png"
                 alt="Conti nested CC mark"
                 width={128}
                 height={128}
-                className="h-28 w-28 drop-shadow-[0_12px_24px_rgba(30,79,163,0.35)]"
+                className="h-28 w-28 rounded-[1.35rem] shadow-[0_16px_32px_-18px_rgba(0,0,0,0.75)]"
               />
               <h1 className="mt-6 font-display text-5xl leading-none font-semibold tracking-tight text-ink-strong sm:text-7xl">
                 ContiHub
@@ -81,7 +81,7 @@ export default function HomePage() {
             </div>
             <aside className="mx-auto w-full max-w-sm">
               <img
-                src="/brand/tiles/contihub.svg"
+                src="/brand/tiles/contihub.png"
                 alt="ContiHub app tile"
                 className="w-full drop-shadow-[0_24px_40px_rgba(0,0,0,0.45)]"
               />

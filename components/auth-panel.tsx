@@ -19,11 +19,11 @@ export function AuthPanel({
       <div className="relative mx-auto flex min-h-screen max-w-md flex-col justify-center px-6 py-16">
         <Link href="/" className="flex flex-col items-center text-center">
           <img
-            src="/brand/cc-mark.svg"
+            src="/brand/cc-mark-on-dark.png"
             alt="Conti nested CC mark"
             width={96}
             height={96}
-            className="h-24 w-24 drop-shadow-[0_12px_24px_rgba(30,79,163,0.35)]"
+            className="h-24 w-24 rounded-[1.2rem] shadow-[0_16px_32px_-18px_rgba(0,0,0,0.75)]"
           />
           <span className="mt-5 font-display text-[1.85rem] font-semibold tracking-tight text-ink">
             ContiHub
