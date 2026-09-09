@@ -58,9 +58,9 @@
     <path fill="#041028" d="M80.577 29.538 A34 34 0 1 0 80.577 70.462 L70.195 62.638 A21 21 0 1 1 70.195 37.362 Z" transform="translate(1.5 2.1)"/>
     <path fill="url(#t-blue)" d="M80.577 29.538 A34 34 0 1 0 80.577 70.462 L70.195 62.638 A21 21 0 1 1 70.195 37.362 Z" filter="url(#t-brush)"/>
     <path fill="url(#t-blue-hi)" d="M80.577 29.538 A34 34 0 1 0 80.577 70.462 L70.195 62.638 A21 21 0 1 1 70.195 37.362 Z"/>
-    <path fill="#3d3208" d="M66.84 39.89 A16.8 16.8 0 1 0 66.84 60.11 L59.253 54.393 A7.3 7.3 0 1 1 59.253 45.607 Z" transform="translate(1.1 1.6)"/>
-    <path fill="url(#t-gold)" d="M66.84 39.89 A16.8 16.8 0 1 0 66.84 60.11 L59.253 54.393 A7.3 7.3 0 1 1 59.253 45.607 Z" filter="url(#t-brush)"/>
-    <path fill="url(#t-gold-hi)" d="M66.84 39.89 A16.8 16.8 0 1 0 66.84 60.11 L59.253 54.393 A7.3 7.3 0 1 1 59.253 45.607 Z"/>
+    <path fill="#3d3208" d="M69.419 39.178 A17.4 17.4 0 1 0 69.419 60.122 L61.513 54.164 A7.5 7.5 0 1 1 61.513 45.136 Z" transform="translate(1.1 1.6)"/>
+    <path fill="url(#t-gold)" d="M69.419 39.178 A17.4 17.4 0 1 0 69.419 60.122 L61.513 54.164 A7.5 7.5 0 1 1 61.513 45.136 Z" filter="url(#t-brush)"/>
+    <path fill="url(#t-gold-hi)" d="M69.419 39.178 A17.4 17.4 0 1 0 69.419 60.122 L61.513 54.164 A7.5 7.5 0 1 1 61.513 45.136 Z"/>
   
   </g>
   <text x="512" y="820" text-anchor="middle" fill="#fffdf8" font-family="Inter, Arial, Helvetica, sans-serif" font-size="78" font-weight="650">ContiSafety</text>

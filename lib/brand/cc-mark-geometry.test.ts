@@ -15,11 +15,13 @@ import {
 } from "./cc-mark-geometry.ts";
 
 describe("cc-mark geometry", () => {
-  test("gold sits concentric inside the blue C with a uniform gap", () => {
-    const { center, gap, blueStroke, goldStroke } = ccMetrics();
+  test("gold sits inside the blue C with breathing room and a heavier blue stroke", () => {
+    const { center, goldCenter: gold, gap, blueStroke, goldStroke } = ccMetrics();
     assert.equal(center.cx, ccCenter().cx);
     assert.equal(center.cy, CC_VIEWBOX / 2);
-    assert.ok(gap > 3.5 && gap < 6, `gap ${gap} should leave even breathing room`);
+    assert.ok(gold.cx > center.cx, "gold should sit slightly toward the opening");
+    assert.ok(gold.cy < center.cy, "gold should sit slightly above the drop shadow");
+    assert.ok(gap > 3 && gap < 6, `gap ${gap} should leave even breathing room`);
     assert.ok(blueStroke > goldStroke, "blue stroke should be heavier than gold");
     assert.ok(blueStroke / goldStroke > 1.2 && blueStroke / goldStroke < 1.6);
     assert.equal(BLUE_INNER - GOLD_OUTER, gap);
@@ -43,9 +45,11 @@ describe("cc-mark geometry", () => {
     const midY = (blueBBox.top + blueBBox.bottom) / 2;
     assert.ok(Math.abs(midX - CC_VIEWBOX / 2) < 0.05);
     assert.ok(Math.abs(midY - CC_VIEWBOX / 2) < 0.05);
-    assert.ok(Math.abs(goldBBox.top - blueBBox.top - (blueBBox.bottom - goldBBox.bottom)) < 1e-9);
-    assert.ok(Math.abs(goldBBox.left - blueBBox.left - (BLUE_OUTER - GOLD_OUTER)) < 1e-9);
-    assert.ok(Math.abs(center.cy - goldBBox.top - (goldBBox.bottom - center.cy)) < 1e-9);
+    const leftInnerGap = goldBBox.left - (center.cx - BLUE_INNER);
+    const topInnerGap = goldBBox.top - (center.cy - BLUE_INNER);
+    assert.ok(leftInnerGap > 2.5 && leftInnerGap < 8, `left inner gap ${leftInnerGap}`);
+    assert.ok(topInnerGap > 2.5 && topInnerGap < 6, `top inner gap ${topInnerGap}`);
+    assert.ok(goldBBox.right < blueBBox.right);
   });
 
   test("path helper stays concentric when radii change", () => {
