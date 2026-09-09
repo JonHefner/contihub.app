@@ -8,7 +8,7 @@ import {
   faviconSvg,
   products,
   tileSvg,
-} from "../lib/brand/cc-mark-svg.ts";
+} from "./cc-mark-svg.mts";
 
 const root = join(dirname(fileURLToPath(import.meta.url)), "..");
 const brandDir = join(root, "public/brand");

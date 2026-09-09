@@ -2,7 +2,7 @@ import {
   CC_VIEWBOX,
   bluePath,
   goldPath,
-} from "./cc-mark-geometry.ts";
+} from "../lib/brand/cc-mark-geometry.ts";
 
 export const products = [
   { id: "contihub", name: "ContiHub" },
