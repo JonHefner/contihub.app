@@ -42,18 +42,26 @@ export default function HomePage() {
 
       <main>
         <section className="relative overflow-hidden">
-          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(30,79,163,0.28),transparent_38%),linear-gradient(120deg,rgba(201,163,74,0.12),transparent_42%)]" />
-          <div className="relative mx-auto grid max-w-6xl gap-12 px-6 py-20 lg:grid-cols-[1.2fr_0.8fr] lg:py-28">
+          <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_18%_20%,rgba(30,79,163,0.32),transparent_36%),radial-gradient(circle_at_88%_8%,rgba(201,163,74,0.16),transparent_28%)]" />
+          <div className="relative mx-auto grid max-w-6xl items-center gap-12 px-6 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:py-24">
             <div>
-              <p className="text-xs font-semibold uppercase tracking-[0.28em] text-gold">
+              <img
+                src="/brand/cc-mark.svg"
+                alt="Conti nested CC mark"
+                width={128}
+                height={128}
+                className="h-28 w-28 drop-shadow-[0_12px_24px_rgba(30,79,163,0.35)]"
+              />
+              <h1 className="mt-6 font-display text-5xl leading-none font-semibold tracking-tight text-ink-strong sm:text-7xl">
+                ContiHub
+              </h1>
+              <span className="mt-5 block h-0.5 w-24 rounded-full bg-gold" />
+              <p className="mt-5 text-xs font-semibold uppercase tracking-[0.28em] text-gold">
                 The Conti Way · Akron, Ohio
               </p>
-              <h1 className="mt-5 font-display text-4xl leading-[1.1] font-semibold tracking-tight text-ink-strong sm:text-6xl">
-                Operations for Continental Construction of Ohio.
-              </h1>
-              <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
-                ContiHub is the live ops portal for CCO. Sign in to reach the Conti suite —
-                estimating, field, CRM, safety, tracking, and bid — from one secure home on{" "}
+              <p className="mt-5 max-w-xl text-lg leading-8 text-muted">
+                The ops portal for Continental Construction of Ohio. Projects, field logs, cost,
+                CRM, safety, tracking, and bid — one dark, secure home on{" "}
                 <span className="text-ink">contihub.app</span>.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
@@ -71,17 +79,12 @@ export default function HomePage() {
                 </Link>
               </div>
             </div>
-            <aside className="self-end rounded-2xl border border-gold/25 bg-surface/80 p-6">
-              <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">
-                Continental Construction
-              </p>
-              <p className="mt-3 font-display text-2xl text-ink-strong">
-                Focus. Dedication. Execution.
-              </p>
-              <p className="mt-3 text-sm leading-6 text-muted">
-                A local alternative to large corporate construction management — accountable
-                leadership, creative problem solving, and projects our customers are proud of.
-              </p>
+            <aside className="mx-auto w-full max-w-sm">
+              <img
+                src="/brand/tiles/contihub.svg"
+                alt="ContiHub app tile"
+                className="w-full drop-shadow-[0_24px_40px_rgba(0,0,0,0.45)]"
+              />
             </aside>
           </div>
         </section>
@@ -104,7 +107,8 @@ export default function HomePage() {
               Built for how CCO works.
             </h2>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-              The full Conti suite is live behind the same sign-in. Open any app to start working.
+              Each tile is the Conti mark: dark matte, nested blue and gold CCs, white wordmark, gold
+              underline. Open any app after sign-in.
             </p>
             <div className="mt-10">
               <AppTiles />

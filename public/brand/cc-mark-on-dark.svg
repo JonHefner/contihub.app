@@ -1,5 +1,7 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
-  <defs>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
+  <rect width="128" height="128" rx="28" fill="#0b0b0d"/>
+  <rect x="3" y="3" width="122" height="122" rx="25" stroke="#c9a34a" stroke-opacity=".45" stroke-width="3"/>
+  <g transform="translate(16 16)">  <defs>
     <linearGradient id="cc-blue" x1="10" y1="6" x2="86" y2="90" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#9cc4f5"/>
       <stop offset="22%" stop-color="#3b6ec4"/>
@@ -26,5 +28,5 @@
   <path fill="url(#cc-blue-hi)" d="M68.368 25.836 A 36 36 0 1 0 68.368 70.164 L 57.73 61.852 A 22.5 22.5 0 1 1 57.73 34.148 Z"/>
   <path fill="#4a3c0c" d="M74.321 36.144 A 20 20 0 1 0 74.321 61.856 L 67.81 56.392 A 11.5 11.5 0 1 1 67.81 41.608 Z" transform="translate(.7 1)"/>
   <path fill="url(#cc-gold)" d="M73.321 35.144 A 20 20 0 1 0 73.321 60.856 L 66.81 55.392 A 11.5 11.5 0 1 1 66.81 40.608 Z"/>
-  <path fill="url(#cc-gold-hi)" d="M73.321 35.144 A 20 20 0 1 0 73.321 60.856 L 66.81 55.392 A 11.5 11.5 0 1 1 66.81 40.608 Z"/>
+  <path fill="url(#cc-gold-hi)" d="M73.321 35.144 A 20 20 0 1 0 73.321 60.856 L 66.81 55.392 A 11.5 11.5 0 1 1 66.81 40.608 Z"/></g>
 </svg>

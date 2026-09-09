@@ -1,30 +1,35 @@
 import Link from "next/link";
-import { CcMark } from "@/components/cc-mark";
 
 type LogoProps = {
   href?: string;
   light?: boolean;
+  size?: "sm" | "lg";
 };
 
-export function Logo({ href = "/", light = true }: LogoProps) {
+export function Logo({ href = "/", light = true, size = "sm" }: LogoProps) {
+  const markSize = size === "lg" ? "h-16 w-16" : "h-12 w-12";
+  const titleSize = size === "lg" ? "text-[1.85rem]" : "text-[1.35rem]";
+
   const mark = (
     <span className="inline-flex items-center gap-3">
-      <span
-        aria-hidden
-        className="grid h-11 w-11 place-items-center rounded-lg border border-gold/45 bg-charcoal shadow-[inset_0_0_0_1px_rgba(201,163,74,0.12)]"
-      >
-        <CcMark id="header-logo" size={38} />
-      </span>
+      <img
+        src="/brand/cc-mark-on-dark.svg"
+        alt=""
+        width={size === "lg" ? 64 : 48}
+        height={size === "lg" ? 64 : 48}
+        className={`${markSize} rounded-[0.9rem] shadow-[0_0_0_1px_rgba(201,163,74,0.28)]`}
+      />
       <span className="leading-none">
         <span
-          className={`block font-display text-[1.35rem] font-semibold tracking-tight ${
+          className={`block font-display font-semibold tracking-tight ${titleSize} ${
             light ? "text-ink" : "text-page"
           }`}
         >
           ContiHub
         </span>
+        <span className={`mt-1.5 block h-0.5 rounded-full bg-gold ${size === "lg" ? "w-20" : "w-14"}`} />
         <span
-          className={`mt-1 block text-[10px] font-medium uppercase tracking-[0.22em] ${
+          className={`mt-1.5 block text-[10px] font-medium uppercase tracking-[0.22em] ${
             light ? "text-muted" : "text-steel-500"
           }`}
         >

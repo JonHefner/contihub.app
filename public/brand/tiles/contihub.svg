@@ -1,5 +1,18 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 96 96" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 640" fill="none">
   <defs>
+    <linearGradient id="tile-face" x1="256" y1="0" x2="256" y2="640" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#16161a"/>
+      <stop offset="100%" stop-color="#0b0b0d"/>
+    </linearGradient>
+    <radialGradient id="tile-glow" cx="256" cy="190" r="220" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#1e4fa3" stop-opacity=".28"/>
+      <stop offset="100%" stop-color="#1e4fa3" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+  <rect width="512" height="640" rx="72" fill="url(#tile-face)"/>
+  <rect x="10" y="10" width="492" height="620" rx="62" stroke="#c9a34a" stroke-opacity=".38" stroke-width="3"/>
+  <rect width="512" height="640" rx="72" fill="url(#tile-glow)"/>
+  <g transform="translate(128 78) scale(2.66)">  <defs>
     <linearGradient id="cc-blue" x1="10" y1="6" x2="86" y2="90" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#9cc4f5"/>
       <stop offset="22%" stop-color="#3b6ec4"/>
@@ -26,5 +39,7 @@
   <path fill="url(#cc-blue-hi)" d="M68.368 25.836 A 36 36 0 1 0 68.368 70.164 L 57.73 61.852 A 22.5 22.5 0 1 1 57.73 34.148 Z"/>
   <path fill="#4a3c0c" d="M74.321 36.144 A 20 20 0 1 0 74.321 61.856 L 67.81 56.392 A 11.5 11.5 0 1 1 67.81 41.608 Z" transform="translate(.7 1)"/>
   <path fill="url(#cc-gold)" d="M73.321 35.144 A 20 20 0 1 0 73.321 60.856 L 66.81 55.392 A 11.5 11.5 0 1 1 66.81 40.608 Z"/>
-  <path fill="url(#cc-gold-hi)" d="M73.321 35.144 A 20 20 0 1 0 73.321 60.856 L 66.81 55.392 A 11.5 11.5 0 1 1 66.81 40.608 Z"/>
+  <path fill="url(#cc-gold-hi)" d="M73.321 35.144 A 20 20 0 1 0 73.321 60.856 L 66.81 55.392 A 11.5 11.5 0 1 1 66.81 40.608 Z"/></g>
+  <text x="256" y="478" text-anchor="middle" fill="#fffdf8" font-family="Arial, Helvetica, sans-serif" font-size="44" font-weight="700">ContiHub</text>
+  <rect x="176" y="508" width="160" height="6" rx="3" fill="#c9a34a"/>
 </svg>
