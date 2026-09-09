@@ -33,7 +33,7 @@ npm run build
 npm start
 ```
 
-Vercel detects Next.js from `package.json`. Set the same environment variables in the Vercel project.
+Vercel detects Next.js from `package.json` and `vercel.json` (`framework: nextjs`). In the Vercel project, the Framework Preset should be **Next.js** (not Other / static). Set the same environment variables in the Vercel project.
 
 ## Environment variables
 
