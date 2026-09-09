@@ -13,35 +13,43 @@ export async function handleAuthCallback(request: NextRequest) {
   const flow = resolveAuthCallbackFlow(params);
 
   if (flow === "pkce" || flow === "otp") {
-    const cookieStore = await cookies();
-    const response = NextResponse.redirect(`${origin}${params.next}`);
+    if (!getSupabaseUrl() || !getSupabaseAnonKey()) {
+      return NextResponse.redirect(`${origin}/login?error=auth`);
+    }
 
-    const supabase = createServerClient(getSupabaseUrl(), getSupabaseAnonKey(), {
-      cookieOptions,
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
+    try {
+      const cookieStore = await cookies();
+      const response = NextResponse.redirect(`${origin}${params.next}`);
+
+      const supabase = createServerClient(getSupabaseUrl(), getSupabaseAnonKey(), {
+        cookieOptions,
+        cookies: {
+          getAll() {
+            return cookieStore.getAll();
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value, options }) => {
+              const merged = mergeCookieOptions(options, cookieOptions);
+              cookieStore.set(name, value, merged);
+              response.cookies.set(name, value, merged);
+            });
+          },
         },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            const merged = mergeCookieOptions(options, cookieOptions);
-            cookieStore.set(name, value, merged);
-            response.cookies.set(name, value, merged);
-          });
-        },
-      },
-    });
+      });
 
-    const { error } =
-      flow === "pkce"
-        ? await supabase.auth.exchangeCodeForSession(params.code!)
-        : await supabase.auth.verifyOtp({
-            type: params.type!,
-            token_hash: params.tokenHash!,
-          });
+      const { error } =
+        flow === "pkce"
+          ? await supabase.auth.exchangeCodeForSession(params.code!)
+          : await supabase.auth.verifyOtp({
+              type: params.type!,
+              token_hash: params.tokenHash!,
+            });
 
-    if (!error) {
-      return response;
+      if (!error) {
+        return response;
+      }
+    } catch {
+      // Invalid/expired links and missing project config should return the user to login.
     }
 
     return NextResponse.redirect(`${origin}/login?error=auth`);
