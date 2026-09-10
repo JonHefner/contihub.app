@@ -31,7 +31,7 @@ export default function HomePage() {
               alt="ContiHub — nested blue and gold CC mark"
               width={320}
               height={320}
-              className="h-52 w-52 rounded-[2rem] shadow-[0_24px_48px_-20px_rgba(0,0,0,0.85)] sm:h-64 sm:w-64"
+              className="aspect-square h-52 w-52 rounded-[2rem] object-contain shadow-[0_24px_48px_-20px_rgba(0,0,0,0.85)] sm:h-64 sm:w-64"
             />
             <h1 className="mt-8 text-5xl font-semibold tracking-tight text-ink-strong sm:text-7xl">
               ContiHub

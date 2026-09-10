@@ -1,3 +1,5 @@
+import { bluePath, goldPath } from "@/lib/brand/cc-mark-geometry";
+
 type CcMarkProps = {
   id: string;
   size?: number;
@@ -9,64 +11,59 @@ export function CcMark({ id, size = 72, className }: CcMarkProps) {
   const blueHi = `${id}-cc-blue-hi`;
   const gold = `${id}-cc-gold`;
   const goldHi = `${id}-cc-gold-hi`;
+  const brush = `${id}-cc-brush`;
+  const blueD = bluePath();
+  const goldD = goldPath();
 
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 96 96"
+      viewBox="0 0 100 100"
       width={size}
       height={size}
       className={className}
       aria-hidden
     >
       <defs>
-        <linearGradient id={blue} x1="10" y1="6" x2="86" y2="90" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#9cc4f5" />
-          <stop offset="22%" stopColor="#3b6ec4" />
-          <stop offset="55%" stopColor="#1e4fa3" />
-          <stop offset="100%" stopColor="#0a1d4a" />
+        <linearGradient id={blue} x1="18" y1="12" x2="82" y2="88" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#c5dcff" />
+          <stop offset="18%" stopColor="#4d82d6" />
+          <stop offset="48%" stopColor="#1e4fa3" />
+          <stop offset="100%" stopColor="#071433" />
         </linearGradient>
-        <linearGradient id={blueHi} x1="18" y1="14" x2="48" y2="50" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#d7e8ff" stopOpacity=".9" />
+        <linearGradient id={blueHi} x1="22" y1="16" x2="58" y2="54" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#eef5ff" stopOpacity=".9" />
           <stop offset="100%" stopColor="#1e4fa3" stopOpacity="0" />
         </linearGradient>
-        <linearGradient id={gold} x1="38" y1="18" x2="90" y2="80" gradientUnits="userSpaceOnUse">
-          <stop offset="0%" stopColor="#fff3c4" />
-          <stop offset="28%" stopColor="#e0c36a" />
-          <stop offset="58%" stopColor="#c9a34a" />
-          <stop offset="100%" stopColor="#6f5a12" />
+        <linearGradient id={gold} x1="28" y1="20" x2="78" y2="82" gradientUnits="userSpaceOnUse">
+          <stop offset="0%" stopColor="#fff6d2" />
+          <stop offset="16%" stopColor="#edd078" />
+          <stop offset="42%" stopColor="#c9a34a" />
+          <stop offset="72%" stopColor="#8b7020" />
+          <stop offset="100%" stopColor="#4a3c0c" />
         </linearGradient>
-        <linearGradient id={goldHi} x1="52" y1="30" x2="78" y2="58" gradientUnits="userSpaceOnUse">
+        <linearGradient id={goldHi} x1="36" y1="26" x2="68" y2="62" gradientUnits="userSpaceOnUse">
           <stop offset="0%" stopColor="#fff8d8" stopOpacity=".95" />
           <stop offset="100%" stopColor="#c9a34a" stopOpacity="0" />
         </linearGradient>
+        <filter id={brush} x="-8%" y="-8%" width="116%" height="116%">
+          <feTurbulence type="fractalNoise" baseFrequency="0.06 0.8" numOctaves="3" seed="3" result="noise" />
+          <feColorMatrix type="saturate" values="0" in="noise" result="gray" />
+          <feComponentTransfer in="gray" result="grain">
+            <feFuncA type="linear" slope="0.28" />
+          </feComponentTransfer>
+          <feComposite in="grain" in2="SourceAlpha" operator="in" result="clipped" />
+          <feBlend in="SourceGraphic" in2="clipped" mode="overlay" />
+        </filter>
       </defs>
-      <path
-        fill="#071433"
-        d="M69.176 25.032 A 37 37 0 1 0 69.176 70.968 L 57.985 62.209 A 23.2 23.2 0 1 1 57.985 33.791 Z"
-        transform="translate(1.4 1.8)"
-      />
-      <path
-        fill={`url(#${blue})`}
-        d="M68.368 25.836 A 36 36 0 1 0 68.368 70.164 L 57.73 61.852 A 22.5 22.5 0 1 1 57.73 34.148 Z"
-      />
-      <path
-        fill={`url(#${blueHi})`}
-        d="M68.368 25.836 A 36 36 0 1 0 68.368 70.164 L 57.73 61.852 A 22.5 22.5 0 1 1 57.73 34.148 Z"
-      />
-      <path
-        fill="#4a3c0c"
-        d="M74.321 36.144 A 20 20 0 1 0 74.321 61.856 L 67.81 56.392 A 11.5 11.5 0 1 1 67.81 41.608 Z"
-        transform="translate(.7 1)"
-      />
-      <path
-        fill={`url(#${gold})`}
-        d="M73.321 35.144 A 20 20 0 1 0 73.321 60.856 L 66.81 55.392 A 11.5 11.5 0 1 1 66.81 40.608 Z"
-      />
-      <path
-        fill={`url(#${goldHi})`}
-        d="M73.321 35.144 A 20 20 0 1 0 73.321 60.856 L 66.81 55.392 A 11.5 11.5 0 1 1 66.81 40.608 Z"
-      />
+      <path fill="#020817" d={blueD} transform="translate(2.6 2.8)" />
+      <path fill="#041028" d={blueD} transform="translate(1.4 1.8)" />
+      <path fill={`url(#${blue})`} d={blueD} filter={`url(#${brush})`} />
+      <path fill={`url(#${blueHi})`} d={blueD} />
+      <path fill="#2a2206" d={goldD} transform="translate(2 2.2)" />
+      <path fill="#3d3208" d={goldD} transform="translate(1 1.2)" />
+      <path fill={`url(#${gold})`} d={goldD} filter={`url(#${brush})`} />
+      <path fill={`url(#${goldHi})`} d={goldD} />
     </svg>
   );
 }

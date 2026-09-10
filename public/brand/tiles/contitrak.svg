@@ -1,27 +1,27 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" fill="none">
   <defs>
-    <linearGradient id="f-blue" x1="18" y1="12" x2="82" y2="88" gradientUnits="userSpaceOnUse">
+    <linearGradient id="t-blue" x1="18" y1="12" x2="82" y2="88" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#c5dcff"/>
       <stop offset="18%" stop-color="#4d82d6"/>
       <stop offset="48%" stop-color="#1e4fa3"/>
       <stop offset="100%" stop-color="#071433"/>
     </linearGradient>
-    <linearGradient id="f-blue-hi" x1="22" y1="16" x2="58" y2="54" gradientUnits="userSpaceOnUse">
+    <linearGradient id="t-blue-hi" x1="22" y1="16" x2="58" y2="54" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#eef5ff" stop-opacity=".9"/>
       <stop offset="100%" stop-color="#1e4fa3" stop-opacity="0"/>
     </linearGradient>
-    <linearGradient id="f-gold" x1="28" y1="20" x2="78" y2="82" gradientUnits="userSpaceOnUse">
+    <linearGradient id="t-gold" x1="28" y1="20" x2="78" y2="82" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#fff6d2"/>
       <stop offset="16%" stop-color="#edd078"/>
       <stop offset="42%" stop-color="#c9a34a"/>
       <stop offset="72%" stop-color="#8b7020"/>
       <stop offset="100%" stop-color="#4a3c0c"/>
     </linearGradient>
-    <linearGradient id="f-gold-hi" x1="36" y1="26" x2="68" y2="62" gradientUnits="userSpaceOnUse">
+    <linearGradient id="t-gold-hi" x1="36" y1="26" x2="68" y2="62" gradientUnits="userSpaceOnUse">
       <stop offset="0%" stop-color="#fff8d8" stop-opacity=".95"/>
       <stop offset="100%" stop-color="#c9a34a" stop-opacity="0"/>
     </linearGradient>
-    <filter id="f-brush" x="-8%" y="-8%" width="116%" height="116%">
+    <filter id="t-brush" x="-8%" y="-8%" width="116%" height="116%">
       <feTurbulence type="fractalNoise" baseFrequency="0.06 0.8" numOctaves="3" seed="3" result="noise"/>
       <feColorMatrix type="saturate" values="0" in="noise" result="gray"/>
       <feComponentTransfer in="gray" result="grain">
@@ -30,7 +30,7 @@
       <feComposite in="grain" in2="SourceAlpha" operator="in" result="clipped"/>
       <feBlend in="SourceGraphic" in2="clipped" mode="overlay"/>
     </filter>
-    <filter id="f-paper" x="0" y="0" width="100%" height="100%">
+    <filter id="t-paper" x="0" y="0" width="100%" height="100%">
       <feTurbulence type="fractalNoise" baseFrequency="1.15" numOctaves="2" seed="11" result="n"/>
       <feColorMatrix type="saturate" values="0" in="n" result="g"/>
       <feComponentTransfer in="g" result="grain">
@@ -38,31 +38,34 @@
       </feComponentTransfer>
       <feBlend in="SourceGraphic" in2="grain" mode="multiply"/>
     </filter>
-    <radialGradient id="f-vignette" cx="50%" cy="38%" r="62%">
+    <radialGradient id="t-vignette" cx="50%" cy="38%" r="62%">
       <stop offset="0%" stop-color="#1a1a1f"/>
       <stop offset="100%" stop-color="#0b0b0d"/>
     </radialGradient>
-    <linearGradient id="f-flare" x1="0" y1="0" x2="1" y2="0">
+    <linearGradient id="t-flare" x1="0" y1="0" x2="1" y2="0">
       <stop offset="0%" stop-color="#c9a34a" stop-opacity="0"/>
       <stop offset="50%" stop-color="#f0d27a" stop-opacity="1"/>
       <stop offset="100%" stop-color="#c9a34a" stop-opacity="0"/>
     </linearGradient>
-    <filter id="f-flare-glow" x="-40%" y="-400%" width="180%" height="900%">
+    <filter id="t-flare-glow" x="-40%" y="-400%" width="180%" height="900%">
       <feGaussianBlur stdDeviation="2.4"/>
     </filter>
   </defs>
-  <rect width="32" height="32" rx="7" fill="#0b0b0d"/>
-  <rect x="1.1" y="1.1" width="29.8" height="29.8" rx="6" stroke="#d7d2c6" stroke-width="1.05" stroke-opacity=".4"/>
-  <g transform="translate(1.6 1.4) scale(0.288)">
+  <rect width="1024" height="1024" rx="180" fill="url(#t-vignette)" filter="url(#t-paper)"/>
+  <rect x="18" y="18" width="988" height="988" rx="164" stroke="#d7d2c6" stroke-opacity=".2" stroke-width="4"/>
+  <g transform="translate(162 58) scale(7)">
     
     <path fill="#020817" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" transform="translate(2.6 2.8)"/>
     <path fill="#041028" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" transform="translate(1.4 1.8)"/>
-    <path fill="url(#f-blue)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" filter="url(#f-brush)"/>
-    <path fill="url(#f-blue-hi)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z"/>
+    <path fill="url(#t-blue)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" filter="url(#t-brush)"/>
+    <path fill="url(#t-blue-hi)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z"/>
     <path fill="#2a2206" d="M67.765 41.643 A17.8 17.8 0 1 0 67.765 58.357 L58.935 53.662 A7.8 7.8 0 1 1 58.935 46.338 Z" transform="translate(2 2.2)"/>
     <path fill="#3d3208" d="M67.765 41.643 A17.8 17.8 0 1 0 67.765 58.357 L58.935 53.662 A7.8 7.8 0 1 1 58.935 46.338 Z" transform="translate(1 1.2)"/>
-    <path fill="url(#f-gold)" d="M67.765 41.643 A17.8 17.8 0 1 0 67.765 58.357 L58.935 53.662 A7.8 7.8 0 1 1 58.935 46.338 Z" filter="url(#f-brush)"/>
-    <path fill="url(#f-gold-hi)" d="M67.765 41.643 A17.8 17.8 0 1 0 67.765 58.357 L58.935 53.662 A7.8 7.8 0 1 1 58.935 46.338 Z"/>
+    <path fill="url(#t-gold)" d="M67.765 41.643 A17.8 17.8 0 1 0 67.765 58.357 L58.935 53.662 A7.8 7.8 0 1 1 58.935 46.338 Z" filter="url(#t-brush)"/>
+    <path fill="url(#t-gold-hi)" d="M67.765 41.643 A17.8 17.8 0 1 0 67.765 58.357 L58.935 53.662 A7.8 7.8 0 1 1 58.935 46.338 Z"/>
   
   </g>
+  <text x="512" y="824" text-anchor="middle" fill="#fffdf8" font-family="Inter, Arial, Helvetica, sans-serif" font-size="84" font-weight="700">ContiTraK</text>
+  <rect x="312" y="862" width="400" height="5" rx="2.5" fill="url(#t-flare)" filter="url(#t-flare-glow)"/>
+  <rect x="352" y="862" width="320" height="3" rx="1.5" fill="url(#t-flare)"/>
 </svg>

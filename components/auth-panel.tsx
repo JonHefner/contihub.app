@@ -26,7 +26,7 @@ export function AuthPanel({
               alt="ContiHub — nested blue and gold CC mark"
               width={176}
               height={176}
-              className="h-40 w-40 rounded-[1.75rem] shadow-[0_20px_40px_-18px_rgba(0,0,0,0.85)]"
+              className="aspect-square h-40 w-40 rounded-[1.75rem] object-contain shadow-[0_20px_40px_-18px_rgba(0,0,0,0.85)]"
             />
             <span className="mt-5 text-xs font-semibold uppercase tracking-[0.28em] text-gold">
               The Conti Way

@@ -8,7 +8,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test lib/site.test.ts lib/field/dates.test.ts lib/projects.test.ts"
+    "test": "node --experimental-strip-types --test lib/site.test.ts lib/field/dates.test.ts lib/projects.test.ts lib/brand/cc-mark-geometry.test.ts",
+    "brand:assets": "node --experimental-strip-types scripts/generate-brand-assets.mts"
   },
   "dependencies": {
     "@supabase/ssr": "^0.7.0",
@@ -19,6 +20,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
+    "@resvg/resvg-js": "^2.6.2",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
     "@types/react": "^19",
