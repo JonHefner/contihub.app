@@ -27,6 +27,11 @@ export function readMoney(formData: FormData, key: string, label = key) {
   return Math.round(value * 100) / 100;
 }
 
+export function readSignedMoney(formData: FormData, key: string, label = key) {
+  const value = readNumber(formData, key, label);
+  return Math.round(value * 100) / 100;
+}
+
 export function readInt(formData: FormData, key: string, label = key, min = 0, max = Number.MAX_SAFE_INTEGER) {
   const value = Math.round(readNumber(formData, key, label));
   if (value < min || value > max) {

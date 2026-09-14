@@ -2,7 +2,7 @@
 
 Continental Construction of Ohio (CCO) operations portal for [contihub.app](https://contihub.app).
 
-ContiHub is the live home for the Conti suite: Projects, ContiHub, ContiCRM, ContiField, ContiCost, ContiSafety, ContiTraK, and Conti Bid. Suite boards are scoped to an individual project.
+ContiHub is the live home for the Conti suite: Projects, ContiHub, ContiCRM, ContiField, ContiCost, Change Orders, ContiSafety, ContiTraK, and Conti Bid. Suite boards are scoped to an individual project.
 
 ## Stack
 
@@ -115,10 +115,11 @@ Then redeploy. Leave **Authentication → Providers → Email → Confirm email*
 - `/app/projects/[id]/field/rfis` — ContiField RFI list for that project
 - `/app/projects/[id]/crm` — ContiCRM opportunities for that project
 - `/app/projects/[id]/cost` — ContiCost job cost summary for that project
+- `/app/projects/[id]/change-orders` — Change Order log (proposed / priced / approved / rejected, owner exposure vs approved)
 - `/app/projects/[id]/safety` — ContiSafety log for that project
 - `/app/projects/[id]/trak` — ContiTraK milestones for that project
 - `/app/projects/[id]/bid` — Conti Bid chase list for that project
-- `/app/crm`, `/app/field`, `/app/cost`, `/app/safety`, `/app/trak`, `/app/bid` — project pickers (redirect when only one project exists)
+- `/app/crm`, `/app/field`, `/app/cost`, `/app/change-orders`, `/app/safety`, `/app/trak`, `/app/bid` — project pickers (redirect when only one project exists)
 
 All `/app/**` routes share the suite nav and require a signed-in session.
 
@@ -131,7 +132,26 @@ Apply these files in the Supabase SQL editor (in order), or with the Supabase CL
 1. `supabase/migrations/20260909060000_conti_suite.sql` — CRM, Field, Cost, Safety, TraK, and Bid MVP tables
 2. `supabase/migrations/20260909160000_contifield_daily_log.sql` — ContiField job settings, RFI table, and richer daily-log columns
 3. `supabase/migrations/20260909180000_projects.sql` — `projects` table, nullable `project_id` on suite tables, and a per-user **Data Center** seed that attaches existing unassigned / “Data Center” sample rows
+4. `supabase/migrations/20260914120000_change_orders.sql` — `change_orders` table (RLS + `project_id` FK) and a per-user fictional **Midwest Regional Stadium Renovation** demo project with a CO breakdown sample
 
-Run all three in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner.
+Run all four in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner.
+
+### Change Orders SQL (Jon)
+
+1. Open the ContiHub project in the [Supabase Dashboard](https://supabase.com/dashboard) → **SQL Editor**.
+2. Confirm the first three migrations above have already been applied (`projects` must exist).
+3. Paste and run the full contents of `supabase/migrations/20260914120000_change_orders.sql`.
+4. Reload ContiHub. Open **Projects → Midwest Regional Stadium Renovation** (or create that job and use **Load Midwest Stadium sample COs**).
+
+The sample log is fictional stadium work only (no United CLE / live lead names). Totals after seed:
+
+| Bucket | Amount |
+| --- | ---: |
+| Proposed + Pricing (pending) | $393,650 |
+| Approved | $282,900 |
+| Rejected (excluded from exposure) | $28,900 |
+| **Net owner exposure** (pending + approved) | **$676,550** |
+
+Deduct rows use a negative amount. Type **Deduct** with a positive number is stored as a credit.
 
 Row Level Security scopes every row to `auth.uid()`. Suite boards filter by `project_id` so Data Center and the next chase stay separate.

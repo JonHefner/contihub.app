@@ -19,7 +19,16 @@ export type CrudField = {
   placeholder?: string;
 };
 
-export type ColumnFormat = "text" | "emphasis" | "badge" | "date" | "money" | "variance" | "percent";
+export type ColumnFormat =
+  | "text"
+  | "emphasis"
+  | "badge"
+  | "status"
+  | "date"
+  | "money"
+  | "signed-money"
+  | "variance"
+  | "percent";
 
 export type CrudColumn = {
   key: string;
@@ -85,6 +94,19 @@ function asNumber(value: unknown) {
   return Number.isFinite(n) ? n : 0;
 }
 
+function statusTone(status: string) {
+  if (status === "Approved") {
+    return "rounded-sm bg-emerald-950 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-emerald-300";
+  }
+  if (status === "Rejected") {
+    return "rounded-sm bg-red-950 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-red-300";
+  }
+  if (status === "Pricing") {
+    return "rounded-sm bg-amber-950 px-2 py-1 text-xs font-semibold uppercase tracking-wide text-amber-200";
+  }
+  return "rounded-sm bg-royal-deep px-2 py-1 text-xs font-semibold uppercase tracking-wide text-gold-soft";
+}
+
 function ColumnCell({ column, row }: { column: CrudColumn; row: Record<string, unknown> }) {
   const format = column.format ?? "text";
   const raw = row[column.key];
@@ -101,12 +123,24 @@ function ColumnCell({ column, row }: { column: CrudColumn; row: Record<string, u
     );
   }
 
+  if (format === "status") {
+    const text = cellText(row, column.key);
+    return <span className={statusTone(text)}>{text}</span>;
+  }
+
   if (format === "date") {
     return <>{formatDate(typeof raw === "string" ? raw : "")}</>;
   }
 
   if (format === "money") {
     return <>{formatMoneyExact(asNumber(raw))}</>;
+  }
+
+  if (format === "signed-money") {
+    const amount = asNumber(raw);
+    const tone =
+      amount < 0 ? "font-semibold text-emerald-300" : amount > 0 ? "font-semibold text-ink-strong" : "text-muted";
+    return <span className={tone}>{formatMoneyExact(amount)}</span>;
   }
 
   if (format === "variance") {

@@ -19,8 +19,8 @@ export default async function ProjectsPage() {
         Projects
       </h1>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-        Every Conti job lives here. Open a project to work Field, CRM, Cost, Safety, TraK, and Bid
-        against that job only.
+        Every Conti job lives here. Open a project to work Field, CRM, Cost, Change Orders, Safety,
+        TraK, and Bid against that job only.
       </p>
       {persist === "memory" ? (
         <p className="mt-5 rounded-sm border border-gold/35 bg-gold/10 px-3 py-2 text-sm text-gold-soft">
@@ -70,7 +70,7 @@ export default async function ProjectsPage() {
                       href={projectHref(project.id, app)}
                       className="rounded-sm border border-gold/25 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-gold"
                     >
-                      {app}
+                      {app === "change-orders" ? "COs" : app}
                     </Link>
                   ))}
                 </div>

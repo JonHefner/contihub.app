@@ -20,7 +20,7 @@ export const contiApps: ContiApp[] = [
     id: "projects",
     name: "Projects",
     shortName: "Projects",
-    description: "Jobs and project homes. Field, CRM, Cost, Safety, TraK, and Bid stay scoped to one job.",
+    description: "Jobs and project homes. Field, CRM, Cost, Change Orders, Safety, TraK, and Bid stay scoped to one job.",
     status: "live",
     href: "/app/projects",
   },
@@ -74,8 +74,11 @@ export const contiApps: ContiApp[] = [
   },
 ];
 
-export const suiteNav = contiApps.map((app) => ({
-  name: app.shortName,
-  href: app.href,
-  exact: app.href === "/app",
-}));
+export const suiteNav = [
+  ...contiApps.map((app) => ({
+    name: app.shortName,
+    href: app.href,
+    exact: app.href === "/app",
+  })),
+  { name: "COs", href: "/app/change-orders", exact: false },
+];

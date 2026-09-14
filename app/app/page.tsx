@@ -16,8 +16,8 @@ export default function HubPage() {
         Welcome to ContiHub
       </h1>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-        Start in Projects to open a job, then work ContiCRM, ContiField, ContiCost, ContiSafety,
-        ContiTraK, or Conti Bid against that project only.
+        Start in Projects to open a job, then work ContiCRM, ContiField, ContiCost, Change Orders,
+        ContiSafety, ContiTraK, or Conti Bid against that project only.
       </p>
       <div className="mt-8">
         <AppTiles />

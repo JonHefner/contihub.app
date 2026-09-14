@@ -1,5 +1,13 @@
+import {
+  SAMPLE_CHANGE_ORDERS,
+  isChangeOrderStatus,
+  isChangeOrderType,
+} from "@/lib/change-orders";
 import type {
   BidChase,
+  ChangeOrder,
+  ChangeOrderStatus,
+  ChangeOrderType,
   CostJob,
   CrmLead,
   FieldJob,
@@ -205,6 +213,47 @@ function mapCost(row: DbRow): CostJob {
     budget: asNumber(row.budget),
     committed: asNumber(row.committed),
     actual: asNumber(row.actual),
+  };
+}
+
+function asChangeOrderType(value: unknown): ChangeOrderType {
+  const type = asString(value);
+  return isChangeOrderType(type) ? type : "Owner";
+}
+
+function asChangeOrderStatus(value: unknown): ChangeOrderStatus {
+  const status = asString(value);
+  return isChangeOrderStatus(status) ? status : "Proposed";
+}
+
+function mapChangeOrder(row: DbRow): ChangeOrder {
+  return {
+    id: asString(row.id),
+    projectId: asProjectId(row.project_id),
+    number: asString(row.number),
+    title: asString(row.title),
+    description: asString(row.description),
+    type: asChangeOrderType(row.type),
+    amount: asNumber(row.amount),
+    status: asChangeOrderStatus(row.status),
+    submittedDate: asDate(row.submitted_date),
+    decidedDate: asDate(row.decided_date),
+    notes: asString(row.notes),
+  };
+}
+
+function changeOrderValues(input: Omit<ChangeOrder, "id">): DbRow {
+  return {
+    project_id: input.projectId || null,
+    number: input.number,
+    title: input.title,
+    description: input.description,
+    type: input.type,
+    amount: input.amount,
+    status: input.status,
+    submitted_date: input.submittedDate || null,
+    decided_date: input.decidedDate || null,
+    notes: input.notes,
   };
 }
 
@@ -599,6 +648,36 @@ export async function saveCostJob(input: Omit<CostJob, "id">, id?: string) {
 
 export async function deleteCostJob(id: string) {
   await removeRow("cost_jobs", id);
+}
+
+export async function listChangeOrders(projectId?: string): Promise<ListResult<ChangeOrder>> {
+  const result = await queryRows("change_orders", { orderBy: "number", ascending: true, projectId });
+  const rows = result.rows
+    .map(mapChangeOrder)
+    .sort((a, b) => a.number.localeCompare(b.number, undefined, { numeric: true }));
+  return { persist: result.persist, rows };
+}
+
+export async function saveChangeOrder(input: Omit<ChangeOrder, "id">, id?: string) {
+  const { row } = await writeRow("change_orders", changeOrderValues(input), id);
+  return mapChangeOrder(row);
+}
+
+export async function deleteChangeOrder(id: string) {
+  await removeRow("change_orders", id);
+}
+
+export async function seedSampleChangeOrders(projectId: string) {
+  const existing = await listChangeOrders(projectId);
+  if (existing.rows.length > 0) {
+    return existing;
+  }
+
+  for (const sample of SAMPLE_CHANGE_ORDERS) {
+    await saveChangeOrder({ ...sample, projectId });
+  }
+
+  return listChangeOrders(projectId);
 }
 
 export async function listSafetyLogs(projectId?: string): Promise<ListResult<SafetyLog>> {

@@ -7,6 +7,7 @@ export type SuiteTable =
   | "field_jobs"
   | "field_rfis"
   | "cost_jobs"
+  | "change_orders"
   | "safety_logs"
   | "trak_milestones"
   | "bid_chases";
@@ -91,6 +92,24 @@ export type CostJob = {
   actual: number;
 };
 
+export type ChangeOrderType = "Owner" | "Unforeseen" | "Deduct" | "Allowance" | "Other";
+
+export type ChangeOrderStatus = "Proposed" | "Pricing" | "Approved" | "Rejected";
+
+export type ChangeOrder = {
+  id: string;
+  projectId: string;
+  number: string;
+  title: string;
+  description: string;
+  type: ChangeOrderType;
+  amount: number;
+  status: ChangeOrderStatus;
+  submittedDate: string;
+  decidedDate: string;
+  notes: string;
+};
+
 export type SafetyLog = {
   id: string;
   projectId: string;
@@ -125,6 +144,7 @@ export type SuiteRecord =
   | FieldJob
   | FieldRfi
   | CostJob
+  | ChangeOrder
   | SafetyLog
   | TrakMilestone
   | BidChase;

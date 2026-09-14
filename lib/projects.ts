@@ -1,13 +1,22 @@
 export const PROJECT_STATUSES = ["Active", "Bidding", "On Hold", "Closed"] as const;
 
-export type SuiteAppKey = "crm" | "field" | "cost" | "safety" | "trak" | "bid";
+export type SuiteAppKey = "crm" | "field" | "cost" | "change-orders" | "safety" | "trak" | "bid";
 
-export const SUITE_APP_KEYS: SuiteAppKey[] = ["field", "crm", "cost", "safety", "trak", "bid"];
+export const SUITE_APP_KEYS: SuiteAppKey[] = [
+  "field",
+  "crm",
+  "cost",
+  "change-orders",
+  "safety",
+  "trak",
+  "bid",
+];
 
 export const SUITE_APP_LABELS: Record<SuiteAppKey, string> = {
   field: "ContiField",
   crm: "ContiCRM",
   cost: "ContiCost",
+  "change-orders": "Change Orders",
   safety: "ContiSafety",
   trak: "ContiTraK",
   bid: "Conti Bid",
@@ -17,6 +26,7 @@ export const SUITE_APP_BLURBS: Record<SuiteAppKey, string> = {
   field: "Daily construction logs and RFIs",
   crm: "Owners, architects, and opportunities",
   cost: "Budget, committed, and actual",
+  "change-orders": "Proposed, priced, approved, and owner exposure",
   safety: "Toolbox talks and incidents",
   trak: "Schedule and milestones",
   bid: "Bid chase and proposals",
