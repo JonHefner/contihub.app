@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectForm } from "@/components/projects/project-form";
+import { SampleBadge } from "@/components/sample-badge";
 import { SuiteShell } from "@/components/suite-shell";
 import { SUITE_APP_KEYS, projectHref } from "@/lib/projects";
 import { listProjects } from "@/lib/suite/store";
@@ -19,8 +20,8 @@ export default async function ProjectsPage() {
         Projects
       </h1>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-        Every Conti job lives here. Open a project to work Field, CRM, Cost, Safety, TraK, and Bid
-        against that job only.
+        Every Conti job lives here. Open a project to work Field, CRM, Cost, Change Orders, Safety,
+        TraK, and Bid against that job only.
       </p>
       {persist === "memory" ? (
         <p className="mt-5 rounded-sm border border-gold/35 bg-gold/10 px-3 py-2 text-sm text-gold-soft">
@@ -46,7 +47,7 @@ export default async function ProjectsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="font-display text-2xl font-semibold text-ink-strong">
-                      {project.name}
+                      {project.name} <SampleBadge text={project.name} />
                     </h2>
                     <p className="mt-1 text-sm text-muted">
                       {project.jobNumber ? `Job ${project.jobNumber}` : "No job #"}
@@ -70,7 +71,7 @@ export default async function ProjectsPage() {
                       href={projectHref(project.id, app)}
                       className="rounded-sm border border-gold/25 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-gold"
                     >
-                      {app}
+                      {app === "change-orders" ? "COs" : app === "rfi" ? "ContiReview" : app}
                     </Link>
                   ))}
                 </div>

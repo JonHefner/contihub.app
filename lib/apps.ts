@@ -20,7 +20,7 @@ export const contiApps: ContiApp[] = [
     id: "projects",
     name: "Projects",
     shortName: "Projects",
-    description: "Jobs and project homes. Field, CRM, Cost, Safety, TraK, and Bid stay scoped to one job.",
+    description: "Jobs and project homes. Field, ContiReview, CRM, Cost, Change Orders, Safety, TraK, and Bid stay scoped to one job.",
     status: "live",
     href: "/app/projects",
   },
@@ -60,7 +60,7 @@ export const contiApps: ContiApp[] = [
     id: "contitrak",
     name: "ContiTraK",
     shortName: "TraK",
-    description: "Schedule, production, and project tracking.",
+    description: "Milestone look-ahead list. Not a CPM schedule.",
     status: "live",
     href: "/app/trak",
   },
@@ -68,14 +68,39 @@ export const contiApps: ContiApp[] = [
     id: "contibid",
     name: "Conti Bid",
     shortName: "Bid",
-    description: "Bid invitations, takeoff, and proposal workflow.",
+    description: "Contractor directory, bid packages, and chase list. Takeoff stays outside Hub.",
     status: "live",
     href: "/app/bid",
   },
 ];
 
-export const suiteNav = contiApps.map((app) => ({
-  name: app.shortName,
-  href: app.href,
-  exact: app.href === "/app",
-}));
+/** Front-page reel. Same tile art as the suite, plus ContiReview and Change Orders. */
+export const hubTiles: ContiApp[] = [
+  ...contiApps,
+  {
+    id: "contireview",
+    name: "ContiReview",
+    shortName: "ContiReview",
+    description: "Suggested outcomes, route to the architect or owner, then the ContiHub RFI log.",
+    status: "live",
+    href: "/app/rfi",
+  },
+  {
+    id: "changeorders",
+    name: "Change Orders",
+    shortName: "COs",
+    description: "Proposed, pricing, and approved change orders.",
+    status: "live",
+    href: "/app/change-orders",
+  },
+];
+
+export const suiteNav = [
+  ...contiApps.map((app) => ({
+    name: app.shortName,
+    href: app.href,
+    exact: app.href === "/app",
+  })),
+  { name: "ContiReview", href: "/app/rfi", exact: false },
+  { name: "COs", href: "/app/change-orders", exact: false },
+];

@@ -1,6 +1,6 @@
 "use server";
 
-import { readRequired, readString } from "@/lib/suite/form";
+import { readMoney, readRequired, readString } from "@/lib/suite/form";
 import { readProjectId, revalidateSuite } from "@/lib/suite/revalidate";
 import { deleteCrmLead, saveCrmLead } from "@/lib/suite/store";
 
@@ -10,6 +10,8 @@ function readLead(formData: FormData) {
     name: readRequired(formData, "name", "Name"),
     company: readRequired(formData, "company", "Company"),
     stage: readRequired(formData, "stage", "Stage"),
+    nextAction: readString(formData, "nextAction"),
+    value: readMoney(formData, "value", "Value"),
     notes: readString(formData, "notes"),
   };
 }

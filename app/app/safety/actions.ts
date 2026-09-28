@@ -1,6 +1,6 @@
 "use server";
 
-import { readRequired, readString } from "@/lib/suite/form";
+import { readInt, readRequired, readString } from "@/lib/suite/form";
 import { readProjectId, revalidateSuite } from "@/lib/suite/revalidate";
 import { deleteSafetyLog, saveSafetyLog } from "@/lib/suite/store";
 
@@ -11,6 +11,10 @@ function readLog(formData: FormData) {
     date: readRequired(formData, "date", "Date"),
     location: readRequired(formData, "location", "Location"),
     notes: readString(formData, "notes"),
+    whatHappened: readString(formData, "whatHappened"),
+    whoInvolved: readString(formData, "whoInvolved"),
+    correctiveAction: readString(formData, "correctiveAction"),
+    attendeeCount: readInt(formData, "attendeeCount", "Toolbox attendees", 0, 5000),
   };
 }
 

@@ -1,5 +1,13 @@
+import {
+  SAMPLE_CHANGE_ORDERS,
+  isChangeOrderStatus,
+  isChangeOrderType,
+} from "@/lib/change-orders";
 import type {
   BidChase,
+  ChangeOrder,
+  ChangeOrderStatus,
+  ChangeOrderType,
   CostJob,
   CrmLead,
   FieldJob,
@@ -17,6 +25,8 @@ import type {
 } from "@/lib/suite/types";
 import { isValidProjectStatus } from "@/lib/projects";
 import { requireUser } from "@/lib/suite/auth";
+import { isMissingRelation } from "@/lib/suite/db-error";
+import { ensureStaffOrg } from "@/lib/suite/org";
 
 type DbRow = Record<string, unknown>;
 
@@ -39,24 +49,6 @@ function getMemory(table: SuiteTable, userId: string) {
     memory.set(key, []);
   }
   return memory.get(key)!;
-}
-
-function isMissingRelation(error: { code?: string; message?: string } | null) {
-  if (!error) {
-    return false;
-  }
-
-  const code = error.code ?? "";
-  const message = (error.message ?? "").toLowerCase();
-
-  return (
-    code === "42P01" ||
-    code === "PGRST205" ||
-    code === "PGRST204" ||
-    message.includes("does not exist") ||
-    message.includes("could not find the table") ||
-    message.includes("schema cache")
-  );
 }
 
 function nowIso() {
@@ -105,6 +97,8 @@ function mapCrm(row: DbRow): CrmLead {
     name: asString(row.name),
     company: asString(row.company),
     stage: asString(row.stage),
+    nextAction: asString(row.next_action),
+    value: asNumber(row.opportunity_value),
     notes: asString(row.notes),
   };
 }
@@ -208,6 +202,47 @@ function mapCost(row: DbRow): CostJob {
   };
 }
 
+function asChangeOrderType(value: unknown): ChangeOrderType {
+  const type = asString(value);
+  return isChangeOrderType(type) ? type : "Owner";
+}
+
+function asChangeOrderStatus(value: unknown): ChangeOrderStatus {
+  const status = asString(value);
+  return isChangeOrderStatus(status) ? status : "Proposed";
+}
+
+function mapChangeOrder(row: DbRow): ChangeOrder {
+  return {
+    id: asString(row.id),
+    projectId: asProjectId(row.project_id),
+    number: asString(row.number),
+    title: asString(row.title),
+    description: asString(row.description),
+    type: asChangeOrderType(row.type),
+    amount: asNumber(row.amount),
+    status: asChangeOrderStatus(row.status),
+    submittedDate: asDate(row.submitted_date),
+    decidedDate: asDate(row.decided_date),
+    notes: asString(row.notes),
+  };
+}
+
+function changeOrderValues(input: Omit<ChangeOrder, "id">): DbRow {
+  return {
+    project_id: input.projectId || null,
+    number: input.number,
+    title: input.title,
+    description: input.description,
+    type: input.type,
+    amount: input.amount,
+    status: input.status,
+    submitted_date: input.submittedDate || null,
+    decided_date: input.decidedDate || null,
+    notes: input.notes,
+  };
+}
+
 function mapSafety(row: DbRow): SafetyLog {
   return {
     id: asString(row.id),
@@ -216,6 +251,10 @@ function mapSafety(row: DbRow): SafetyLog {
     date: asDate(row.entry_date),
     location: asString(row.location),
     notes: asString(row.notes),
+    whatHappened: asString(row.what_happened),
+    whoInvolved: asString(row.who_involved),
+    correctiveAction: asString(row.corrective_action),
+    attendeeCount: asNumber(row.attendee_count),
   };
 }
 
@@ -227,6 +266,8 @@ function mapTrak(row: DbRow): TrakMilestone {
     start: asDate(row.start_date),
     finish: asDate(row.finish_date),
     percentComplete: asNumber(row.percent_complete),
+    status: asString(row.milestone_status, "Not started"),
+    owner: asString(row.owner_name),
   };
 }
 
@@ -253,7 +294,8 @@ async function queryRows(
   options: { orderBy?: string; ascending?: boolean; projectId?: string } = {},
 ): Promise<{ rows: DbRow[]; persist: PersistMode }> {
   const { supabase, user } = await requireUser();
-  let query = supabase.from(table).select("*").eq("user_id", user.id);
+  // RLS allows the row owner and Conti staff in the same organization.
+  let query = supabase.from(table).select("*");
   if (options.projectId) {
     query = query.eq("project_id", options.projectId);
   }
@@ -274,7 +316,6 @@ async function queryRows(
     const unscoped = await supabase
       .from(table)
       .select("*")
-      .eq("user_id", user.id)
       .order(options.orderBy ?? "created_at", { ascending: options.ascending ?? false });
 
     if (!unscoped.error) {
@@ -302,7 +343,6 @@ async function writeRow(
       .from(table)
       .update({ ...values, updated_at: stamp })
       .eq("id", id)
-      .eq("user_id", user.id)
       .select("*")
       .single();
 
@@ -350,7 +390,7 @@ async function writeRow(
 
 async function removeRow(table: SuiteTable, id: string) {
   const { supabase, user } = await requireUser();
-  const { error } = await supabase.from(table).delete().eq("id", id).eq("user_id", user.id);
+  const { error } = await supabase.from(table).delete().eq("id", id);
 
   if (!error) {
     return;
@@ -380,13 +420,8 @@ export async function getProject(id: string): Promise<Project | null> {
     return null;
   }
 
-  const { supabase, user } = await requireUser();
-  const { data, error } = await supabase
-    .from("projects")
-    .select("*")
-    .eq("id", id)
-    .eq("user_id", user.id)
-    .maybeSingle();
+  const { supabase } = await requireUser();
+  const { data, error } = await supabase.from("projects").select("*").eq("id", id).maybeSingle();
 
   if (!error) {
     return data ? mapProject(data) : null;
@@ -399,17 +434,18 @@ export async function getProject(id: string): Promise<Project | null> {
 
 export async function saveProject(input: Omit<Project, "id" | "createdBy">, id?: string) {
   const { user } = await requireUser();
-  const { row } = await writeRow(
-    "projects",
-    {
-      name: input.name,
-      job_number: input.jobNumber,
-      address: input.address,
-      status: input.status,
-      created_by: user.id,
-    },
-    id,
-  );
+  const org = await ensureStaffOrg();
+  const values: DbRow = {
+    name: input.name,
+    job_number: input.jobNumber,
+    address: input.address,
+    status: input.status,
+    created_by: user.id,
+  };
+  if (org.persist === "supabase") {
+    values.org_id = org.orgId;
+  }
+  const { row } = await writeRow("projects", values, id);
   return mapProject(row);
 }
 
@@ -430,6 +466,8 @@ export async function saveCrmLead(input: Omit<CrmLead, "id">, id?: string) {
       name: input.name,
       company: input.company,
       stage: input.stage,
+      next_action: input.nextAction,
+      opportunity_value: input.value,
       notes: input.notes,
     },
     id,
@@ -453,11 +491,7 @@ export async function listFieldReports(projectId?: string): Promise<ListResult<F
 
 export async function getFieldReportByDate(date: string, projectId?: string): Promise<FieldReport | null> {
   const { supabase, user } = await requireUser();
-  let query = supabase
-    .from("field_reports")
-    .select("*")
-    .eq("user_id", user.id)
-    .eq("report_date", date);
+  let query = supabase.from("field_reports").select("*").eq("report_date", date);
 
   if (projectId) {
     query = query.eq("project_id", projectId);
@@ -477,7 +511,6 @@ export async function getFieldReportByDate(date: string, projectId?: string): Pr
     const unscoped = await supabase
       .from("field_reports")
       .select("*")
-      .eq("user_id", user.id)
       .eq("report_date", date)
       .order("updated_at", { ascending: false })
       .limit(8);
@@ -601,6 +634,36 @@ export async function deleteCostJob(id: string) {
   await removeRow("cost_jobs", id);
 }
 
+export async function listChangeOrders(projectId?: string): Promise<ListResult<ChangeOrder>> {
+  const result = await queryRows("change_orders", { orderBy: "number", ascending: true, projectId });
+  const rows = result.rows
+    .map(mapChangeOrder)
+    .sort((a, b) => a.number.localeCompare(b.number, undefined, { numeric: true }));
+  return { persist: result.persist, rows };
+}
+
+export async function saveChangeOrder(input: Omit<ChangeOrder, "id">, id?: string) {
+  const { row } = await writeRow("change_orders", changeOrderValues(input), id);
+  return mapChangeOrder(row);
+}
+
+export async function deleteChangeOrder(id: string) {
+  await removeRow("change_orders", id);
+}
+
+export async function seedSampleChangeOrders(projectId: string) {
+  const existing = await listChangeOrders(projectId);
+  if (existing.rows.length > 0) {
+    return existing;
+  }
+
+  for (const sample of SAMPLE_CHANGE_ORDERS) {
+    await saveChangeOrder({ ...sample, projectId });
+  }
+
+  return listChangeOrders(projectId);
+}
+
 export async function listSafetyLogs(projectId?: string): Promise<ListResult<SafetyLog>> {
   const result = await queryRows("safety_logs", { projectId });
   return { persist: result.persist, rows: result.rows.map(mapSafety) };
@@ -615,6 +678,10 @@ export async function saveSafetyLog(input: Omit<SafetyLog, "id">, id?: string) {
       entry_date: input.date,
       location: input.location,
       notes: input.notes,
+      what_happened: input.whatHappened,
+      who_involved: input.whoInvolved,
+      corrective_action: input.correctiveAction,
+      attendee_count: input.attendeeCount,
     },
     id,
   );
@@ -639,6 +706,8 @@ export async function saveTrakMilestone(input: Omit<TrakMilestone, "id">, id?: s
       start_date: input.start,
       finish_date: input.finish,
       percent_complete: input.percentComplete,
+      milestone_status: input.status,
+      owner_name: input.owner,
     },
     id,
   );

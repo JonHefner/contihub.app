@@ -13,6 +13,8 @@ export const products = [
   { id: "contisafety", name: "ContiSafety" },
   { id: "contitrak", name: "ContiTraK" },
   { id: "contibid", name: "Conti Bid" },
+  { id: "contireview", name: "ContiReview" },
+  { id: "changeorders", name: "Change Orders" },
 ] as const;
 
 export type BrandProduct = (typeof products)[number];
@@ -97,6 +99,58 @@ export function ccMarkSvg() {
 `;
 }
 
+/** Same nested-C paths as the ContiCost mark, with a polished chrome highlight and no plate. */
+export function ccMarkChromeSvg() {
+  const prefix = "c-";
+  const blue = bluePath();
+  const gold = goldPath();
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${CC_VIEWBOX} ${CC_VIEWBOX}" fill="none">
+  <defs>
+    <linearGradient id="${prefix}blue" x1="8" y1="6" x2="92" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f7fbff"/>
+      <stop offset="7%" stop-color="#d5e6ff"/>
+      <stop offset="16%" stop-color="#7eaeef"/>
+      <stop offset="30%" stop-color="#1b4f9e"/>
+      <stop offset="44%" stop-color="#071833"/>
+      <stop offset="56%" stop-color="#2f74d0"/>
+      <stop offset="70%" stop-color="#eef5ff"/>
+      <stop offset="82%" stop-color="#3c7ccc"/>
+      <stop offset="100%" stop-color="#061228"/>
+    </linearGradient>
+    <linearGradient id="${prefix}blue-spec" x1="18" y1="10" x2="70" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="42%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="${prefix}gold" x1="22" y1="14" x2="84" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fffef8"/>
+      <stop offset="9%" stop-color="#fff3b8"/>
+      <stop offset="20%" stop-color="#e4bc55"/>
+      <stop offset="38%" stop-color="#8d6816"/>
+      <stop offset="50%" stop-color="#3a2a08"/>
+      <stop offset="62%" stop-color="#d4ae4a"/>
+      <stop offset="76%" stop-color="#fff6c4"/>
+      <stop offset="100%" stop-color="#6d5212"/>
+    </linearGradient>
+    <linearGradient id="${prefix}gold-spec" x1="34" y1="22" x2="62" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="48%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="${prefix}lift" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.2" stdDeviation="1.1" flood-color="#000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+  <g filter="url(#${prefix}lift)">
+    <path fill="#020817" d="${blue}" transform="translate(1.6 2)"/>
+    <path fill="url(#${prefix}blue)" d="${blue}"/>
+    <path fill="url(#${prefix}blue-spec)" d="${blue}"/>
+    <path fill="#2a2206" d="${gold}" transform="translate(1.1 1.3)"/>
+    <path fill="url(#${prefix}gold)" d="${gold}"/>
+    <path fill="url(#${prefix}gold-spec)" d="${gold}"/>
+  </g>
+</svg>
+`;
+}
+
 export function ccMarkOnDarkSvg() {
   const prefix = "d-";
   return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" fill="none">
@@ -119,7 +173,7 @@ export function tileSvg(name: string) {
   <g transform="translate(162 58) scale(7)">
     ${markLetters(prefix)}
   </g>
-  <text x="512" y="824" text-anchor="middle" fill="#fffdf8" font-family="Inter, Arial, Helvetica, sans-serif" font-size="84" font-weight="700">${escapeXml(name)}</text>
+  <text x="512" y="${name.length > 12 ? 836 : 824}" text-anchor="middle" fill="#fffdf8" font-family="Inter, Arial, Helvetica, sans-serif" font-size="${name.length > 12 ? 64 : 84}" font-weight="700">${escapeXml(name)}</text>
   <rect x="312" y="862" width="400" height="5" rx="2.5" fill="url(#${prefix}flare)" filter="url(#${prefix}flare-glow)"/>
   <rect x="352" y="862" width="320" height="3" rx="1.5" fill="url(#${prefix}flare)"/>
 </svg>

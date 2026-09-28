@@ -4,21 +4,38 @@ type LogoProps = {
   href?: string;
   light?: boolean;
   size?: "sm" | "lg";
+  /** 3D chrome nested C from Conti marketing. Used on the signed-in ContiHub header. */
+  chrome?: boolean;
 };
 
-export function Logo({ href = "/", light = true, size = "sm" }: LogoProps) {
-  const markSize = size === "lg" ? "h-16 w-16" : "h-12 w-12";
+export function Logo({ href = "/", light = true, size = "sm", chrome = false }: LogoProps) {
+  const markSize = size === "lg" ? "h-16 w-16" : chrome ? "h-16 w-16" : "h-12 w-12";
   const titleSize = size === "lg" ? "text-[1.85rem]" : "text-[1.35rem]";
+  const markPx = size === "lg" ? 64 : chrome ? 64 : 48;
+
+  const markImage = chrome ? (
+    <span className={`${markSize} inline-block shrink-0 overflow-hidden`}>
+      <img
+        src="/brand/conti-way-mark.png"
+        alt=""
+        width={markPx}
+        height={markPx}
+        className="h-[150%] w-full max-w-none object-cover object-top"
+      />
+    </span>
+  ) : (
+    <img
+      src="/brand/cc-mark-on-dark.png"
+      alt=""
+      width={markPx}
+      height={markPx}
+      className={`${markSize} aspect-square rounded-[0.9rem] object-contain`}
+    />
+  );
 
   const mark = (
     <span className="inline-flex items-center gap-3">
-      <img
-        src="/brand/cc-mark-on-dark.png"
-        alt=""
-        width={size === "lg" ? 64 : 48}
-        height={size === "lg" ? 64 : 48}
-        className={`${markSize} aspect-square rounded-[0.9rem] object-contain`}
-      />
+      {markImage}
       <span className="leading-none">
         <span
           className={`block font-semibold tracking-tight ${titleSize} ${

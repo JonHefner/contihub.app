@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
-import { AppTiles } from "@/components/app-tiles";
+import { RevolvingTiles } from "@/components/revolving-tiles";
+import { LoadSampleButton } from "@/components/suite/load-sample-button";
+import { OpsPulse } from "@/components/suite/ops-pulse";
 import { SuiteShell } from "@/components/suite-shell";
+import { InviteTeammateForm } from "@/components/team/invite-teammate-form";
+import { hubTiles } from "@/lib/apps";
 
 export const metadata: Metadata = {
   title: "Ops hub",
@@ -9,18 +13,34 @@ export const metadata: Metadata = {
 export default function HubPage() {
   return (
     <SuiteShell>
-      <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">
-        Continental Construction of Ohio
-      </p>
-      <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-ink-strong">
-        Welcome to ContiHub
-      </h1>
+      <div className="flex items-center gap-5">
+        <span className="inline-block h-44 w-44 shrink-0 overflow-hidden sm:h-56 sm:w-56">
+          <img
+            src="/brand/conti-way-mark.png"
+            alt=""
+            width={224}
+            height={224}
+            className="h-[130%] w-full max-w-none object-cover object-top"
+          />
+        </span>
+        <div>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">
+            Continental Construction of Ohio
+          </p>
+          <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-ink-strong">
+            Welcome to ContiHub
+          </h1>
+        </div>
+      </div>
       <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-        Start in Projects to open a job, then work ContiCRM, ContiField, ContiCost, ContiSafety,
-        ContiTraK, or Conti Bid against that project only.
+        Start in Projects to open a job, then work ContiReview, ContiCRM, ContiField, ContiCost,
+        Change Orders, ContiSafety, ContiTraK, or Conti Bid against that project only.
       </p>
-      <div className="mt-8">
-        <AppTiles />
+      <RevolvingTiles tiles={hubTiles} />
+      <OpsPulse />
+      <div className="mt-8 grid gap-4 lg:grid-cols-2">
+        <InviteTeammateForm />
+        <LoadSampleButton />
       </div>
     </SuiteShell>
   );

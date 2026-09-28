@@ -14,8 +14,8 @@ export async function TrakScreen({ project }: { project: Project }) {
       <ProjectScopeBar project={project} app="trak" />
       <CrudBoard
         eyebrow="ContiTraK"
-        title="Schedule & milestones"
-        description={`Activities and percent complete for ${project.name}.`}
+        title="Milestones (not CPM)"
+        description={`Look-ahead milestone list for ${project.name}. This is not a critical-path schedule. Full ContiTraK CPM stays a separate app.`}
         addLabel="Add milestone"
         editLabel="Edit milestone"
         emptyTitle="No milestones on this project"
@@ -26,12 +26,22 @@ export async function TrakScreen({ project }: { project: Project }) {
           { name: "start", label: "Start", type: "date", required: true },
           { name: "finish", label: "Finish", type: "date", required: true },
           { name: "percentComplete", label: "% complete", type: "number", required: true, min: 0, max: 100, step: "1" },
+          {
+            name: "status",
+            label: "Status",
+            type: "select",
+            required: true,
+            options: ["Not started", "In progress", "Done"],
+          },
+          { name: "owner", label: "Owner", type: "text", placeholder: "Superintendent or PM" },
         ]}
         columns={[
           { key: "activity", label: "Activity", format: "emphasis" },
           { key: "start", label: "Start", format: "date" },
           { key: "finish", label: "Finish", format: "date" },
           { key: "percentComplete", label: "% complete", format: "percent" },
+          { key: "status", label: "Status", format: "badge" },
+          { key: "owner", label: "Owner" },
         ]}
         rows={rows}
         defaults={{
@@ -39,6 +49,8 @@ export async function TrakScreen({ project }: { project: Project }) {
           start: todayISO(),
           finish: todayISO(),
           percentComplete: "0",
+          status: "Not started",
+          owner: "",
           projectId: project.id,
         }}
         hiddenValues={{ projectId: project.id }}

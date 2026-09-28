@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectForm } from "@/components/projects/project-form";
+import { ChangeOrderSummaryCards } from "@/components/suite/change-order-summary";
 import { SuiteShell } from "@/components/suite-shell";
+import { summarizeChangeOrders } from "@/lib/change-orders";
+import { countOpenRfis } from "@/lib/rfi/pipeline";
 import { SUITE_APP_BLURBS, SUITE_APP_KEYS, SUITE_APP_LABELS, projectHref } from "@/lib/projects";
 import { loadProject } from "@/lib/suite/project-route";
+import { listRfiItems } from "@/lib/suite/rfi-store";
 import {
   listBidChases,
+  listChangeOrders,
   listCostJobs,
   listCrmLeads,
   listFieldReports,
@@ -27,11 +32,13 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 export default async function ProjectHomePage({ params }: ProjectPageProps) {
   const { id } = await params;
   const project = await loadProject(id);
-  const [logs, rfis, leads, costs, safety, trak, bids] = await Promise.all([
+  const [logs, rfis, pipeline, leads, costs, changeOrders, safety, trak, bids] = await Promise.all([
     listFieldReports(id),
     listFieldRfis(id),
+    listRfiItems(id),
     listCrmLeads(id),
     listCostJobs(id),
+    listChangeOrders(id),
     listSafetyLogs(id),
     listTrakMilestones(id),
     listBidChases(id),
@@ -39,12 +46,16 @@ export default async function ProjectHomePage({ params }: ProjectPageProps) {
 
   const counts: Record<(typeof SUITE_APP_KEYS)[number], number> = {
     field: logs.rows.length,
+    rfi: pipeline.rows.length,
     crm: leads.rows.length,
     cost: costs.rows.length,
+    "change-orders": changeOrders.rows.length,
     safety: safety.rows.length,
     trak: trak.rows.length,
     bid: bids.rows.length,
   };
+  const openRfiCount = countOpenRfis(pipeline.rows, rfis.rows);
+  const changeOrderSummary = summarizeChangeOrders(changeOrders.rows);
 
   return (
     <SuiteShell>
@@ -72,7 +83,9 @@ export default async function ProjectHomePage({ params }: ProjectPageProps) {
         <div className="rounded-2xl border border-gold/20 bg-surface px-4 py-4">
           <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Open RFIs</dt>
           <dd className="mt-2 font-display text-3xl text-ink-strong">
-            {rfis.rows.filter((rfi) => rfi.status === "open").length}
+            <Link href={projectHref(project.id, "rfi")} className="hover:text-gold">
+              {openRfiCount}
+            </Link>
           </dd>
         </div>
         <div className="rounded-2xl border border-gold/20 bg-surface px-4 py-4">
@@ -80,6 +93,10 @@ export default async function ProjectHomePage({ params }: ProjectPageProps) {
           <dd className="mt-2 font-display text-3xl text-ink-strong">{costs.rows.length}</dd>
         </div>
       </dl>
+
+      <div className="mt-10">
+        <ChangeOrderSummaryCards summary={changeOrderSummary} projectId={project.id} showLink />
+      </div>
 
       <h2 className="mt-10 font-display text-2xl font-semibold text-ink-strong">Suite for this job</h2>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">

@@ -7,9 +7,69 @@ export type SuiteTable =
   | "field_jobs"
   | "field_rfis"
   | "cost_jobs"
+  | "change_orders"
   | "safety_logs"
   | "trak_milestones"
   | "bid_chases";
+
+export type ContractorSource = "import" | "manual";
+
+export type BidContractor = {
+  id: string;
+  orgId: string;
+  firstName: string;
+  lastName: string;
+  name: string;
+  email: string;
+  company: string;
+  phone: string;
+  office: string;
+  cell: string;
+  street: string;
+  city: string;
+  state: string;
+  zip: string;
+  categories: string;
+  notes: string;
+  source: ContractorSource;
+};
+
+export type BidPackage = {
+  id: string;
+  orgId: string;
+  projectId: string;
+  projectName: string;
+  title: string;
+  dueAt: string;
+  drawingsTeamsUrl: string;
+  notes: string;
+  buildingConnectedSent: boolean;
+};
+
+export type BidInviteeStatus = "draft" | "invited" | "opened" | "declined";
+
+export type BidInvitee = {
+  id: string;
+  packageId: string;
+  contractorId: string;
+  userId: string;
+  email: string;
+  name: string;
+  company: string;
+  trade: string;
+  status: BidInviteeStatus;
+  invitedAt: string;
+  magicLinkSentAt: string;
+};
+
+export type FieldPhoto = {
+  id: string;
+  projectId: string;
+  reportId: string;
+  storagePath: string;
+  caption: string;
+  url: string;
+};
 
 export type ProjectStatus = "Active" | "Bidding" | "On Hold" | "Closed";
 
@@ -28,6 +88,8 @@ export type CrmLead = {
   name: string;
   company: string;
   stage: string;
+  nextAction: string;
+  value: number;
   notes: string;
 };
 
@@ -91,6 +153,24 @@ export type CostJob = {
   actual: number;
 };
 
+export type ChangeOrderType = "Owner" | "Unforeseen" | "Deduct" | "Allowance" | "Other";
+
+export type ChangeOrderStatus = "Proposed" | "Pricing" | "Approved" | "Rejected";
+
+export type ChangeOrder = {
+  id: string;
+  projectId: string;
+  number: string;
+  title: string;
+  description: string;
+  type: ChangeOrderType;
+  amount: number;
+  status: ChangeOrderStatus;
+  submittedDate: string;
+  decidedDate: string;
+  notes: string;
+};
+
 export type SafetyLog = {
   id: string;
   projectId: string;
@@ -98,6 +178,10 @@ export type SafetyLog = {
   date: string;
   location: string;
   notes: string;
+  whatHappened: string;
+  whoInvolved: string;
+  correctiveAction: string;
+  attendeeCount: number;
 };
 
 export type TrakMilestone = {
@@ -107,6 +191,8 @@ export type TrakMilestone = {
   start: string;
   finish: string;
   percentComplete: number;
+  status: string;
+  owner: string;
 };
 
 export type BidChase = {
@@ -125,6 +211,7 @@ export type SuiteRecord =
   | FieldJob
   | FieldRfi
   | CostJob
+  | ChangeOrder
   | SafetyLog
   | TrakMilestone
   | BidChase;

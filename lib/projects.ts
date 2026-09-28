@@ -1,13 +1,24 @@
 export const PROJECT_STATUSES = ["Active", "Bidding", "On Hold", "Closed"] as const;
 
-export type SuiteAppKey = "crm" | "field" | "cost" | "safety" | "trak" | "bid";
+export type SuiteAppKey = "crm" | "field" | "rfi" | "cost" | "change-orders" | "safety" | "trak" | "bid";
 
-export const SUITE_APP_KEYS: SuiteAppKey[] = ["field", "crm", "cost", "safety", "trak", "bid"];
+export const SUITE_APP_KEYS: SuiteAppKey[] = [
+  "field",
+  "rfi",
+  "crm",
+  "cost",
+  "change-orders",
+  "safety",
+  "trak",
+  "bid",
+];
 
 export const SUITE_APP_LABELS: Record<SuiteAppKey, string> = {
   field: "ContiField",
+  rfi: "ContiReview",
   crm: "ContiCRM",
   cost: "ContiCost",
+  "change-orders": "Change Orders",
   safety: "ContiSafety",
   trak: "ContiTraK",
   bid: "Conti Bid",
@@ -15,11 +26,13 @@ export const SUITE_APP_LABELS: Record<SuiteAppKey, string> = {
 
 export const SUITE_APP_BLURBS: Record<SuiteAppKey, string> = {
   field: "Daily construction logs and RFIs",
+  rfi: "ContiReview form, then route, log, and distribute",
   crm: "Owners, architects, and opportunities",
   cost: "Budget, committed, and actual",
+  "change-orders": "Proposed, priced, approved, and owner exposure",
   safety: "Toolbox talks and incidents",
-  trak: "Schedule and milestones",
-  bid: "Bid chase and proposals",
+  trak: "Milestones (not CPM)",
+  bid: "Packages, invites, and chase list",
 };
 
 export function projectHref(projectId: string, app?: SuiteAppKey, rest = "") {

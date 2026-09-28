@@ -41,8 +41,8 @@ export default function HomePage() {
               The Conti Way
             </p>
             <p className="mt-5 max-w-xl text-lg leading-8 text-muted">
-              The ops portal for Continental Construction of Ohio. Sign in to Projects, Field, Cost,
-              CRM, Safety, TraK, and Bid.
+              The ops portal for Continental Construction of Ohio. Sign in to Projects, ContiReview,
+              Field, Cost, CRM, Safety, TraK, and Bid.
             </p>
             <div className="mt-8 flex flex-wrap justify-center gap-3">
               <Link
