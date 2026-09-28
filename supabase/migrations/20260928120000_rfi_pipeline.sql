@@ -1,7 +1,9 @@
 -- ContiHub RFI pipeline.
 -- Roster seats are rows. Remove a person by setting active = false.
 -- Design/document RFIs route to architect_liaison. Owner decisions route to owner_liaison.
--- ContiRFI agent handoff stays stubbed: staff paste citations. Hub does not invent sheet content.
+-- ContiRFI stays draft and document review. The suggested-outcomes form is ContiHub.
+-- Staff paste citations. Hub does not invent sheet content.
+-- Confirmed roster: Ann Saccone, Michael Might, Ryan Roberts, Braden Farmer.
 -- Braden Farmer is the distributor seat (the six roster roles do not include a separate conti_staff value).
 -- owner_liaison is intentionally unseeded until Conti adds that person.
 
@@ -198,14 +200,34 @@ begin
     return;
   end if;
 
+  -- Earlier drafts used Anne / Mike / Mike Ryan Roberts with blank emails.
+  update public.rfi_roster
+  set display_name = 'Ann Saccone', email = 'ann.saccone@continentalcando.com'
+  where org_id = oid and project_id is null and role in ('admin', 'intake_reviewer')
+    and lower(display_name) in ('anne saccone', 'ann saccone');
+
+  update public.rfi_roster
+  set display_name = 'Michael Might',
+      email = 'michael.might@continentalcando.com',
+      notes = 'Conti Field superintendent seat.'
+  where org_id = oid and project_id is null and role = 'superintendent'
+    and (lower(display_name) = 'michael might' or (lower(display_name) = 'mike' and email = ''));
+
+  update public.rfi_roster
+  set display_name = 'Ryan Roberts',
+      email = 'ryan.roberts@continentalcando.com',
+      notes = 'Architect liaison for design and document RFIs.'
+  where org_id = oid and project_id is null and role = 'architect_liaison'
+    and lower(display_name) in ('mike ryan roberts', 'ryan roberts');
+
   insert into public.rfi_roster (org_id, user_id, display_name, email, role, notes)
   select oid, uid, v.display_name, v.email, v.role, v.notes
   from (
     values
-      ('Anne Saccone', 'ann.saccone@continentalcando.com', 'admin', 'Admin seat. Add or remove people by setting the roster row inactive.'),
-      ('Anne Saccone', 'ann.saccone@continentalcando.com', 'intake_reviewer', 'Intake reviewer.'),
-      ('Mike', '', 'superintendent', 'Email TBD. Conti Field superintendent seat.'),
-      ('Mike Ryan Roberts', '', 'architect_liaison', 'Email TBD. Architect liaison for design and document RFIs.'),
+      ('Ann Saccone', 'ann.saccone@continentalcando.com', 'admin', 'Admin seat. Add or remove people by setting the roster row inactive.'),
+      ('Ann Saccone', 'ann.saccone@continentalcando.com', 'intake_reviewer', 'Intake reviewer.'),
+      ('Michael Might', 'michael.might@continentalcando.com', 'superintendent', 'Conti Field superintendent seat.'),
+      ('Ryan Roberts', 'ryan.roberts@continentalcando.com', 'architect_liaison', 'Architect liaison for design and document RFIs.'),
       ('Braden Farmer', 'Braden.Farmer@continentalcando.com', 'distributor', 'Distributor seat. Pushes the logged RFI to the field and affected subcontractors.')
   ) as v(display_name, email, role, notes)
   where not exists (
@@ -279,6 +301,10 @@ begin
     return;
   end if;
 
+  update public.rfi_items
+  set to_name = 'Ryan Roberts'
+  where project_id = pid and number = 'RFI-P01' and to_name = 'Mike Ryan Roberts';
+
   if exists (select 1 from public.rfi_items where project_id = pid and number = 'RFI-P01') then
     return;
   end if;
@@ -297,13 +323,13 @@ begin
     'SAMPLE — What working clearance is required at the main switchgear?',
     'SAMPLE — Confirm the working clearance at the main switchgear and whether the equipment pad must move before the pour.',
     'SAMPLE only. Not from a drawing set. Do not treat these words as a sheet citation. Paste verbatim quotes and printed sheet labels from Teams before issuing a live RFI.',
-    'ContiRFI agent handoff is stubbed. Paste citations from the Teams file set. Quote the printed sheet label and the words on the sheet. Hub does not invent an answer or a sheet number. If the documents already answer the question, close it with the drafter and do not issue.',
+    'ContiRFI stays the draft and document-review process. The suggested-outcomes form is ContiHub. Paste citations from the Teams file set. Quote the printed sheet label and the words on the sheet. Hub does not invent an answer or a sheet number. If the documents already answer the question, close it with the drafter and do not issue.',
     false,
     'normal',
     'design_docs',
     'architect_liaison',
     'SAMPLE — Conti field',
-    'Mike Ryan Roberts',
+    'Ryan Roberts',
     current_date + 5,
     'unknown',
     'unknown',

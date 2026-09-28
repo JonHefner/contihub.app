@@ -78,28 +78,28 @@ export const DEFAULT_OUTCOMES = [
 
 export const DEFAULT_ROSTER: { displayName: string; email: string; role: RfiRole; notes: string }[] = [
   {
-    displayName: "Anne Saccone",
+    displayName: "Ann Saccone",
     email: "ann.saccone@continentalcando.com",
     role: "admin",
     notes: "Admin seat. Add or remove people by setting the roster row inactive.",
   },
   {
-    displayName: "Anne Saccone",
+    displayName: "Ann Saccone",
     email: "ann.saccone@continentalcando.com",
     role: "intake_reviewer",
     notes: "Intake reviewer.",
   },
   {
-    displayName: "Mike",
-    email: "",
+    displayName: "Michael Might",
+    email: "michael.might@continentalcando.com",
     role: "superintendent",
-    notes: "Email TBD. Conti Field superintendent seat.",
+    notes: "Conti Field superintendent seat.",
   },
   {
-    displayName: "Mike Ryan Roberts",
-    email: "",
+    displayName: "Ryan Roberts",
+    email: "ryan.roberts@continentalcando.com",
     role: "architect_liaison",
-    notes: "Email TBD. Architect liaison for design and document RFIs.",
+    notes: "Architect liaison for design and document RFIs.",
   },
   {
     displayName: "Braden Farmer",
@@ -110,7 +110,41 @@ export const DEFAULT_ROSTER: { displayName: string; email: string; role: RfiRole
 ];
 
 export const DOC_REVIEW_STUB =
-  "ContiRFI agent handoff is stubbed. Paste citations from the Teams file set. Quote the printed sheet label and the words on the sheet. Hub does not invent an answer or a sheet number. If the documents already answer the question, close it with the drafter and do not issue.";
+  "ContiRFI stays the draft and document-review process. The suggested-outcomes form is ContiHub. Paste citations from the Teams file set. Quote the printed sheet label and the words on the sheet. Hub does not invent an answer or a sheet number. If the documents already answer the question, close it with the drafter and do not issue.";
+
+export function rosterCorrection(role: string, displayName: string, email: string) {
+  const name = displayName.trim().toLowerCase();
+  const mail = email.trim().toLowerCase();
+  let targetName = "";
+  if (
+    (role === "admin" || role === "intake_reviewer") &&
+    (name === "anne saccone" || name === "ann saccone" || mail === "ann.saccone@continentalcando.com")
+  ) {
+    targetName = "Ann Saccone";
+  } else if (
+    role === "superintendent" &&
+    (name === "michael might" || mail === "michael.might@continentalcando.com" || (name === "mike" && mail === ""))
+  ) {
+    targetName = "Michael Might";
+  } else if (
+    role === "architect_liaison" &&
+    (name === "ryan roberts" || name === "mike ryan roberts" || mail === "ryan.roberts@continentalcando.com")
+  ) {
+    targetName = "Ryan Roberts";
+  } else if (role === "distributor" && (name === "braden farmer" || mail === "braden.farmer@continentalcando.com")) {
+    targetName = "Braden Farmer";
+  } else {
+    return null;
+  }
+  const canonical = DEFAULT_ROSTER.find((seat) => seat.role === role && seat.displayName === targetName);
+  if (!canonical) {
+    return null;
+  }
+  if (displayName.trim() === canonical.displayName && mail === canonical.email.toLowerCase()) {
+    return null;
+  }
+  return { displayName: canonical.displayName, email: canonical.email, notes: canonical.notes };
+}
 
 export const SAMPLE_RFI_NUMBER = "RFI-P01";
 
@@ -124,7 +158,7 @@ export const SAMPLE_RFI = {
     "SAMPLE only. Not from a drawing set. Do not treat these words as a sheet citation. Paste verbatim quotes and printed sheet labels from Teams before issuing a live RFI.",
   docReviewNotes: DOC_REVIEW_STUB,
   fromName: "SAMPLE — Conti field",
-  toName: "Mike Ryan Roberts",
+  toName: "Ryan Roberts",
   urgency: "normal" as RfiUrgency,
   rfiType: "design_docs" as RfiType,
   costImpact: "unknown" as RfiCostImpact,

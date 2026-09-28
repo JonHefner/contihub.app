@@ -8,6 +8,7 @@ import {
   costPingNote,
   countOpenRfis,
   nextPipelineNumber,
+  rosterCorrection,
   routeBlockReason,
   routeRoleForType,
   urgencyTag,
@@ -99,7 +100,7 @@ describe("RFI drafts", () => {
       subject: "Working clearance",
       urgency: "high",
       fromName: "Anne",
-      toName: "Mike Ryan Roberts",
+      toName: "Ryan Roberts",
       question: "What clearance is required?",
       improvedQuestion: "Confirm the working clearance at the gear.",
       citations: "",
@@ -132,23 +133,43 @@ describe("RFI drafts", () => {
 });
 
 describe("deploy roster", () => {
-  test("seeds Anne, Mike, Mike Ryan Roberts, and Braden on the six roles", () => {
+  test("seeds Ann, Michael Might, Ryan Roberts, and Braden with confirmed emails", () => {
     const names = DEFAULT_ROSTER.map((seat) => seat.displayName);
-    assert.ok(names.includes("Anne Saccone"));
-    assert.ok(names.includes("Mike"));
-    assert.ok(names.includes("Mike Ryan Roberts"));
+    assert.ok(names.includes("Ann Saccone"));
+    assert.ok(names.includes("Michael Might"));
+    assert.ok(names.includes("Ryan Roberts"));
     assert.ok(names.includes("Braden Farmer"));
     assert.equal(
-      DEFAULT_ROSTER.find((seat) => seat.displayName === "Anne Saccone" && seat.role === "admin")?.email,
+      DEFAULT_ROSTER.find((seat) => seat.displayName === "Ann Saccone" && seat.role === "admin")?.email,
       "ann.saccone@continentalcando.com",
     );
-    assert.equal(DEFAULT_ROSTER.find((seat) => seat.displayName === "Mike")?.email, "");
-    assert.equal(DEFAULT_ROSTER.find((seat) => seat.displayName === "Mike Ryan Roberts")?.role, "architect_liaison");
+    assert.equal(
+      DEFAULT_ROSTER.find((seat) => seat.displayName === "Michael Might")?.email,
+      "michael.might@continentalcando.com",
+    );
+    assert.equal(DEFAULT_ROSTER.find((seat) => seat.displayName === "Ryan Roberts")?.role, "architect_liaison");
+    assert.equal(
+      DEFAULT_ROSTER.find((seat) => seat.displayName === "Ryan Roberts")?.email,
+      "ryan.roberts@continentalcando.com",
+    );
     assert.equal(
       DEFAULT_ROSTER.find((seat) => seat.displayName === "Braden Farmer")?.email,
       "Braden.Farmer@continentalcando.com",
     );
     assert.equal(DEFAULT_ROSTER.some((seat) => seat.role === "owner_liaison"), false);
+    assert.equal(SAMPLE_RFI.toName, "Ryan Roberts");
     assert.match(SAMPLE_RFI.citations, /Not from a drawing set/);
+  });
+
+  test("renames the earlier placeholder seats onto the confirmed roster", () => {
+    assert.deepEqual(rosterCorrection("admin", "Anne Saccone", "ann.saccone@continentalcando.com"), {
+      displayName: "Ann Saccone",
+      email: "ann.saccone@continentalcando.com",
+      notes: "Admin seat. Add or remove people by setting the roster row inactive.",
+    });
+    assert.equal(rosterCorrection("superintendent", "Mike", "")?.email, "michael.might@continentalcando.com");
+    assert.equal(rosterCorrection("architect_liaison", "Mike Ryan Roberts", "")?.displayName, "Ryan Roberts");
+    assert.equal(rosterCorrection("architect_liaison", "Ryan Roberts", "ryan.roberts@continentalcando.com"), null);
+    assert.equal(rosterCorrection("superintendent", "Another Mike", "mike@example.com"), null);
   });
 });

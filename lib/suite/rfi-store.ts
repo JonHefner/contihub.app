@@ -13,6 +13,7 @@ import {
   costPingNote,
   fieldStatusForPipeline,
   requireRole,
+  rosterCorrection,
   routeBlockReason,
   routeRoleFromConfig,
   statusAfterSave,
@@ -260,10 +261,50 @@ async function ensureSupabaseRoster(orgId: string, userId: string) {
   }
 }
 
+async function reconcileRoster(ctx: { mode: PersistMode; orgId: string; userId: string }, seats: RfiRosterSeat[]) {
+  const next = seats.map((seat) => {
+    const fix = rosterCorrection(seat.role, seat.displayName, seat.email);
+    if (!fix) {
+      return seat;
+    }
+    return { ...seat, displayName: fix.displayName, email: fix.email, notes: fix.notes };
+  });
+  for (let index = 0; index < seats.length; index += 1) {
+    const before = seats[index];
+    const after = next[index];
+    if (
+      before.displayName === after.displayName &&
+      before.email === after.email &&
+      before.notes === after.notes
+    ) {
+      continue;
+    }
+    if (ctx.mode === "memory") {
+      const row = seedMemory(ctx.userId).roster.find((seat) => seat.id === after.id);
+      if (row) {
+        row.displayName = after.displayName;
+        row.email = after.email;
+        row.notes = after.notes;
+      }
+      continue;
+    }
+    const { supabase } = await requireUser();
+    const updated = await supabase
+      .from("rfi_roster")
+      .update({ display_name: after.displayName, email: after.email, notes: after.notes })
+      .eq("id", after.id);
+    if (updated.error) {
+      throw new Error(updated.error.message);
+    }
+  }
+  return next;
+}
+
 export async function listRoster(): Promise<ListResult<RfiRosterSeat>> {
   const ctx = await persistMode();
   if (ctx.mode === "memory") {
-    return { persist: "memory", rows: seedMemory(ctx.userId).roster.slice() };
+    const rows = await reconcileRoster(ctx, seedMemory(ctx.userId).roster.slice());
+    return { persist: "memory", rows };
   }
   await ensureSupabaseRoster(ctx.orgId, ctx.userId);
   const { supabase } = await requireUser();
@@ -275,7 +316,8 @@ export async function listRoster(): Promise<ListResult<RfiRosterSeat>> {
   if (error) {
     throw new Error(error.message);
   }
-  return { persist: "supabase", rows: (data ?? []).map(mapSeat) };
+  const rows = await reconcileRoster(ctx, (data ?? []).map(mapSeat));
+  return { persist: "supabase", rows };
 }
 
 export async function listTypeRoutes(): Promise<ListResult<RfiTypeRoute>> {
