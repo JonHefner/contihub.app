@@ -109,12 +109,12 @@ export function RfiForm({
         const saved = await saveRfiAction(data);
         setNotice(
           intent === "route"
-            ? "Routed. The reviewer draft is ready to copy."
+            ? "Routed from ContiReview. The draft is ready to copy."
             : intent === "return" || intent === "close_docs"
               ? "Logged on the ContiHub RFI log and mirrored to ContiField."
               : intent === "distribute"
                 ? "Field log updated. Distribution drafts are ready to copy. Mail was not sent."
-                : "Saved.",
+                : "Submitted to ContiReview.",
         );
         router.replace(`/app/projects/${projectId}/rfi?id=${saved.id}`);
         router.refresh();
@@ -231,8 +231,8 @@ export function RfiForm({
       </label>
 
       <fieldset className="mt-5">
-        <legend className="text-xs font-semibold uppercase tracking-[0.16em] text-gold">Suggested outcomes</legend>
-        <p className="mt-2 text-sm text-muted">Edit the wording, then select the one Conti will carry into the route draft.</p>
+        <legend className="text-xs font-semibold uppercase tracking-[0.16em] text-gold">ContiReview form</legend>
+        <p className="mt-2 text-sm text-muted">Edit the suggested outcomes, then select the one ContiReview will carry into the route draft.</p>
         <div className="mt-3 grid gap-3">
           {outcomeText.map((value, index) => (
             <div key={index} className="flex items-start gap-2">
@@ -350,7 +350,7 @@ export function RfiForm({
 
       <div className="mt-4 flex flex-wrap gap-2">
         <button type="button" className={buttonClass} disabled={pending} onClick={() => run("save")}>
-          Save
+          Submit to ContiReview
         </button>
         <button type="button" className={quietClass} disabled={pending} onClick={() => run("route")}>
           Route

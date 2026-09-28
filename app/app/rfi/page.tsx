@@ -4,7 +4,7 @@ import { SuiteShell } from "@/components/suite-shell";
 import { listOrRedirectToProject } from "@/lib/suite/project-route";
 
 export const metadata: Metadata = {
-  title: "RFI pipeline",
+  title: "ContiReview",
 };
 
 export default async function RfiPickerPage() {
@@ -17,7 +17,7 @@ export default async function RfiPickerPage() {
         projects={projects}
         persist={persist}
         title="Choose a project"
-        description="The RFI log is scoped per job. Open a project to review, route, and distribute that job’s RFIs."
+        description="ContiReview is scoped per job. Open a project for the ContiReview form, then route and distribute that job’s RFIs."
       />
     </SuiteShell>
   );

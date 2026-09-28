@@ -263,7 +263,7 @@ async function ensureSupabaseRoster(orgId: string, userId: string) {
 
 async function reconcileRoster(ctx: { mode: PersistMode; orgId: string; userId: string }, seats: RfiRosterSeat[]) {
   const next = seats.map((seat) => {
-    const fix = rosterCorrection(seat.role, seat.displayName, seat.email);
+    const fix = rosterCorrection(seat.role, seat.displayName, seat.email, seat.notes);
     if (!fix) {
       return seat;
     }

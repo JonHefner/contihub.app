@@ -1,7 +1,7 @@
--- ContiHub RFI pipeline.
+-- ContiHub RFI pipeline. The suggested-outcomes review step is ContiReview.
 -- Roster seats are rows. Remove a person by setting active = false.
 -- Design/document RFIs route to architect_liaison. Owner decisions route to owner_liaison.
--- ContiRFI stays draft and document review. The suggested-outcomes form is ContiHub.
+-- ContiRFI stays draft and document review. Suggested outcomes are the ContiReview form.
 -- Staff paste citations. Hub does not invent sheet content.
 -- Confirmed roster: Ann Saccone, Michael Might, Ryan Roberts, Braden Farmer.
 -- Braden Farmer is the distributor seat (the six roster roles do not include a separate conti_staff value).
@@ -225,7 +225,7 @@ begin
   from (
     values
       ('Ann Saccone', 'ann.saccone@continentalcando.com', 'admin', 'Admin seat. Add or remove people by setting the roster row inactive.'),
-      ('Ann Saccone', 'ann.saccone@continentalcando.com', 'intake_reviewer', 'Intake reviewer.'),
+      ('Ann Saccone', 'ann.saccone@continentalcando.com', 'intake_reviewer', 'Acts in ContiReview.'),
       ('Michael Might', 'michael.might@continentalcando.com', 'superintendent', 'Conti Field superintendent seat.'),
       ('Ryan Roberts', 'ryan.roberts@continentalcando.com', 'architect_liaison', 'Architect liaison for design and document RFIs.'),
       ('Braden Farmer', 'Braden.Farmer@continentalcando.com', 'distributor', 'Distributor seat. Pushes the logged RFI to the field and affected subcontractors.')
@@ -323,7 +323,7 @@ begin
     'SAMPLE — What working clearance is required at the main switchgear?',
     'SAMPLE — Confirm the working clearance at the main switchgear and whether the equipment pad must move before the pour.',
     'SAMPLE only. Not from a drawing set. Do not treat these words as a sheet citation. Paste verbatim quotes and printed sheet labels from Teams before issuing a live RFI.',
-    'ContiRFI stays the draft and document-review process. The suggested-outcomes form is ContiHub. Paste citations from the Teams file set. Quote the printed sheet label and the words on the sheet. Hub does not invent an answer or a sheet number. If the documents already answer the question, close it with the drafter and do not issue.',
+    'ContiRFI stays the draft and document-review process. Suggested outcomes are the ContiReview form in ContiHub. Paste citations from the Teams file set. Quote the printed sheet label and the words on the sheet. Hub does not invent an answer or a sheet number. If the documents already answer the question, close it with the drafter and do not issue.',
     false,
     'normal',
     'design_docs',

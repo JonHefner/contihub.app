@@ -2,7 +2,7 @@
 
 Continental Construction of Ohio (CCO) operations portal for [contihub.app](https://contihub.app).
 
-ContiHub is the live home for the Conti suite: Projects, ContiHub, the RFI pipeline, ContiCRM, ContiField, ContiCost, Change Orders, ContiSafety, ContiTraK, and Conti Bid. Suite boards are scoped to an individual project.
+ContiHub is the live home for the Conti suite: Projects, ContiHub, ContiReview, ContiCRM, ContiField, ContiCost, Change Orders, ContiSafety, ContiTraK, and Conti Bid. Suite boards are scoped to an individual project.
 
 ## Stack
 
@@ -127,7 +127,7 @@ Then redeploy. Leave **Authentication → Providers → Email → Confirm email*
 - `/app/projects/[id]/safety` — ContiSafety log for that project
 - `/app/projects/[id]/trak` — ContiTraK milestone list (not CPM)
 - `/app/projects/[id]/bid` — Conti Bid packages, invites, and chase list for that project
-- `/app/projects/[id]/rfi` — RFI pipeline (roster, suggested outcomes, architect or owner route, log, field and subcontractor drafts)
+- `/app/projects/[id]/rfi` — ContiReview (roster, ContiReview form, architect or owner route, log, field and subcontractor drafts)
 - `/app/bid/directory` — contractor directory (search, CSV import, CSV export)
 - `/app/bid/invitations` — bidder landing (invited packages only)
 - `/app/crm`, `/app/field`, `/app/rfi`, `/app/cost`, `/app/change-orders`, `/app/safety`, `/app/trak`, `/app/bid` — project pickers (redirect when only one project exists)
@@ -145,10 +145,11 @@ Apply these files in the Supabase SQL editor (in order), or with the Supabase CL
 3. `supabase/migrations/20260909180000_projects.sql` — `projects` table, nullable `project_id` on suite tables, and a per-user **Data Center** seed that attaches existing unassigned / “Data Center” sample rows
 4. `supabase/migrations/20260914120000_change_orders.sql` — `change_orders` table (RLS + `project_id` FK) and a per-user fictional **Midwest Regional Stadium Renovation** demo project with a CO breakdown sample
 5. `supabase/migrations/20260927120000_full_court_press.sql` — company org, staff vs bidder, contractor directory, bid packages, SAMPLE workspace, field-photo bucket
-6. `supabase/migrations/20260928120000_rfi_pipeline.sql` — RFI roster, type routes, pipeline log, suggested outcomes, and the SAMPLE RFI
+6. `supabase/migrations/20260928120000_rfi_pipeline.sql` — ContiReview roster, type routes, log, suggested-outcomes form, and the SAMPLE RFI
 7. `supabase/migrations/20260928130000_rfi_roster_emails.sql` — confirmed roster names and emails if file 6 was applied with the earlier placeholders
+8. `supabase/migrations/20260928140000_contireview_naming.sql` — ContiReview name on the suggested-outcomes step and operator notes
 
-Run all seven in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner. After file 5, Conti staff in the same organization share projects. Bidders only see packages they were invited to. Files 6 and 7 are staff-only. Bidders do not see the RFI pipeline.
+Run all eight in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner. After file 5, Conti staff in the same organization share projects. Bidders only see packages they were invited to. Files 6 through 8 are staff-only. Bidders do not see ContiReview.
 
 ### Change Orders SQL (Jon)
 
@@ -226,29 +227,29 @@ Bidders who sign in land on `/app/bid/invitations` and do not get the rest of th
 
 ### Merge order
 
-This branch includes the open Change Order log (PR #8). Merge this pull request and close #8, or merge #8 first and then this branch. Do not force-merge if CI fails. Run `20260914120000_change_orders.sql` before `20260927120000_full_court_press.sql`, then `20260928120000_rfi_pipeline.sql` and `20260928130000_rfi_roster_emails.sql`. Hub shows the COs nav item, the RFI nav item, and an ops pulse (open RFIs, packages due, chase due, pending COs).
+This branch includes the open Change Order log (PR #8). Merge this pull request and close #8, or merge #8 first and then this branch. Do not force-merge if CI fails. Run `20260914120000_change_orders.sql` before `20260927120000_full_court_press.sql`, then `20260928120000_rfi_pipeline.sql`, `20260928130000_rfi_roster_emails.sql`, and `20260928140000_contireview_naming.sql`. Hub shows the COs nav item, the ContiReview nav item, and an ops pulse (open RFIs, packages due, chase due, pending COs).
 
-### RFI pipeline
+### ContiReview
 
-Equal priority with Conti Bid for this week. ContiHub is the system of record for the Hub log. Access tblRFI can stay parallel until cutover. ContiRFI remains the draft and document-review process. The suggested-outcomes form is built in ContiHub. Conti’s ContiRFI training pack is reference only and is not this app. Staff paste citations. The form does not invent sheet numbers or answers.
+Equal priority with Conti Bid for this week. ContiHub is the system of record for the Hub log. Access tblRFI can stay parallel until cutover. ContiRFI remains the draft and document-review process. The suggested-outcomes step is the ContiReview form. Conti’s ContiRFI training pack is reference only and is not this app. Staff paste citations. The form does not invent sheet numbers or answers.
 
-After the full court press SQL, run `supabase/migrations/20260928120000_rfi_pipeline.sql` and `supabase/migrations/20260928130000_rfi_roster_emails.sql`. **Load SAMPLE** also inserts **RFI-P01** on SAMPLE Data Center. That row is labeled SAMPLE. Its citation text says it is not from a drawing set.
+After the full court press SQL, run `supabase/migrations/20260928120000_rfi_pipeline.sql`, `supabase/migrations/20260928130000_rfi_roster_emails.sql`, and `supabase/migrations/20260928140000_contireview_naming.sql`. **Load SAMPLE** also inserts **RFI-P01** on SAMPLE Data Center. That row is labeled SAMPLE. Its citation text says it is not from a drawing set.
 
 Workflow on `/app/projects/[id]/rfi`:
 
 1. Intake the question, urgency, cost impact, and schedule impact.
 2. Paste doc-review notes and verbatim citations from the Teams link. If the documents already answer it, close with the drafter and do not issue.
 3. Improve the question.
-4. Edit two or three suggested outcomes and select one.
+4. Submit to ContiReview: edit two or three suggested outcomes and select one.
 5. Route by type. Design / documents goes to the architect liaison. Owner decision goes to the owner liaison. The route email is a copy or mailto draft.
 6. Log the official return as Waiting, Closed, or Complete. That writes the ContiHub log and mirrors a ContiField RFI.
 7. Push drafts to the active superintendent seat and the subcontractors you check. Mail is not sent from Hub this week.
 
-Deploy roster (config table `rfi_roster`, not hard-coded in the UI):
+Deploy roster (config table `rfi_roster`, not hard-coded in the UI). These people are operators who can act in ContiReview. ContiReview is the module name.
 
 | Seat | Email | Role |
 | --- | --- | --- |
-| Ann Saccone | ann.saccone@continentalcando.com | admin and intake reviewer (two rows) |
+| Ann Saccone | ann.saccone@continentalcando.com | admin and ContiReview (two rows) |
 | Michael Might | michael.might@continentalcando.com | superintendent |
 | Ryan Roberts | ryan.roberts@continentalcando.com | architect liaison |
 | Braden Farmer | Braden.Farmer@continentalcando.com | distributor |

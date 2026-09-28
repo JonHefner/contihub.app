@@ -3,7 +3,7 @@ import { RfiScreen } from "@/components/rfi/rfi-screen";
 import { loadProject } from "@/lib/suite/project-route";
 
 export const metadata: Metadata = {
-  title: "RFI pipeline",
+  title: "ContiReview",
 };
 
 type PageProps = {

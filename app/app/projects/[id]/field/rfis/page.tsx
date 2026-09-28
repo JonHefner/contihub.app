@@ -27,7 +27,7 @@ export default async function ProjectFieldRfisPage({ params, searchParams }: Rfi
         <h1 className="font-display text-2xl font-semibold tracking-wide text-field-ink uppercase">RFIs</h1>
         <p className="mt-1 text-sm text-field-muted">Questions from {project.name} — open, overdue, and closed.</p>
         <Link href={projectHref(project.id, "rfi")} className="mt-2 inline-block text-sm font-semibold text-field-primary">
-          Open the ContiHub RFI pipeline
+          Open ContiReview
         </Link>
       </div>
       <RfiBoard

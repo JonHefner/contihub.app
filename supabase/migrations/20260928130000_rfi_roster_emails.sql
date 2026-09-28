@@ -37,7 +37,7 @@ begin
   from (
     values
       ('Ann Saccone', 'ann.saccone@continentalcando.com', 'admin', 'Admin seat. Add or remove people by setting the roster row inactive.'),
-      ('Ann Saccone', 'ann.saccone@continentalcando.com', 'intake_reviewer', 'Intake reviewer.'),
+      ('Ann Saccone', 'ann.saccone@continentalcando.com', 'intake_reviewer', 'Acts in ContiReview.'),
       ('Michael Might', 'michael.might@continentalcando.com', 'superintendent', 'Conti Field superintendent seat.'),
       ('Ryan Roberts', 'ryan.roberts@continentalcando.com', 'architect_liaison', 'Architect liaison for design and document RFIs.'),
       ('Braden Farmer', 'Braden.Farmer@continentalcando.com', 'distributor', 'Distributor seat. Pushes the logged RFI to the field and affected subcontractors.')

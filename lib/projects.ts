@@ -15,7 +15,7 @@ export const SUITE_APP_KEYS: SuiteAppKey[] = [
 
 export const SUITE_APP_LABELS: Record<SuiteAppKey, string> = {
   field: "ContiField",
-  rfi: "RFI pipeline",
+  rfi: "ContiReview",
   crm: "ContiCRM",
   cost: "ContiCost",
   "change-orders": "Change Orders",
@@ -26,7 +26,7 @@ export const SUITE_APP_LABELS: Record<SuiteAppKey, string> = {
 
 export const SUITE_APP_BLURBS: Record<SuiteAppKey, string> = {
   field: "Daily construction logs and RFIs",
-  rfi: "Review, route, log, and distribute",
+  rfi: "ContiReview form, then route, log, and distribute",
   crm: "Owners, architects, and opportunities",
   cost: "Budget, committed, and actual",
   "change-orders": "Proposed, priced, approved, and owner exposure",

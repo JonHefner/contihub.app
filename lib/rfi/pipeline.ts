@@ -41,7 +41,7 @@ export type RfiScheduleImpact = (typeof RFI_SCHEDULE_IMPACTS)[number];
 export type RfiIntent = "save" | "route" | "return" | "distribute" | "close_docs";
 
 export const RFI_ROLE_LABELS: Record<RfiRole, string> = {
-  intake_reviewer: "Intake reviewer",
+  intake_reviewer: "ContiReview",
   architect_liaison: "Architect liaison",
   owner_liaison: "Owner liaison",
   superintendent: "Superintendent",
@@ -53,7 +53,7 @@ export const RFI_STATUS_LABELS: Record<RfiStatus, string> = {
   draft: "Draft",
   doc_review: "Doc review",
   writing: "Writing",
-  outcomes: "Outcomes",
+  outcomes: "ContiReview",
   routed: "Routed",
   waiting: "Waiting",
   closed: "Closed",
@@ -87,7 +87,7 @@ export const DEFAULT_ROSTER: { displayName: string; email: string; role: RfiRole
     displayName: "Ann Saccone",
     email: "ann.saccone@continentalcando.com",
     role: "intake_reviewer",
-    notes: "Intake reviewer.",
+    notes: "Acts in ContiReview.",
   },
   {
     displayName: "Michael Might",
@@ -110,9 +110,9 @@ export const DEFAULT_ROSTER: { displayName: string; email: string; role: RfiRole
 ];
 
 export const DOC_REVIEW_STUB =
-  "ContiRFI stays the draft and document-review process. The suggested-outcomes form is ContiHub. Paste citations from the Teams file set. Quote the printed sheet label and the words on the sheet. Hub does not invent an answer or a sheet number. If the documents already answer the question, close it with the drafter and do not issue.";
+  "ContiRFI stays the draft and document-review process. Suggested outcomes are the ContiReview form in ContiHub. Paste citations from the Teams file set. Quote the printed sheet label and the words on the sheet. Hub does not invent an answer or a sheet number. If the documents already answer the question, close it with the drafter and do not issue.";
 
-export function rosterCorrection(role: string, displayName: string, email: string) {
+export function rosterCorrection(role: string, displayName: string, email: string, notes = "") {
   const name = displayName.trim().toLowerCase();
   const mail = email.trim().toLowerCase();
   let targetName = "";
@@ -140,7 +140,11 @@ export function rosterCorrection(role: string, displayName: string, email: strin
   if (!canonical) {
     return null;
   }
-  if (displayName.trim() === canonical.displayName && mail === canonical.email.toLowerCase()) {
+  const identityMatches = displayName.trim() === canonical.displayName && mail === canonical.email.toLowerCase();
+  const placeholderNote =
+    notes === "Intake reviewer." || notes.startsWith("Email TBD");
+  const notesDiffer = notes !== canonical.notes && placeholderNote;
+  if (identityMatches && !notesDiffer) {
     return null;
   }
   return { displayName: canonical.displayName, email: canonical.email, notes: canonical.notes };
@@ -382,10 +386,10 @@ export function routeBlockReason(input: {
   }
   const labels = input.outcomes.map((outcome) => outcome.trim()).filter(Boolean);
   if (labels.length < 2) {
-    return "Add at least two suggested outcomes.";
+    return "Add at least two suggested outcomes on the ContiReview form.";
   }
   if (input.selectedIndex < 0 || !input.outcomes[input.selectedIndex]?.trim()) {
-    return "Select one suggested outcome.";
+    return "Select one suggested outcome on the ContiReview form.";
   }
   if (!routeRoleForType(input.rfiType)) {
     return "Choose an RFI type so Hub can route to the architect or the owner.";
@@ -472,10 +476,10 @@ export function buildRouteDraft(input: {
 }) {
   const lines = [
     `RFI ${input.number}`,
-    `To: ${input.toName || "Reviewer"}`,
+    `To: ${input.toName || "ContiReview"}`,
     `From: ${input.fromName || "Continental Construction"}`,
     "",
-    "This draft is for review. Suggested outcomes are editable. They are not an official answer, and ContiHub does not invent drawing citations.",
+    "ContiReview form. Suggested outcomes are editable. They are not an official answer, and ContiHub does not invent drawing citations.",
     "",
     "Question:",
     input.improvedQuestion.trim() || input.question.trim(),

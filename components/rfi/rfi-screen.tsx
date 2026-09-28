@@ -27,10 +27,10 @@ export async function RfiScreen({ project, activeId }: { project: Project; activ
       <ProjectScopeBar project={project} app="rfi" />
       <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
         <div>
-          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">RFI pipeline</p>
-          <h1 className="mt-2 font-display text-4xl font-semibold text-ink-strong">ContiHub RFI log</h1>
+          <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">ContiReview</p>
+          <h1 className="mt-2 font-display text-4xl font-semibold text-ink-strong">ContiReview</h1>
           <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-            Review the question, paste citations, edit a couple of suggested outcomes, and route design questions to the architect or owner decisions to the owner. When the answer comes back, log it here and push a draft to the Conti Field superintendent and the subs you pick.
+            Paste citations, then use the ContiReview form for a couple of suggested outcomes. Route design questions to the architect or owner decisions to the owner. When the answer comes back, log it here and push a draft to the Conti Field superintendent and the subs you pick.
           </p>
         </div>
         <Link href={`/app/projects/${project.id}/field/rfis`} className="text-sm font-semibold text-gold">
@@ -48,7 +48,7 @@ export async function RfiScreen({ project, activeId }: { project: Project; activ
             New RFI
           </Link>
           <ul className="mt-3 grid gap-2">
-            {items.rows.length === 0 ? <li className="text-sm text-muted">No pipeline RFIs on this job yet.</li> : null}
+            {items.rows.length === 0 ? <li className="text-sm text-muted">No ContiReview items on this job yet.</li> : null}
             {items.rows.map((row) => (
               <li key={row.id}>
                 <Link

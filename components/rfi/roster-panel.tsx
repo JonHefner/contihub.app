@@ -17,7 +17,7 @@ export function RosterPanel({ projectId, roster }: { projectId: string; roster: 
     <section className="mt-10">
       <h2 className="font-display text-2xl text-ink-strong">Deploy roster</h2>
       <p className="mt-2 max-w-3xl text-sm leading-6 text-muted">
-        Seats are rows. Add a person with a role. Remove them by marking the row inactive. Blank email means TBD.
+        Ann Saccone, Michael Might, Ryan Roberts, and Braden Farmer are operators who can act in ContiReview. Seats are rows. Add a person with a role. Remove them by marking the row inactive. Blank email means TBD.
         Owner liaison is empty until someone is added, so owner-decision RFIs stay here until that seat exists.
       </p>
       {error ? <p className="mt-3 text-sm text-gold-soft">{error}</p> : null}

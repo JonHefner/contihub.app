@@ -171,5 +171,10 @@ describe("deploy roster", () => {
     assert.equal(rosterCorrection("architect_liaison", "Mike Ryan Roberts", "")?.displayName, "Ryan Roberts");
     assert.equal(rosterCorrection("architect_liaison", "Ryan Roberts", "ryan.roberts@continentalcando.com"), null);
     assert.equal(rosterCorrection("superintendent", "Another Mike", "mike@example.com"), null);
+    assert.equal(
+      rosterCorrection("intake_reviewer", "Ann Saccone", "ann.saccone@continentalcando.com", "Intake reviewer.")?.notes,
+      "Acts in ContiReview.",
+    );
+    assert.match(SAMPLE_RFI.docReviewNotes, /ContiReview form/);
   });
 });
