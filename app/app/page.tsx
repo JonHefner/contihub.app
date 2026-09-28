@@ -14,13 +14,15 @@ export default function HubPage() {
   return (
     <SuiteShell>
       <div className="flex items-center gap-5">
-        <img
-          src="/brand/conti-way-mark.png"
-          alt=""
-          width={144}
-          height={144}
-          className="h-28 w-28 shrink-0 object-contain sm:h-36 sm:w-36"
-        />
+        <span className="inline-block h-44 w-44 shrink-0 overflow-hidden sm:h-56 sm:w-56">
+          <img
+            src="/brand/conti-way-mark.png"
+            alt=""
+            width={224}
+            height={224}
+            className="h-[130%] w-full max-w-none object-cover object-top"
+          />
+        </span>
         <div>
           <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">
             Continental Construction of Ohio
