@@ -151,16 +151,39 @@ export function RevolvingTiles({ tiles }: RevolvingTilesProps) {
                 transition: dragging ? "none" : "transform 420ms cubic-bezier(.2,.7,.2,1), opacity 420ms",
               }}
             >
-              <img
-                src={`/brand/tiles/${tile.id}.png`}
-                alt={tile.name}
-                width={512}
-                height={512}
-                draggable={false}
-                className={`aspect-square w-full rounded-[1.6rem] object-contain shadow-[0_16px_32px_-18px_rgba(0,0,0,0.75)] ${
+              <span
+                className={`relative block aspect-square w-full overflow-hidden rounded-[1.6rem] shadow-[0_16px_32px_-18px_rgba(0,0,0,0.75)] ${
                   frontTile ? "ring-2 ring-gold" : ""
                 }`}
-              />
+                style={{ background: "#000" }}
+              >
+                <img
+                  src="/brand/conti-way-mark.png"
+                  alt=""
+                  width={588}
+                  height={588}
+                  draggable={false}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  style={{ objectPosition: "center top" }}
+                />
+                <span
+                  className="absolute inset-x-0 bottom-0 text-center"
+                  style={{
+                    background: "linear-gradient(to top, #000 42%, rgba(0,0,0,0.72) 68%, transparent)",
+                    padding: "2.75rem 0.75rem 1rem",
+                  }}
+                >
+                  <span
+                    className="block font-semibold leading-none tracking-tight"
+                    style={{
+                      color: "#fffdf8",
+                      fontSize: tile.name.length > 12 ? "0.95rem" : "1.25rem",
+                    }}
+                  >
+                    {tile.name}
+                  </span>
+                </span>
+              </span>
             </Link>
           );
         })}
