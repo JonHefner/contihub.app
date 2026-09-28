@@ -177,7 +177,9 @@ This is the week path for Conti Bid invitations, shared Hub access, and a demo t
 
 ### Galaxy home
 
-After sign-in, `/app` opens the suite galaxy: a navy and gold canvas in the same family as the CCO org chart (`#05020F`, `#1B025A`, `#D4AF37`). Drag to pan, scroll or pinch to zoom, and click a node for a panel with **Open app**. Cluster chips and the app chips are the phone path when a tap misses a node. **List view** restores the boards, ops pulse, invite form, Load SAMPLE, and app tiles. Suite routes are unchanged. The public marketing page stays a page, not the galaxy.
+The galaxy is the post-login front page only (`/app`). It is not the chrome for Projects, Field, CRM, Bid, Cost, Safety, TraK, ContiReview, Change Orders, or any other suite route. Those pages keep the Conti Way shell and tiles. Nodes open those normal pages. **List view** on `/app` restores the boards, ops pulse, invite form, Load SAMPLE, and app tiles. The public marketing page (`/`) stays a page, not the starfield, until that roll-out is asked for.
+
+After sign-in, `/app` opens a navy and gold canvas in the same family as the CCO org chart (`#05020F`, `#1B025A`, `#D4AF37`). Drag to pan, scroll or pinch to zoom, and click a node for a panel with **Open app**. Cluster chips and the app chips are the phone path when a tap misses a node.
 
 ### SQL to run
 

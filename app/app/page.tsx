@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: "Ops hub",
 };
 
+/** Front page only. Suite routes keep the Conti Way shell. */
+
 export default function HubPage() {
   return (
     <GalaxyHome

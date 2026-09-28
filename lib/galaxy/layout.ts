@@ -1,4 +1,4 @@
-/** Suite-app placement for the ContiHub galaxy. Pure layout — no framework imports. */
+/** Suite-app placement for the post-login `/app` front page only. Nodes link into the existing suite pages, which do not use this canvas. Pure layout — no framework imports. */
 
 export type GalaxyKind = "hub" | "suite" | "project" | "team";
 
