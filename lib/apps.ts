@@ -74,6 +74,27 @@ export const contiApps: ContiApp[] = [
   },
 ];
 
+/** Front-page reel. Same tile art as the suite, plus ContiReview and Change Orders. */
+export const hubTiles: ContiApp[] = [
+  ...contiApps,
+  {
+    id: "contireview",
+    name: "ContiReview",
+    shortName: "ContiReview",
+    description: "Suggested outcomes, route to the architect or owner, then the ContiHub RFI log.",
+    status: "live",
+    href: "/app/rfi",
+  },
+  {
+    id: "changeorders",
+    name: "Change Orders",
+    shortName: "COs",
+    description: "Proposed, pricing, and approved change orders.",
+    status: "live",
+    href: "/app/change-orders",
+  },
+];
+
 export const suiteNav = [
   ...contiApps.map((app) => ({
     name: app.shortName,

@@ -175,11 +175,9 @@ Until the full court press SQL is applied, row level security scopes every row t
 
 This is the week path for Conti Bid invitations, shared Hub access, and a demo that is not an empty board. Building Connected stays a parallel process. Conti Bid does not replace it and does not talk to Building Connected.
 
-### Galaxy home
+### Home reel
 
-The galaxy is the post-login front page only (`/app`). It is not the chrome for Projects, Field, CRM, Bid, Cost, Safety, TraK, ContiReview, Change Orders, or any other suite route. Those pages keep the Conti Way shell and tiles. Nodes open those normal pages. **List view** on `/app` restores the boards, ops pulse, invite form, Load SAMPLE, and app tiles. The public marketing page (`/`) stays a page, not the starfield, until that roll-out is asked for.
-
-After sign-in, `/app` opens a navy and gold canvas in the same family as the CCO org chart (`#05020F`, `#1B025A`, `#D4AF37`). Drag to pan, scroll or pinch to zoom, and click a node for a panel with **Open app**. Cluster chips and the app chips are the phone path when a tap misses a node.
+After sign-in, `/app` keeps the Conti Way shell and the same tile art as the rest of Hub. The tiles sit in a cover-flow row: scroll or swipe left and right and the row revolves. The front tile opens that app. ContiReview and Change Orders use the same tile treatment. Suite sub-pages are unchanged. The public marketing page stays a grid of tiles, not this reel.
 
 ### SQL to run
 

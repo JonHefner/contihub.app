@@ -13,6 +13,8 @@ export const products = [
   { id: "contisafety", name: "ContiSafety" },
   { id: "contitrak", name: "ContiTraK" },
   { id: "contibid", name: "Conti Bid" },
+  { id: "contireview", name: "ContiReview" },
+  { id: "changeorders", name: "Change Orders" },
 ] as const;
 
 export type BrandProduct = (typeof products)[number];
@@ -119,7 +121,7 @@ export function tileSvg(name: string) {
   <g transform="translate(162 58) scale(7)">
     ${markLetters(prefix)}
   </g>
-  <text x="512" y="824" text-anchor="middle" fill="#fffdf8" font-family="Inter, Arial, Helvetica, sans-serif" font-size="84" font-weight="700">${escapeXml(name)}</text>
+  <text x="512" y="${name.length > 12 ? 836 : 824}" text-anchor="middle" fill="#fffdf8" font-family="Inter, Arial, Helvetica, sans-serif" font-size="${name.length > 12 ? 64 : 84}" font-weight="700">${escapeXml(name)}</text>
   <rect x="312" y="862" width="400" height="5" rx="2.5" fill="url(#${prefix}flare)" filter="url(#${prefix}flare-glow)"/>
   <rect x="352" y="862" width="320" height="3" rx="1.5" fill="url(#${prefix}flare)"/>
 </svg>

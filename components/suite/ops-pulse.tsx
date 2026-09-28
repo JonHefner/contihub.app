@@ -5,7 +5,7 @@ import { listPackages } from "@/lib/suite/bid-store";
 import { listRfiItems } from "@/lib/suite/rfi-store";
 import { listBidChases, listChangeOrders, listFieldRfis } from "@/lib/suite/store";
 
-export async function OpsPulse({ compact = false }: { compact?: boolean } = {}) {
+export async function OpsPulse() {
   const [pipeline, rfis, packages, chases, orders] = await Promise.all([
     listRfiItems(),
     listFieldRfis(),
@@ -28,24 +28,6 @@ export async function OpsPulse({ compact = false }: { compact?: boolean } = {}) 
     { label: "Chase due", value: chasesDue, href: "/app/bid" },
     { label: "Pending COs", value: pendingOrders, href: "/app/change-orders" },
   ];
-
-  if (compact) {
-    return (
-      <div>
-        {memory ? <p className="mb-1 text-[10px] text-[#d9c98b]">In-session counts until SQL is applied.</p> : null}
-        <ul className="flex gap-2 overflow-x-auto pb-1">
-          {cards.map((card) => (
-            <li key={card.label} className="shrink-0">
-              <Link href={card.href} className="block min-w-[7.5rem] rounded-xl border border-[#D4AF3780] bg-[#120a28ee] px-3 py-2 backdrop-blur">
-                <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-[#D4AF37]">{card.label}</p>
-                <p className="font-display text-2xl text-[#F5F0FF]">{card.value}</p>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  }
 
   return (
     <section className="mt-8">
