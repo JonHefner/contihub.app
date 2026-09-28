@@ -12,6 +12,8 @@ import {
 } from "@/lib/galaxy/layout";
 import styles from "./galaxy-home.module.css";
 
+/** Rendered only on the `/app` front page. Suite sub-pages keep the Conti Way shell. */
+
 type GalaxyHomeProps = {
   list: ReactNode;
   invite: ReactNode;
