@@ -71,7 +71,7 @@ export default async function ProjectsPage() {
                       href={projectHref(project.id, app)}
                       className="rounded-sm border border-gold/25 px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.12em] text-gold"
                     >
-                      {app === "change-orders" ? "COs" : app}
+                      {app === "change-orders" ? "COs" : app === "rfi" ? "RFI" : app}
                     </Link>
                   ))}
                 </div>

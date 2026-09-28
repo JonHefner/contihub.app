@@ -13,8 +13,9 @@ export function revalidateSuite(app: SuiteAppKey, projectId?: string | null) {
   if (projectId) {
     revalidatePath(projectHref(projectId));
     revalidatePath(projectHref(projectId, app));
-    if (app === "field") {
+    if (app === "field" || app === "rfi") {
       revalidatePath(`${projectHref(projectId, "field")}/rfis`);
+      revalidatePath(projectHref(projectId, "rfi"));
     }
   }
 }

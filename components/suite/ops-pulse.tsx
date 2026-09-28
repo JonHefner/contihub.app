@@ -1,26 +1,29 @@
 import Link from "next/link";
+import { countOpenRfis } from "@/lib/rfi/pipeline";
 import { isDueBy, weekThrough } from "@/lib/ops/pulse";
 import { listPackages } from "@/lib/suite/bid-store";
+import { listRfiItems } from "@/lib/suite/rfi-store";
 import { listBidChases, listChangeOrders, listFieldRfis } from "@/lib/suite/store";
 
 export async function OpsPulse() {
-  const [rfis, packages, chases, orders] = await Promise.all([
+  const [pipeline, rfis, packages, chases, orders] = await Promise.all([
+    listRfiItems(),
     listFieldRfis(),
     listPackages(),
     listBidChases(),
     listChangeOrders(),
   ]);
   const through = weekThrough();
-  const openRfis = rfis.rows.filter((row) => row.status === "open").length;
+  const openRfis = countOpenRfis(pipeline.rows, rfis.rows);
   const packagesDue = packages.rows.filter((row) => isDueBy(row.dueAt, through)).length;
   const chasesDue = chases.rows.filter(
     (row) => isDueBy(row.dueDate, through) && !["Awarded", "Lost", "No Bid"].includes(row.status),
   ).length;
   const pendingOrders = orders.rows.filter((row) => row.status === "Proposed" || row.status === "Pricing").length;
-  const memory = [rfis.persist, packages.persist, chases.persist, orders.persist].includes("memory");
+  const memory = [pipeline.persist, rfis.persist, packages.persist, chases.persist, orders.persist].includes("memory");
 
   const cards = [
-    { label: "Open RFIs", value: openRfis, href: "/app/field" },
+    { label: "Open RFIs", value: openRfis, href: "/app/rfi" },
     { label: "Packages due", value: packagesDue, href: "/app/bid" },
     { label: "Chase due", value: chasesDue, href: "/app/bid" },
     { label: "Pending COs", value: pendingOrders, href: "/app/change-orders" },

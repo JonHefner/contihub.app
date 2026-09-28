@@ -1,7 +1,9 @@
+import { SAMPLE_RFI, SAMPLE_RFI_NUMBER } from "@/lib/rfi/pipeline";
 import { SAMPLE_CONTRACTORS, SAMPLE_DRAWINGS_URL, SAMPLE_PACKAGE_TITLE, SAMPLE_PROJECT_NAME } from "@/lib/bid/sample-contractors";
 import { contractorName } from "@/lib/bid/csv";
 import { todayISO } from "@/lib/suite/form";
 import { importContractors, listInvitees, listPackages, saveInvitee, savePackage } from "@/lib/suite/bid-store";
+import { listRfiItems, saveRfiDraft } from "@/lib/suite/rfi-store";
 import {
   listCostJobs,
   listCrmLeads,
@@ -217,5 +219,47 @@ export async function seedSampleWorkspace() {
     }
   }
 
+  await seedSamplePipelineRfi(projectId);
   return { projectId };
+}
+
+export async function seedSamplePipelineRfi(projectId: string) {
+  const existing = await listRfiItems(projectId);
+  if (existing.rows.some((row) => row.number === SAMPLE_RFI_NUMBER)) {
+    return;
+  }
+  await saveRfiDraft(
+    {
+      projectId,
+      number: SAMPLE_RFI.number,
+      subject: SAMPLE_RFI.subject,
+      question: SAMPLE_RFI.question,
+      improvedQuestion: SAMPLE_RFI.improvedQuestion,
+      citations: SAMPLE_RFI.citations,
+      docReviewNotes: SAMPLE_RFI.docReviewNotes,
+      docsAlreadyAnswer: false,
+      urgency: SAMPLE_RFI.urgency,
+      rfiType: SAMPLE_RFI.rfiType,
+      fromName: SAMPLE_RFI.fromName,
+      toName: SAMPLE_RFI.toName,
+      dateRequired: shiftDate(5),
+      costImpact: SAMPLE_RFI.costImpact,
+      scheduleImpact: SAMPLE_RFI.scheduleImpact,
+      officialResponse: "",
+      returnedAt: "",
+      teamsDocsUrl: SAMPLE_RFI.teamsDocsUrl,
+      outcomes: SAMPLE_RFI.outcomes,
+      selectedIndex: SAMPLE_RFI.selectedIndex,
+    },
+    "save",
+  );
+}
+
+export async function seedSamplePipelineRfiFromWorkspace() {
+  const projects = await listProjects();
+  const project = projects.rows.find((row) => row.name === SAMPLE_PROJECT_NAME);
+  if (!project) {
+    return;
+  }
+  await seedSamplePipelineRfi(project.id);
 }

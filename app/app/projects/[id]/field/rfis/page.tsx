@@ -1,7 +1,8 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { FieldPersistBanner } from "@/components/field/persist-banner";
 import { RfiBoard } from "@/components/field/rfi-board";
-import { fieldBase } from "@/lib/projects";
+import { fieldBase, projectHref } from "@/lib/projects";
 import { loadProject } from "@/lib/suite/project-route";
 import { listFieldRfis } from "@/lib/suite/store";
 
@@ -25,6 +26,9 @@ export default async function ProjectFieldRfisPage({ params, searchParams }: Rfi
       <div className="mb-4">
         <h1 className="font-display text-2xl font-semibold tracking-wide text-field-ink uppercase">RFIs</h1>
         <p className="mt-1 text-sm text-field-muted">Questions from {project.name} — open, overdue, and closed.</p>
+        <Link href={projectHref(project.id, "rfi")} className="mt-2 inline-block text-sm font-semibold text-field-primary">
+          Open the ContiHub RFI pipeline
+        </Link>
       </div>
       <RfiBoard
         rfis={rfis.rows}

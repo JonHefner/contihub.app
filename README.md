@@ -2,7 +2,7 @@
 
 Continental Construction of Ohio (CCO) operations portal for [contihub.app](https://contihub.app).
 
-ContiHub is the live home for the Conti suite: Projects, ContiHub, ContiCRM, ContiField, ContiCost, Change Orders, ContiSafety, ContiTraK, and Conti Bid. Suite boards are scoped to an individual project.
+ContiHub is the live home for the Conti suite: Projects, ContiHub, the RFI pipeline, ContiCRM, ContiField, ContiCost, Change Orders, ContiSafety, ContiTraK, and Conti Bid. Suite boards are scoped to an individual project.
 
 ## Stack
 
@@ -127,9 +127,10 @@ Then redeploy. Leave **Authentication → Providers → Email → Confirm email*
 - `/app/projects/[id]/safety` — ContiSafety log for that project
 - `/app/projects/[id]/trak` — ContiTraK milestone list (not CPM)
 - `/app/projects/[id]/bid` — Conti Bid packages, invites, and chase list for that project
+- `/app/projects/[id]/rfi` — RFI pipeline (roster, suggested outcomes, architect or owner route, log, field and subcontractor drafts)
 - `/app/bid/directory` — contractor directory (search, CSV import, CSV export)
 - `/app/bid/invitations` — bidder landing (invited packages only)
-- `/app/crm`, `/app/field`, `/app/cost`, `/app/change-orders`, `/app/safety`, `/app/trak`, `/app/bid` — project pickers (redirect when only one project exists)
+- `/app/crm`, `/app/field`, `/app/rfi`, `/app/cost`, `/app/change-orders`, `/app/safety`, `/app/trak`, `/app/bid` — project pickers (redirect when only one project exists)
 
 All `/app/**` routes share the suite nav and require a signed-in session.
 
@@ -144,8 +145,9 @@ Apply these files in the Supabase SQL editor (in order), or with the Supabase CL
 3. `supabase/migrations/20260909180000_projects.sql` — `projects` table, nullable `project_id` on suite tables, and a per-user **Data Center** seed that attaches existing unassigned / “Data Center” sample rows
 4. `supabase/migrations/20260914120000_change_orders.sql` — `change_orders` table (RLS + `project_id` FK) and a per-user fictional **Midwest Regional Stadium Renovation** demo project with a CO breakdown sample
 5. `supabase/migrations/20260927120000_full_court_press.sql` — company org, staff vs bidder, contractor directory, bid packages, SAMPLE workspace, field-photo bucket
+6. `supabase/migrations/20260928120000_rfi_pipeline.sql` — RFI roster, type routes, pipeline log, suggested outcomes, and the SAMPLE RFI
 
-Run all five in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner. After file 5, Conti staff in the same organization share projects. Bidders only see packages they were invited to.
+Run all six in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner. After file 5, Conti staff in the same organization share projects. Bidders only see packages they were invited to. File 6 is staff-only. Bidders do not see the RFI pipeline.
 
 ### Change Orders SQL (Jon)
 
@@ -183,7 +185,7 @@ That file:
 - Creates `bid_contractors`, `bid_packages`, and `bid_invitees`
 - Adds CRM next action and value, safety what / who / action, TraK milestone status and owner
 - Creates the private `field-photos` storage bucket (up to 4 photos on a daily log)
-- Seeds a **SAMPLE Data Center** workspace for each user who already owns a project: multi-day field logs, three RFIs, Conti chase stages, cost lines that roll up (budget $25,000,000 / committed $9,600,000 / actual $2,650,000 / variance $22,350,000), and one bid package with three SAMPLE invitees. No email is sent.
+- Seeds a **SAMPLE Data Center** workspace for each user who already owns a project: multi-day field logs, three field RFIs, Conti chase stages, cost lines that roll up (budget $25,000,000 / committed $9,600,000 / actual $2,650,000 / variance $22,350,000), and one bid package with three SAMPLE invitees. No email is sent.
 
 Hub also has **Load SAMPLE**, which calls `seed_full_court_press_sample()` when that function exists.
 
@@ -223,10 +225,38 @@ Bidders who sign in land on `/app/bid/invitations` and do not get the rest of th
 
 ### Merge order
 
-This branch includes the open Change Order log (PR #8). Merge this pull request and close #8, or merge #8 first and then this branch. Do not force-merge if CI fails. Run `20260914120000_change_orders.sql` before `20260927120000_full_court_press.sql`. Hub shows the COs nav item and an ops pulse (open RFIs, packages due, chase due, pending COs).
+This branch includes the open Change Order log (PR #8). Merge this pull request and close #8, or merge #8 first and then this branch. Do not force-merge if CI fails. Run `20260914120000_change_orders.sql` before `20260927120000_full_court_press.sql`, then `20260928120000_rfi_pipeline.sql`. Hub shows the COs nav item, the RFI nav item, and an ops pulse (open RFIs, packages due, chase due, pending COs).
+
+### RFI pipeline
+
+Equal priority with Conti Bid for this week. ContiHub is the system of record for the Hub log. Access tblRFI can stay parallel until cutover. The ContiRFI agent that would read Teams files is stubbed: staff paste citations. The form does not invent sheet numbers or answers.
+
+After the full court press SQL, run `supabase/migrations/20260928120000_rfi_pipeline.sql`. **Load SAMPLE** also inserts **RFI-P01** on SAMPLE Data Center. That row is labeled SAMPLE. Its citation text says it is not from a drawing set.
+
+Workflow on `/app/projects/[id]/rfi`:
+
+1. Intake the question, urgency, cost impact, and schedule impact.
+2. Paste doc-review notes and verbatim citations from the Teams link. If the documents already answer it, close with the drafter and do not issue.
+3. Improve the question.
+4. Edit two or three suggested outcomes and select one.
+5. Route by type. Design / documents goes to the architect liaison. Owner decision goes to the owner liaison. The route email is a copy or mailto draft.
+6. Log the official return as Waiting, Closed, or Complete. That writes the ContiHub log and mirrors a ContiField RFI.
+7. Push drafts to the active superintendent seat and the subcontractors you check. Mail is not sent from Hub this week.
+
+Deploy roster (config table `rfi_roster`, not hard-coded in the UI):
+
+| Seat | Email | Role |
+| --- | --- | --- |
+| Anne Saccone | ann.saccone@continentalcando.com | admin and intake reviewer (two rows) |
+| Mike | TBD (blank) | superintendent |
+| Mike Ryan Roberts | TBD (blank) | architect liaison |
+| Braden Farmer | Braden.Farmer@continentalcando.com | distributor |
+
+Add a person by inserting a row. Remove them by setting `active` off. The same person can hold more than one role. Owner liaison is not seeded. Add that row before owner-decision RFIs can route. Blank email stays on the roster so the draft can still be copied.
 
 ### Still later
 
+- ContiRFI agent handoff that reads the Teams file set and fills citation-only notes
 - Outlook GAL live search
 - Sending mail from Graph without the copy/mailto step, once the app credentials exist
 - Bid file storage beyond the Teams link
