@@ -175,6 +175,10 @@ Until the full court press SQL is applied, row level security scopes every row t
 
 This is the week path for Conti Bid invitations, shared Hub access, and a demo that is not an empty board. Building Connected stays a parallel process. Conti Bid does not replace it and does not talk to Building Connected.
 
+### Galaxy home
+
+After sign-in, `/app` opens the suite galaxy: a navy and gold canvas in the same family as the CCO org chart (`#05020F`, `#1B025A`, `#D4AF37`). Drag to pan, scroll or pinch to zoom, and click a node for a panel with **Open app**. Cluster chips and the app chips are the phone path when a tap misses a node. **List view** restores the boards, ops pulse, invite form, Load SAMPLE, and app tiles. Suite routes are unchanged. The public marketing page stays a page, not the galaxy.
+
 ### SQL to run
 
 In the Supabase SQL editor, after the four files above, paste and run:

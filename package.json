@@ -8,7 +8,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "test": "node --experimental-strip-types --test lib/site.test.ts lib/field/dates.test.ts lib/projects.test.ts lib/change-orders.test.ts lib/brand/cc-mark-geometry.test.ts lib/bid/csv.test.ts lib/bid/invite-email.test.ts lib/bid/graph.test.ts lib/cost/totals.test.ts lib/access/paths.test.ts lib/crm/stages.test.ts lib/rfi/pipeline.test.ts",
+    "test": "node --experimental-strip-types --test lib/site.test.ts lib/field/dates.test.ts lib/projects.test.ts lib/change-orders.test.ts lib/brand/cc-mark-geometry.test.ts lib/bid/csv.test.ts lib/bid/invite-email.test.ts lib/bid/graph.test.ts lib/cost/totals.test.ts lib/access/paths.test.ts lib/crm/stages.test.ts lib/rfi/pipeline.test.ts lib/galaxy/layout.test.ts",
     "brand:assets": "node --experimental-strip-types scripts/generate-brand-assets.mts"
   },
   "dependencies": {
