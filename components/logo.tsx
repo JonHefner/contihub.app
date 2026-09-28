@@ -4,20 +4,22 @@ type LogoProps = {
   href?: string;
   light?: boolean;
   size?: "sm" | "lg";
+  /** Unboxed chrome nested C. Used on the signed-in ContiHub header. */
+  chrome?: boolean;
 };
 
-export function Logo({ href = "/", light = true, size = "sm" }: LogoProps) {
+export function Logo({ href = "/", light = true, size = "sm", chrome = false }: LogoProps) {
   const markSize = size === "lg" ? "h-16 w-16" : "h-12 w-12";
   const titleSize = size === "lg" ? "text-[1.85rem]" : "text-[1.35rem]";
 
   const mark = (
     <span className="inline-flex items-center gap-3">
       <img
-        src="/brand/cc-mark-on-dark.png"
+        src={chrome ? "/brand/cc-mark-chrome.png" : "/brand/cc-mark-on-dark.png"}
         alt=""
         width={size === "lg" ? 64 : 48}
         height={size === "lg" ? 64 : 48}
-        className={`${markSize} aspect-square rounded-[0.9rem] object-contain`}
+        className={`${markSize} aspect-square object-contain ${chrome ? "" : "rounded-[0.9rem]"}`}
       />
       <span className="leading-none">
         <span

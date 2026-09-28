@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" fill="none">
+  <defs>
+    <linearGradient id="c-blue" x1="8" y1="6" x2="92" y2="96" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#f7fbff"/>
+      <stop offset="7%" stop-color="#d5e6ff"/>
+      <stop offset="16%" stop-color="#7eaeef"/>
+      <stop offset="30%" stop-color="#1b4f9e"/>
+      <stop offset="44%" stop-color="#071833"/>
+      <stop offset="56%" stop-color="#2f74d0"/>
+      <stop offset="70%" stop-color="#eef5ff"/>
+      <stop offset="82%" stop-color="#3c7ccc"/>
+      <stop offset="100%" stop-color="#061228"/>
+    </linearGradient>
+    <linearGradient id="c-blue-spec" x1="18" y1="10" x2="70" y2="46" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.95"/>
+      <stop offset="42%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="c-gold" x1="22" y1="14" x2="84" y2="90" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#fffef8"/>
+      <stop offset="9%" stop-color="#fff3b8"/>
+      <stop offset="20%" stop-color="#e4bc55"/>
+      <stop offset="38%" stop-color="#8d6816"/>
+      <stop offset="50%" stop-color="#3a2a08"/>
+      <stop offset="62%" stop-color="#d4ae4a"/>
+      <stop offset="76%" stop-color="#fff6c4"/>
+      <stop offset="100%" stop-color="#6d5212"/>
+    </linearGradient>
+    <linearGradient id="c-gold-spec" x1="34" y1="22" x2="62" y2="48" gradientUnits="userSpaceOnUse">
+      <stop offset="0%" stop-color="#ffffff" stop-opacity="0.9"/>
+      <stop offset="48%" stop-color="#ffffff" stop-opacity="0"/>
+    </linearGradient>
+    <filter id="c-lift" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="1.2" stdDeviation="1.1" flood-color="#000" flood-opacity="0.55"/>
+    </filter>
+  </defs>
+  <g filter="url(#c-lift)">
+    <path fill="#020817" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z" transform="translate(1.6 2)"/>
+    <path fill="url(#c-blue)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z"/>
+    <path fill="url(#c-blue-spec)" d="M82.952 33.568 A35 35 0 1 0 82.952 66.432 L72.18 60.704 A22.8 22.8 0 1 1 72.18 39.296 Z"/>
+    <path fill="#2a2206" d="M67.765 41.643 A17.8 17.8 0 1 0 67.765 58.357 L58.935 53.662 A7.8 7.8 0 1 1 58.935 46.338 Z" transform="translate(1.1 1.3)"/>
+    <path fill="url(#c-gold)" d="M67.765 41.643 A17.8 17.8 0 1 0 67.765 58.357 L58.935 53.662 A7.8 7.8 0 1 1 58.935 46.338 Z"/>
+    <path fill="url(#c-gold-spec)" d="M67.765 41.643 A17.8 17.8 0 1 0 67.765 58.357 L58.935 53.662 A7.8 7.8 0 1 1 58.935 46.338 Z"/>
+  </g>
+</svg>

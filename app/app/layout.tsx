@@ -23,7 +23,7 @@ export default async function AppLayout({
     <div className="min-h-screen bg-page text-ink">
       <header className="no-print border-b border-white/8 bg-charcoal text-ink">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
-          <Logo light href="/app" />
+          <Logo light href="/app" chrome />
           <div className="flex items-center gap-4">
             <p className="hidden text-sm text-muted sm:block">{access.email}</p>
             <SignOutButton />
