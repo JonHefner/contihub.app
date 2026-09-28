@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { CrudBoard } from "@/components/crud-board";
+import { CostTotals } from "@/components/suite/cost-totals";
 import { ProjectScopeBar } from "@/components/projects/project-scope-bar";
 import { SuiteShell } from "@/components/suite-shell";
 import { projectHref } from "@/lib/projects";
@@ -25,6 +26,7 @@ export async function CostScreen({ project }: { project: Project }) {
         </div>
         <span className="shrink-0 text-xs font-semibold uppercase tracking-[0.12em] text-gold">Open log</span>
       </Link>
+      <CostTotals rows={rows} />
       <CrudBoard
         eyebrow="ContiCost"
         title="Job cost summary"

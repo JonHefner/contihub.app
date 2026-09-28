@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { AppTiles } from "@/components/app-tiles";
+import { LoadSampleButton } from "@/components/suite/load-sample-button";
+import { OpsPulse } from "@/components/suite/ops-pulse";
 import { SuiteShell } from "@/components/suite-shell";
+import { InviteTeammateForm } from "@/components/team/invite-teammate-form";
 
 export const metadata: Metadata = {
   title: "Ops hub",
@@ -19,6 +22,11 @@ export default function HubPage() {
         Start in Projects to open a job, then work ContiCRM, ContiField, ContiCost, Change Orders,
         ContiSafety, ContiTraK, or Conti Bid against that project only.
       </p>
+      <OpsPulse />
+      <div className="mt-8 grid gap-4 lg:grid-cols-2">
+        <InviteTeammateForm />
+        <LoadSampleButton />
+      </div>
       <div className="mt-8">
         <AppTiles />
       </div>

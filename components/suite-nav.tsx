@@ -14,17 +14,22 @@ function isNavActive(pathname: string, href: string) {
     return pathname === "/app/projects" || /^\/app\/projects\/[^/]+$/.test(pathname);
   }
 
+  if (pathname === href || pathname.startsWith(`${href}/`)) {
+    return true;
+  }
+
   const key = href.replace("/app/", "");
   return suiteAppFromPath(pathname) === key;
 }
 
-export function SuiteNav() {
+export function SuiteNav({ bidder = false }: { bidder?: boolean }) {
   const pathname = usePathname();
+  const items = bidder ? [{ name: "My bids", href: "/app/bid/invitations", exact: false }] : suiteNav;
 
   return (
     <nav aria-label="Conti suite" className="no-print border-b border-white/8 bg-charcoal">
       <div className="mx-auto flex max-w-6xl gap-1 overflow-x-auto px-4 py-2 sm:px-6">
-        {suiteNav.map((item) => {
+        {items.map((item) => {
           const active = isNavActive(pathname, item.href);
 
           return (

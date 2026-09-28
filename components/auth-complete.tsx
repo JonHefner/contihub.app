@@ -19,6 +19,23 @@ export function AuthComplete({ nextPath }: AuthCompleteProps) {
 
     async function finish() {
       try {
+        const params = new URLSearchParams(window.location.search);
+        const code = params.get("code");
+        const tokenHash = params.get("token_hash");
+        const type = params.get("type");
+        if (code) {
+          window.location.replace(
+            `/auth/callback?code=${encodeURIComponent(code)}&next=${encodeURIComponent(next)}`,
+          );
+          return;
+        }
+        if (tokenHash && type) {
+          window.location.replace(
+            `/auth/callback?token_hash=${encodeURIComponent(tokenHash)}&type=${encodeURIComponent(type)}&next=${encodeURIComponent(next)}`,
+          );
+          return;
+        }
+
         const supabase = createClient();
         const hash = new URLSearchParams(window.location.hash.replace(/^#/, ""));
         const accessToken = hash.get("access_token");

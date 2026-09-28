@@ -43,6 +43,11 @@ Vercel detects Next.js from `package.json` and `vercel.json` (`framework: nextjs
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anonymous / publishable key |
 | `NEXT_PUBLIC_SITE_URL` | Public site origin. Use `https://www.contihub.app`. Apex `https://contihub.app` is canonicalized to www because Vercel 308-redirects apex → www. |
+| `SUPABASE_SERVICE_ROLE_KEY` | Server-only. Mints magic links for bid and staff invites. Do not prefix with `NEXT_PUBLIC_`. |
+| `CONTI_BID_FROM_MAILBOX` | Mailbox Graph should send as, when connected. Prefer `jon.hefner@continentalcando.com`. Not a secret. |
+| `MICROSOFT_GRAPH_TENANT_ID` | Optional. Azure AD tenant for app-only Mail.Send. |
+| `MICROSOFT_GRAPH_CLIENT_ID` | Optional. Graph app client id. |
+| `MICROSOFT_GRAPH_CLIENT_SECRET` | Optional. Graph app secret. Server-only. |
 
 Never commit real secrets. Use `.env.example` as the template.
 
@@ -67,8 +72,11 @@ https://contihub.app/auth/callback
 https://contihub.app/auth/confirm
 https://www.contihub.app/**
 https://contihub.app/**
+https://www.contihub.app/auth/complete
+https://contihub.app/auth/complete
 http://localhost:3000/auth/callback
 http://localhost:3000/auth/confirm
+http://localhost:3000/auth/complete
 http://localhost:3000/**
 ```
 
@@ -117,8 +125,10 @@ Then redeploy. Leave **Authentication → Providers → Email → Confirm email*
 - `/app/projects/[id]/cost` — ContiCost job cost summary for that project
 - `/app/projects/[id]/change-orders` — Change Order log (proposed / priced / approved / rejected, owner exposure vs approved)
 - `/app/projects/[id]/safety` — ContiSafety log for that project
-- `/app/projects/[id]/trak` — ContiTraK milestones for that project
-- `/app/projects/[id]/bid` — Conti Bid chase list for that project
+- `/app/projects/[id]/trak` — ContiTraK milestone list (not CPM)
+- `/app/projects/[id]/bid` — Conti Bid packages, invites, and chase list for that project
+- `/app/bid/directory` — contractor directory (search, CSV import, CSV export)
+- `/app/bid/invitations` — bidder landing (invited packages only)
 - `/app/crm`, `/app/field`, `/app/cost`, `/app/change-orders`, `/app/safety`, `/app/trak`, `/app/bid` — project pickers (redirect when only one project exists)
 
 All `/app/**` routes share the suite nav and require a signed-in session.
@@ -127,14 +137,15 @@ All `/app/**` routes share the suite nav and require a signed-in session.
 
 Suite apps write to Supabase tables when the migration has been applied. If the tables are missing, the UI still works with an in-session memory store and shows a banner.
 
-Apply these files in the Supabase SQL editor (in order), or with the Supabase CLI (`supabase db push`). No new environment variables are required.
+Apply these files in the Supabase SQL editor (in order), or with the Supabase CLI (`supabase db push`).
 
 1. `supabase/migrations/20260909060000_conti_suite.sql` — CRM, Field, Cost, Safety, TraK, and Bid MVP tables
 2. `supabase/migrations/20260909160000_contifield_daily_log.sql` — ContiField job settings, RFI table, and richer daily-log columns
 3. `supabase/migrations/20260909180000_projects.sql` — `projects` table, nullable `project_id` on suite tables, and a per-user **Data Center** seed that attaches existing unassigned / “Data Center” sample rows
 4. `supabase/migrations/20260914120000_change_orders.sql` — `change_orders` table (RLS + `project_id` FK) and a per-user fictional **Midwest Regional Stadium Renovation** demo project with a CO breakdown sample
+5. `supabase/migrations/20260927120000_full_court_press.sql` — company org, staff vs bidder, contractor directory, bid packages, SAMPLE workspace, field-photo bucket
 
-Run all four in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner.
+Run all five in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner. After file 5, Conti staff in the same organization share projects. Bidders only see packages they were invited to.
 
 ### Change Orders SQL (Jon)
 
@@ -154,4 +165,70 @@ The sample log is fictional stadium work only (no United CLE / live lead names).
 
 Deduct rows use a negative amount. Type **Deduct** with a positive number is stored as a credit.
 
-Row Level Security scopes every row to `auth.uid()`. Suite boards filter by `project_id` so Data Center and the next chase stay separate.
+Until the full court press SQL is applied, row level security scopes every row to `auth.uid()`. After that file, Conti staff share an organization and bidders stay on invited packages. Suite boards still filter by `project_id`.
+
+## Full court press week
+
+This is the week path for Conti Bid invitations, shared Hub access, and a demo that is not an empty board. Building Connected stays a parallel process. Conti Bid does not replace it and does not talk to Building Connected.
+
+### SQL to run
+
+In the Supabase SQL editor, after the four files above, paste and run:
+
+`supabase/migrations/20260927120000_full_court_press.sql`
+
+That file:
+
+- Creates `orgs` and `org_members` (`conti_staff` or `bidder`) and attaches existing projects to a Continental Construction organization
+- Creates `bid_contractors`, `bid_packages`, and `bid_invitees`
+- Adds CRM next action and value, safety what / who / action, TraK milestone status and owner
+- Creates the private `field-photos` storage bucket (up to 4 photos on a daily log)
+- Seeds a **SAMPLE Data Center** workspace for each user who already owns a project: multi-day field logs, three RFIs, Conti chase stages, cost lines that roll up (budget $25,000,000 / committed $9,600,000 / actual $2,650,000 / variance $22,350,000), and one bid package with three SAMPLE invitees. No email is sent.
+
+Hub also has **Load SAMPLE**, which calls `seed_full_court_press_sample()` when that function exists.
+
+### Environment variables
+
+Set these in Vercel (and `.env.local`). Do not commit real values.
+
+| Variable | Required for |
+| --- | --- |
+| `SUPABASE_SERVICE_ROLE_KEY` | Minting the magic link stored on the invite. Without it, the invitee row is still saved and the UI copies a draft. |
+| `CONTI_BID_FROM_MAILBOX` | The From address Graph should use. Prefer `jon.hefner@continentalcando.com`, or another estimator mailbox. |
+| `MICROSOFT_GRAPH_TENANT_ID` | App-only Graph send. Optional this week. |
+| `MICROSOFT_GRAPH_CLIENT_ID` | App-only Graph send. Optional this week. |
+| `MICROSOFT_GRAPH_CLIENT_SECRET` | App-only Graph send. Optional this week. |
+
+Graph needs application permission **Mail.Send** and admin consent, then `POST /api/bid/graph-send`. If those env vars are empty, the route returns 501 and the estimator uses **Copy body** or **Open mailto**. Vercel does not hold Jon's Outlook user token, so this week does not depend on a live Graph send.
+
+Magic links redirect to `/auth/complete`. Keep that path on the Supabase redirect allowlist (listed above).
+
+### Contractor directory and CSV
+
+Conti Bid → **Contractor directory** searches, adds, edits, imports, and exports CSV with these columns:
+
+`First, Last, Email, Company, Phone, Office, Cell, Street, City, State, Zip, Categories, Notes`
+
+A labeled SAMPLE subset is in `supabase/seeds/conti-bid-contractors-sample.csv` and is inserted by the SQL above. Import the full GAL export or Conti bidder list through the directory. Do not commit that full file.
+
+Live Outlook GAL sync is not in this app. The Outlook connector can read personal contacts, not the Global Address List. Org directory scopes (`People` / `orgContacts` / users) need admin consent Conti does not have wired up yet. CSV import is the week path. When those scopes exist, live search can sit on top of this directory.
+
+### Invites
+
+1. Open a project → Conti Bid → save a package (title, due, Teams drawings link, notes).
+2. Pick contractors from the directory, set the trade, and check **Also invited on Building Connected** only after that separate send.
+3. **Send invites** creates or reuses the Supabase user, grants the **bidder** role for that package, and returns a Conti-branded draft: Conti Bid URL, username (work email), magic-link button, project, due, trade, Teams drawings link, and the Building Connected note.
+
+Bidders who sign in land on `/app/bid/invitations` and do not get the rest of the suite. **Invite teammate** on the hub sends a staff magic link so Ann and the supers share company projects.
+
+### Merge order
+
+This branch includes the open Change Order log (PR #8). Merge this pull request and close #8, or merge #8 first and then this branch. Do not force-merge if CI fails. Run `20260914120000_change_orders.sql` before `20260927120000_full_court_press.sql`. Hub shows the COs nav item and an ops pulse (open RFIs, packages due, chase due, pending COs).
+
+### Still later
+
+- Outlook GAL live search
+- Sending mail from Graph without the copy/mailto step, once the app credentials exist
+- Bid file storage beyond the Teams link
+- Full CPM inside Hub TraK (the separate ContiTraK app remains the schedule)
+- OSHA 300 export

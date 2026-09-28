@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ProjectForm } from "@/components/projects/project-form";
+import { SampleBadge } from "@/components/sample-badge";
 import { SuiteShell } from "@/components/suite-shell";
 import { SUITE_APP_KEYS, projectHref } from "@/lib/projects";
 import { listProjects } from "@/lib/suite/store";
@@ -46,7 +47,7 @@ export default async function ProjectsPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div>
                     <h2 className="font-display text-2xl font-semibold text-ink-strong">
-                      {project.name}
+                      {project.name} <SampleBadge text={project.name} />
                     </h2>
                     <p className="mt-1 text-sm text-muted">
                       {project.jobNumber ? `Job ${project.jobNumber}` : "No job #"}

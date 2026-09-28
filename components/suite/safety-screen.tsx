@@ -17,7 +17,7 @@ export async function SafetyScreen({ project }: { project: Project }) {
       <CrudBoard
         eyebrow="ContiSafety"
         title="Safety log"
-        description={`Toolbox talks, incidents, and inspections for ${project.name}.`}
+        description={`Toolbox talks and incidents for ${project.name}. Incidents record what happened, who was involved, and the action.`}
         addLabel="Add safety entry"
         editLabel="Edit safety entry"
         emptyTitle="No safety entries on this project"
@@ -27,19 +27,30 @@ export async function SafetyScreen({ project }: { project: Project }) {
           { name: "type", label: "Type", type: "select", required: true, options: types },
           { name: "date", label: "Date", type: "date", required: true },
           { name: "location", label: "Location", type: "text", required: true, placeholder: "Job / area" },
-          { name: "notes", label: "Notes", type: "textarea", placeholder: "Topic, people present, follow-up" },
+          { name: "whatHappened", label: "What happened", type: "textarea", placeholder: "Incident or near miss facts" },
+          { name: "whoInvolved", label: "Who", type: "text", placeholder: "People involved" },
+          { name: "correctiveAction", label: "Action", type: "textarea", placeholder: "Corrective action and close-out" },
+          { name: "attendeeCount", label: "Toolbox attendees", type: "number", min: 0, step: "1" },
+          { name: "notes", label: "Notes", type: "textarea", placeholder: "Topic or extra context" },
         ]}
         columns={[
           { key: "type", label: "Type", format: "badge" },
           { key: "date", label: "Date", format: "date" },
           { key: "location", label: "Location", format: "emphasis" },
-          { key: "notes", label: "Notes", className: "min-w-56 text-muted" },
+          { key: "whatHappened", label: "What", className: "min-w-40" },
+          { key: "whoInvolved", label: "Who" },
+          { key: "correctiveAction", label: "Action", className: "min-w-40" },
+          { key: "attendeeCount", label: "Attendees" },
         ]}
         rows={rows}
         defaults={{
           type: "Toolbox Talk",
           date: todayISO(),
           location: project.name,
+          whatHappened: "",
+          whoInvolved: "",
+          correctiveAction: "",
+          attendeeCount: "0",
           notes: "",
           projectId: project.id,
         }}

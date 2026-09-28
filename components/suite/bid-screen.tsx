@@ -1,7 +1,9 @@
+import { PackageBoard } from "@/components/bid/package-board";
 import { CrudBoard } from "@/components/crud-board";
 import { ProjectScopeBar } from "@/components/projects/project-scope-bar";
 import { SuiteShell } from "@/components/suite-shell";
 import { todayISO } from "@/lib/suite/form";
+import { listContractors, listInvitees, listPackages } from "@/lib/suite/bid-store";
 import { listBidChases } from "@/lib/suite/store";
 import type { Project } from "@/lib/suite/types";
 import { createChase, removeChase, updateChase } from "@/app/app/bid/actions";
@@ -9,20 +11,34 @@ import { createChase, removeChase, updateChase } from "@/app/app/bid/actions";
 const statuses = ["Tracking", "In Progress", "Submitted", "Awarded", "Lost", "No Bid"];
 
 export async function BidScreen({ project }: { project: Project }) {
-  const { rows, persist } = await listBidChases(project.id);
+  const [chases, packages, invitees, contractors] = await Promise.all([
+    listBidChases(project.id),
+    listPackages(project.id),
+    listInvitees(),
+    listContractors(),
+  ]);
+  const packageIds = new Set(packages.rows.map((row) => row.id));
 
   return (
     <SuiteShell>
       <ProjectScopeBar project={project} app="bid" />
+      <PackageBoard
+        projectId={project.id}
+        projectName={project.name}
+        packages={packages.rows}
+        invitees={invitees.rows.filter((row) => packageIds.has(row.packageId))}
+        contractors={contractors.rows}
+        persist={packages.persist}
+      />
       <CrudBoard
         eyebrow="Conti Bid"
         title="Bid chase list"
-        description={`Invitations through award for ${project.name}.`}
+        description={`Chase status for ${project.name}. Packages and magic-link invites are above. Takeoff stays outside Hub.`}
         addLabel="Add bid"
         editLabel="Edit bid"
         emptyTitle="No bids on this project"
         emptyBody="Add a chase record for this job."
-        persist={persist}
+        persist={chases.persist}
         fields={[
           { name: "project", label: "Project", type: "text", required: true, placeholder: "Bid name or owner" },
           { name: "dueDate", label: "Due date", type: "date", required: true },
@@ -35,7 +51,7 @@ export async function BidScreen({ project }: { project: Project }) {
           { key: "status", label: "Status", format: "badge" },
           { key: "estimateValue", label: "Estimate", format: "money" },
         ]}
-        rows={rows}
+        rows={chases.rows}
         defaults={{
           project: project.name,
           dueDate: todayISO(),

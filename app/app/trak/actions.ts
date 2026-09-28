@@ -1,6 +1,6 @@
 "use server";
 
-import { readInt, readRequired } from "@/lib/suite/form";
+import { readInt, readRequired, readString } from "@/lib/suite/form";
 import { readProjectId, revalidateSuite } from "@/lib/suite/revalidate";
 import { deleteTrakMilestone, saveTrakMilestone } from "@/lib/suite/store";
 
@@ -18,6 +18,8 @@ function readMilestone(formData: FormData) {
     start,
     finish,
     percentComplete: readInt(formData, "percentComplete", "% complete", 0, 100),
+    status: readString(formData, "status", "Not started") || "Not started",
+    owner: readString(formData, "owner"),
   };
 }
 

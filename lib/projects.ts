@@ -28,8 +28,8 @@ export const SUITE_APP_BLURBS: Record<SuiteAppKey, string> = {
   cost: "Budget, committed, and actual",
   "change-orders": "Proposed, priced, approved, and owner exposure",
   safety: "Toolbox talks and incidents",
-  trak: "Schedule and milestones",
-  bid: "Bid chase and proposals",
+  trak: "Milestones (not CPM)",
+  bid: "Packages, invites, and chase list",
 };
 
 export function projectHref(projectId: string, app?: SuiteAppKey, rest = "") {

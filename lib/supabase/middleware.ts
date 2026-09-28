@@ -6,6 +6,7 @@ import { getSupabaseAnonKey, getSupabaseUrl } from "@/lib/supabase/env";
 
 export async function updateSession(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  request.headers.set("x-pathname", pathname);
   const isProtected = pathname === "/app" || pathname.startsWith("/app/");
   const hostname =
     firstHeaderValue(request.headers.get("x-forwarded-host")) ||
