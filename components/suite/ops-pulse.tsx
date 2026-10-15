@@ -1,17 +1,17 @@
 import Link from "next/link";
 import { countOpenRfis } from "@/lib/rfi/pipeline";
 import { isDueBy, weekThrough } from "@/lib/ops/pulse";
-import { listPackages } from "@/lib/suite/bid-store";
-import { listRfiItems } from "@/lib/suite/rfi-store";
-import { listBidChases, listChangeOrders, listFieldRfis } from "@/lib/suite/store";
+import { listPackageDueDates } from "@/lib/suite/bid-store";
+import { listRfiItemSignals } from "@/lib/suite/rfi-store";
+import { listBidChaseSignals, listChangeOrderFigures, listFieldRfiSignals } from "@/lib/suite/store";
 
 export async function OpsPulse() {
   const [pipeline, rfis, packages, chases, orders] = await Promise.all([
-    listRfiItems(),
-    listFieldRfis(),
-    listPackages(),
-    listBidChases(),
-    listChangeOrders(),
+    listRfiItemSignals(),
+    listFieldRfiSignals(),
+    listPackageDueDates(),
+    listBidChaseSignals(),
+    listChangeOrderFigures(),
   ]);
   const through = weekThrough();
   const openRfis = countOpenRfis(pipeline.rows, rfis.rows);

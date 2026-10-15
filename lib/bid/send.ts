@@ -1,6 +1,7 @@
 import { buildBidInviteEmail } from "@/lib/bid/invite-email";
 import { bidFromMailbox, sendMailViaGraph } from "@/lib/bid/graph";
 import { createMagicLink } from "@/lib/bid/magic-link";
+import { ilikeExact } from "@/lib/suite/email-match";
 import { formatDate } from "@/lib/suite/form";
 import { listContractors, listInvitees, listPackages, saveInvitee, savePackage } from "@/lib/suite/bid-store";
 import { ensureStaffOrg } from "@/lib/suite/org";
@@ -170,7 +171,7 @@ async function grantBidder(orgId: string, email: string, userId: string, persist
     .from("org_members")
     .select("id, role")
     .eq("org_id", orgId)
-    .ilike("email", email)
+    .ilike("email", ilikeExact(email))
     .maybeSingle();
 
   if (found.error) {

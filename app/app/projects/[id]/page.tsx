@@ -7,16 +7,11 @@ import { summarizeChangeOrders } from "@/lib/change-orders";
 import { countOpenRfis } from "@/lib/rfi/pipeline";
 import { SUITE_APP_BLURBS, SUITE_APP_KEYS, SUITE_APP_LABELS, projectHref } from "@/lib/projects";
 import { loadProject } from "@/lib/suite/project-route";
-import { listRfiItems } from "@/lib/suite/rfi-store";
+import { listRfiItemSignals } from "@/lib/suite/rfi-store";
 import {
-  listBidChases,
-  listChangeOrders,
-  listCostJobs,
-  listCrmLeads,
-  listFieldReports,
-  listFieldRfis,
-  listSafetyLogs,
-  listTrakMilestones,
+  countSuiteRows,
+  listChangeOrderFigures,
+  listFieldRfiSignals,
 } from "@/lib/suite/store";
 
 type ProjectPageProps = {
@@ -32,29 +27,29 @@ export async function generateMetadata({ params }: ProjectPageProps): Promise<Me
 export default async function ProjectHomePage({ params }: ProjectPageProps) {
   const { id } = await params;
   const project = await loadProject(id);
-  const [logs, rfis, pipeline, leads, costs, changeOrders, safety, trak, bids] = await Promise.all([
-    listFieldReports(id),
-    listFieldRfis(id),
-    listRfiItems(id),
-    listCrmLeads(id),
-    listCostJobs(id),
-    listChangeOrders(id),
-    listSafetyLogs(id),
-    listTrakMilestones(id),
-    listBidChases(id),
+  const [logs, leads, costs, safety, trak, bids, fieldRfis, pipeline, changeOrders] = await Promise.all([
+    countSuiteRows("field_reports", id),
+    countSuiteRows("crm_leads", id),
+    countSuiteRows("cost_jobs", id),
+    countSuiteRows("safety_logs", id),
+    countSuiteRows("trak_milestones", id),
+    countSuiteRows("bid_chases", id),
+    listFieldRfiSignals(id),
+    listRfiItemSignals(id),
+    listChangeOrderFigures(id),
   ]);
 
   const counts: Record<(typeof SUITE_APP_KEYS)[number], number> = {
-    field: logs.rows.length,
+    field: logs.count,
     rfi: pipeline.rows.length,
-    crm: leads.rows.length,
-    cost: costs.rows.length,
+    crm: leads.count,
+    cost: costs.count,
     "change-orders": changeOrders.rows.length,
-    safety: safety.rows.length,
-    trak: trak.rows.length,
-    bid: bids.rows.length,
+    safety: safety.count,
+    trak: trak.count,
+    bid: bids.count,
   };
-  const openRfiCount = countOpenRfis(pipeline.rows, rfis.rows);
+  const openRfiCount = countOpenRfis(pipeline.rows, fieldRfis.rows);
   const changeOrderSummary = summarizeChangeOrders(changeOrders.rows);
 
   return (
@@ -78,7 +73,7 @@ export default async function ProjectHomePage({ params }: ProjectPageProps) {
       <dl className="mt-8 grid gap-3 sm:grid-cols-3">
         <div className="rounded-2xl border border-gold/20 bg-surface px-4 py-4">
           <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Daily logs</dt>
-          <dd className="mt-2 font-display text-3xl text-ink-strong">{logs.rows.length}</dd>
+          <dd className="mt-2 font-display text-3xl text-ink-strong">{logs.count}</dd>
         </div>
         <div className="rounded-2xl border border-gold/20 bg-surface px-4 py-4">
           <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Open RFIs</dt>
@@ -90,7 +85,7 @@ export default async function ProjectHomePage({ params }: ProjectPageProps) {
         </div>
         <div className="rounded-2xl border border-gold/20 bg-surface px-4 py-4">
           <dt className="text-[10px] font-semibold uppercase tracking-[0.16em] text-gold">Cost jobs</dt>
-          <dd className="mt-2 font-display text-3xl text-ink-strong">{costs.rows.length}</dd>
+          <dd className="mt-2 font-display text-3xl text-ink-strong">{costs.count}</dd>
         </div>
       </dl>
 

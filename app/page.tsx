@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { AppTiles } from "@/components/app-tiles";
 import { PublicHeader } from "@/components/public-header";
 
@@ -26,11 +27,13 @@ export default function HomePage() {
         <section className="relative overflow-hidden">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(30,79,163,0.34),transparent_42%),radial-gradient(circle_at_88%_18%,rgba(201,163,74,0.14),transparent_30%)]" />
           <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 py-16 text-center lg:py-24">
-            <img
+            <Image
               src="/brand/tiles/contihub.png"
               alt="ContiHub — nested blue and gold CC mark"
               width={320}
               height={320}
+              priority
+              sizes="(min-width: 640px) 256px, 208px"
               className="aspect-square h-52 w-52 rounded-[2rem] object-contain shadow-[0_24px_48px_-20px_rgba(0,0,0,0.85)] sm:h-64 sm:w-64"
             />
             <h1 className="mt-8 text-5xl font-semibold tracking-tight text-ink-strong sm:text-7xl">

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { listContractors } from "@/lib/suite/bid-store";
 import { isMissingRelation } from "@/lib/suite/db-error";
 import { todayISO } from "@/lib/suite/form";
@@ -201,7 +202,10 @@ function seedMemory(userId: string) {
   return rows;
 }
 
-async function persistMode(): Promise<{ mode: PersistMode; orgId: string; userId: string }> {
+const RFI_ITEM_COLUMNS =
+  "id, org_id, project_id, number, subject, question, improved_question, citations, doc_review_notes, docs_already_answer, urgency, rfi_type, route_role, from_name, to_name, date_required, cost_impact, schedule_impact, status, official_response, returned_at, teams_docs_url, cost_ping_note, logged_at, distributed_at, selected_outcome, field_rfi_id";
+
+const persistMode = cache(async function persistMode(): Promise<{ mode: PersistMode; orgId: string; userId: string }> {
   const org = await ensureStaffOrg();
   const { supabase, user } = await requireUser();
   if (org.persist === "memory") {
@@ -215,7 +219,7 @@ async function persistMode(): Promise<{ mode: PersistMode; orgId: string; userId
     throw new Error(probe.error.message);
   }
   return { mode: "supabase", orgId: org.orgId, userId: user.id };
-}
+});
 
 async function ensureSupabaseRoster(orgId: string, userId: string) {
   const { supabase } = await requireUser();
@@ -310,7 +314,7 @@ export async function listRoster(): Promise<ListResult<RfiRosterSeat>> {
   const { supabase } = await requireUser();
   const { data, error } = await supabase
     .from("rfi_roster")
-    .select("*")
+    .select("id, org_id, project_id, display_name, email, role, active, notes")
     .eq("org_id", ctx.orgId)
     .order("display_name", { ascending: true });
   if (error) {
@@ -327,7 +331,10 @@ export async function listTypeRoutes(): Promise<ListResult<RfiTypeRoute>> {
   }
   await ensureSupabaseRoster(ctx.orgId, ctx.userId);
   const { supabase } = await requireUser();
-  const { data, error } = await supabase.from("rfi_type_routes").select("*").eq("org_id", ctx.orgId);
+  const { data, error } = await supabase
+    .from("rfi_type_routes")
+    .select("id, rfi_type, label, target_role, active")
+    .eq("org_id", ctx.orgId);
   if (error) {
     throw new Error(error.message);
   }
@@ -414,6 +421,37 @@ export async function setRosterActive(id: string, active: boolean) {
   return mapSeat(data);
 }
 
+function rfiSignals(rows: { projectId: string; number: string; status: string }[]) {
+  return rows.map((row) => ({ projectId: row.projectId, number: row.number, status: row.status }));
+}
+
+export async function listRfiItemSignals(
+  projectId?: string,
+): Promise<ListResult<{ projectId: string; number: string; status: string }>> {
+  const ctx = await persistMode();
+  if (ctx.mode === "memory") {
+    const rows = seedMemory(ctx.userId).items.filter((row) => !projectId || row.projectId === projectId);
+    return { persist: "memory", rows: rfiSignals(rows) };
+  }
+  const { supabase } = await requireUser();
+  let query = supabase.from("rfi_items").select("project_id, number, status").order("number", { ascending: true });
+  if (projectId) {
+    query = query.eq("project_id", projectId);
+  }
+  const { data, error } = await query;
+  if (error) {
+    throw new Error(error.message);
+  }
+  return {
+    persist: "supabase",
+    rows: (data ?? []).map((row) => ({
+      projectId: asString(row.project_id),
+      number: asString(row.number),
+      status: asString(row.status),
+    })),
+  };
+}
+
 export async function listRfiItems(projectId?: string): Promise<ListResult<RfiItem>> {
   const ctx = await persistMode();
   if (ctx.mode === "memory") {
@@ -421,7 +459,7 @@ export async function listRfiItems(projectId?: string): Promise<ListResult<RfiIt
     return { persist: "memory", rows };
   }
   const { supabase } = await requireUser();
-  let query = supabase.from("rfi_items").select("*").order("number", { ascending: true });
+  let query = supabase.from("rfi_items").select(RFI_ITEM_COLUMNS).order("number", { ascending: true });
   if (projectId) {
     query = query.eq("project_id", projectId);
   }
@@ -445,7 +483,7 @@ export async function listRfiOutcomes(rfiId: string): Promise<RfiOutcome[]> {
   const { supabase } = await requireUser();
   const { data, error } = await supabase
     .from("rfi_outcomes")
-    .select("*")
+    .select("id, rfi_id, label, sort_order, selected")
     .eq("rfi_id", rfiId)
     .order("sort_order", { ascending: true });
   if (error) {
@@ -463,7 +501,10 @@ export async function listRfiDistributions(rfiId: string): Promise<RfiDistributi
     return seedMemory(ctx.userId).distributions.filter((row) => row.rfiId === rfiId);
   }
   const { supabase } = await requireUser();
-  const { data, error } = await supabase.from("rfi_distributions").select("*").eq("rfi_id", rfiId);
+  const { data, error } = await supabase
+    .from("rfi_distributions")
+    .select("id, rfi_id, recipient_kind, name, email, contractor_id, roster_id, draft_subject, draft_body, sent_at")
+    .eq("rfi_id", rfiId);
   if (error) {
     throw new Error(error.message);
   }

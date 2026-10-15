@@ -38,7 +38,12 @@ export function FieldPhotoPanel({
               {photo.url ? (
                 // Signed Supabase URLs are created per request.
                 // eslint-disable-next-line @next/next/no-img-element
-                <img src={photo.url} alt={photo.caption || "Daily log photo"} className="aspect-video w-full object-cover" />
+                <img
+                  src={photo.url}
+                  alt={photo.caption || "Daily log photo"}
+                  decoding="async"
+                  className="aspect-video w-full object-cover"
+                />
               ) : (
                 <p className="p-3 text-sm text-field-muted">Photo saved. Preview needs the field-photos bucket.</p>
               )}

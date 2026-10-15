@@ -148,8 +148,9 @@ Apply these files in the Supabase SQL editor (in order), or with the Supabase CL
 6. `supabase/migrations/20260928120000_rfi_pipeline.sql` — ContiReview roster, type routes, log, suggested-outcomes form, and the SAMPLE RFI
 7. `supabase/migrations/20260928130000_rfi_roster_emails.sql` — confirmed roster names and emails if file 6 was applied with the earlier placeholders
 8. `supabase/migrations/20260928140000_contireview_naming.sql` — ContiReview name on the suggested-outcomes step and operator notes
+9. `supabase/migrations/20261015120000_query_indexes.sql` — extra indexes for the signed-in home, project counts, and ContiReview. Adds indexes only.
 
-Run all eight in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner. After file 5, Conti staff in the same organization share projects. Bidders only see packages they were invited to. Files 6 through 8 are staff-only. Bidders do not see ContiReview.
+Run all nine in that order in the ContiHub Supabase SQL editor. If a file has not been applied yet, the matching UI still runs with an in-session memory store and shows a banner. After file 5, Conti staff in the same organization share projects. Bidders only see packages they were invited to. Files 6 through 8 are staff-only. Bidders do not see ContiReview.
 
 ### Change Orders SQL (Jon)
 

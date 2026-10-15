@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 type LogoProps = {
@@ -15,20 +16,24 @@ export function Logo({ href = "/", light = true, size = "sm", chrome = false }: 
 
   const markImage = chrome ? (
     <span className={`${markSize} inline-block shrink-0 overflow-hidden`}>
-      <img
+      <Image
         src="/brand/conti-way-mark.png"
         alt=""
         width={markPx}
         height={markPx}
+        priority
+        sizes={`${markPx}px`}
         className="h-[150%] w-full max-w-none object-cover object-top"
       />
     </span>
   ) : (
-    <img
+    <Image
       src="/brand/cc-mark-on-dark.png"
       alt=""
       width={markPx}
       height={markPx}
+      priority
+      sizes={`${markPx}px`}
       className={`${markSize} aspect-square rounded-[0.9rem] object-contain`}
     />
   );

@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { contiApps } from "@/lib/apps";
 
@@ -7,12 +8,13 @@ export function AppTiles() {
       {contiApps.map((app) => (
         <li key={app.id}>
           <Link href={app.href} className="group block transition hover:-translate-y-0.5">
-            <img
+            <Image
               src={`/brand/tiles/${app.id}.png`}
               alt={app.name}
               width={512}
               height={512}
-              className="aspect-square w-full rounded-[1.6rem] object-contain shadow-[0_16px_32px_-18px_rgba(0,0,0,0.75)]"
+              sizes="(min-width: 1280px) 270px, (min-width: 640px) 45vw, 90vw"
+              className="aspect-square h-auto w-full rounded-[1.6rem] object-contain shadow-[0_16px_32px_-18px_rgba(0,0,0,0.75)]"
             />
             <p className="mt-3 px-1 text-sm leading-6 text-muted">{app.description}</p>
           </Link>

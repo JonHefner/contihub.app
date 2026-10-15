@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useRef, useState, type MouseEvent, type PointerEvent } from "react";
 import { ringOffset, wrapIndex } from "@/lib/hub/reel";
@@ -157,13 +158,14 @@ export function RevolvingTiles({ tiles }: RevolvingTilesProps) {
                 }`}
                 style={{ background: "#000" }}
               >
-                <img
+                <Image
                   src="/brand/conti-way-mark.png"
                   alt=""
-                  width={588}
-                  height={588}
+                  fill
+                  sizes="(min-width: 640px) 168px, 118px"
+                  priority={frontTile}
                   draggable={false}
-                  className="absolute inset-0 h-full w-full object-cover"
+                  className="object-cover"
                   style={{ objectPosition: "center top" }}
                 />
                 <span
