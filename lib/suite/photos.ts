@@ -1,3 +1,4 @@
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { isMissingRelation } from "@/lib/suite/db-error";
 import { requireUser } from "@/lib/suite/auth";
 import type { FieldPhoto, ListResult } from "@/lib/suite/types";
@@ -5,6 +6,10 @@ import type { FieldPhoto, ListResult } from "@/lib/suite/types";
 type DbRow = Record<string, unknown>;
 
 const memory = new Map<string, FieldPhoto[]>();
+
+export const FIELD_PHOTO_LIMIT = 4;
+export const FIELD_PHOTO_BUCKET = "field-photos";
+const PHOTO_COLUMNS = "id, project_id, report_id, storage_path, caption, created_at";
 
 function asString(value: unknown, fallback = "") {
   return typeof value === "string" ? value : fallback;
@@ -21,11 +26,39 @@ function mapPhoto(row: DbRow, url = ""): FieldPhoto {
   };
 }
 
+async function signedPhotoUrls(supabase: SupabaseClient, paths: string[]) {
+  const unique = [...new Set(paths.filter((path) => path.length > 0))];
+  const urls = new Map<string, string>();
+  if (unique.length === 0) {
+    return urls;
+  }
+
+  const signed = await supabase.storage.from(FIELD_PHOTO_BUCKET).createSignedUrls(unique, 60 * 60);
+  if (!signed.error) {
+    for (const item of signed.data ?? []) {
+      if (item.path && item.signedUrl && !item.error) {
+        urls.set(item.path, item.signedUrl);
+      }
+    }
+  }
+
+  const missing = unique.filter((path) => !urls.has(path));
+  await Promise.all(
+    missing.map(async (path) => {
+      const single = await supabase.storage.from(FIELD_PHOTO_BUCKET).createSignedUrl(path, 60 * 60);
+      if (single.data?.signedUrl) {
+        urls.set(path, single.data.signedUrl);
+      }
+    }),
+  );
+  return urls;
+}
+
 export async function listFieldPhotos(reportId: string): Promise<ListResult<FieldPhoto>> {
   const { supabase, user } = await requireUser();
   const { data, error } = await supabase
     .from("field_report_photos")
-    .select("*")
+    .select(PHOTO_COLUMNS)
     .eq("report_id", reportId)
     .order("created_at", { ascending: true });
 
@@ -37,18 +70,12 @@ export async function listFieldPhotos(reportId: string): Promise<ListResult<Fiel
     return { persist: "memory", rows };
   }
 
-  const rows: FieldPhoto[] = [];
-  for (const row of data ?? []) {
-    const photo = mapPhoto(row);
-    const signed = await supabase.storage.from("field-photos").createSignedUrl(photo.storagePath, 60 * 60);
-    rows.push({ ...photo, url: signed.data?.signedUrl ?? "" });
-  }
-  return { persist: "supabase", rows };
-}
-
-export async function countFieldPhotos(reportId: string) {
-  const listed = await listFieldPhotos(reportId);
-  return listed;
+  const photos = (data ?? []).map((row) => mapPhoto(row));
+  const urls = await signedPhotoUrls(supabase, photos.map((photo) => photo.storagePath));
+  return {
+    persist: "supabase",
+    rows: photos.map((photo) => ({ ...photo, url: urls.get(photo.storagePath) ?? "" })),
+  };
 }
 
 export async function insertFieldPhoto(input: Omit<FieldPhoto, "id" | "url">) {
@@ -95,6 +122,3 @@ export async function removeFieldPhoto(id: string, storagePath: string) {
   const rows = (memory.get(user.id) ?? []).filter((photo) => photo.id !== id);
   memory.set(user.id, rows);
 }
-
-export const FIELD_PHOTO_LIMIT = 4;
-export const FIELD_PHOTO_BUCKET = "field-photos";

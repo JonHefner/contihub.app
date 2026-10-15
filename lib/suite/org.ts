@@ -1,4 +1,6 @@
 import { redirect } from "next/navigation";
+import { cache } from "react";
+import { ilikeExact } from "@/lib/suite/email-match";
 import { isMissingRelation } from "@/lib/suite/db-error";
 import { requireUser } from "@/lib/suite/auth";
 import type { PersistMode } from "@/lib/suite/types";
@@ -37,23 +39,49 @@ export async function claimAccess() {
   }
 }
 
-export async function resolveAccess(): Promise<AccessContext> {
+type MemberRow = {
+  id: string;
+  org_id: string;
+  role: string;
+  user_id: string | null;
+  email: string | null;
+};
+
+function sameMember(row: MemberRow, userId: string, email: string) {
+  const rowEmail = String(row.email ?? "").toLowerCase();
+  return row.user_id === userId || (rowEmail !== "" && rowEmail === email);
+}
+
+export const resolveAccess = cache(async function resolveAccess(): Promise<AccessContext> {
   const { supabase, user } = await requireUser();
   const email = (user.email ?? "").toLowerCase();
   await claimAccess();
 
-  const members = await supabase.from("org_members").select("org_id, role, user_id, email");
-  if (members.error) {
-    if (!isMissingRelation(members.error)) {
-      throw new Error(members.error.message);
+  const [byUser, byEmail] = await Promise.all([
+    supabase.from("org_members").select("id, org_id, role, user_id, email").eq("user_id", user.id),
+    email
+      ? supabase.from("org_members").select("id, org_id, role, user_id, email").ilike("email", ilikeExact(email))
+      : Promise.resolve({ data: [] as MemberRow[], error: null }),
+  ]);
+  const membersError = byUser.error ?? byEmail.error;
+  if (membersError) {
+    if (!isMissingRelation(membersError)) {
+      throw new Error(membersError.message);
     }
     return { kind: "staff", orgIds: [], persist: "memory", email, userId: user.id };
   }
 
-  const mine = (members.data ?? []).filter((row) => {
-    const rowEmail = String(row.email ?? "").toLowerCase();
-    return row.user_id === user.id || (rowEmail && rowEmail === email);
-  });
+  const seen = new Set<string>();
+  const mine: MemberRow[] = [];
+  for (const row of [...(byUser.data ?? []), ...(byEmail.data ?? [])] as MemberRow[]) {
+    if (!row.id || seen.has(row.id)) {
+      continue;
+    }
+    seen.add(row.id);
+    if (sameMember(row, user.id, email)) {
+      mine.push(row);
+    }
+  }
   const staffOrgIds = mine.filter((row) => row.role === "conti_staff").map((row) => String(row.org_id));
   if (staffOrgIds.length > 0) {
     return { kind: "staff", orgIds: staffOrgIds, persist: "supabase", email, userId: user.id };
@@ -76,7 +104,7 @@ export async function resolveAccess(): Promise<AccessContext> {
   }
 
   return { kind: "staff", orgIds: [], persist: "supabase", email, userId: user.id };
-}
+});
 
 export async function requireStaff() {
   const access = await resolveAccess();
@@ -86,7 +114,7 @@ export async function requireStaff() {
   return access;
 }
 
-export async function ensureStaffOrg() {
+export const ensureStaffOrg = cache(async function ensureStaffOrg() {
   const { supabase, user } = await requireUser();
   const email = (user.email ?? "").toLowerCase();
   const access = await resolveAccess();
@@ -128,11 +156,11 @@ export async function ensureStaffOrg() {
   const orgId = String(created.data.id);
   await supabase.from("projects").update({ org_id: orgId }).eq("user_id", user.id).is("org_id", null);
   return { orgId, persist: "supabase" as const };
-}
+});
 
 async function preferOrg(orgIds: string[]) {
   const { supabase } = await requireUser();
-  const projects = await supabase.from("projects").select("org_id");
+  const projects = await supabase.from("projects").select("org_id").in("org_id", orgIds);
   if (projects.error || !projects.data) {
     return orgIds[0];
   }

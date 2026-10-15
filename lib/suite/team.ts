@@ -1,4 +1,5 @@
 import { buildBidInviteEmail } from "@/lib/bid/invite-email";
+import { ilikeExact } from "@/lib/suite/email-match";
 import { bidFromMailbox } from "@/lib/bid/graph";
 import { createMagicLink } from "@/lib/bid/magic-link";
 import { requireUser } from "@/lib/suite/auth";
@@ -17,7 +18,7 @@ export async function inviteTeammate(email: string) {
       .from("org_members")
       .select("id, role")
       .eq("org_id", org.orgId)
-      .ilike("email", normalized)
+      .ilike("email", ilikeExact(normalized))
       .maybeSingle();
 
     if (existing.error) {

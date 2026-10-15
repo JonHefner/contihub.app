@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { PublicHeader } from "@/components/public-header";
 
@@ -21,11 +22,13 @@ export function AuthPanel({
         <PublicHeader />
         <div className="mx-auto flex max-w-md flex-col items-center px-6 py-12 sm:py-16">
           <Link href="/" className="flex flex-col items-center text-center">
-            <img
+            <Image
               src="/brand/tiles/contihub.png"
               alt="ContiHub — nested blue and gold CC mark"
               width={176}
               height={176}
+              priority
+              sizes="160px"
               className="aspect-square h-40 w-40 rounded-[1.75rem] object-contain shadow-[0_20px_40px_-18px_rgba(0,0,0,0.85)]"
             />
             <span className="mt-5 text-xs font-semibold uppercase tracking-[0.28em] text-gold">

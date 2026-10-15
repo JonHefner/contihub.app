@@ -1,3 +1,4 @@
+import { cache } from "react";
 import {
   SAMPLE_CHANGE_ORDERS,
   isChangeOrderStatus,
@@ -282,6 +283,27 @@ function mapBid(row: DbRow): BidChase {
   };
 }
 
+const LIST_COLUMNS: Record<SuiteTable, string> = {
+  projects: "id, name, job_number, address, status, created_by, created_at",
+  crm_leads: "id, project_id, name, company, stage, next_action, opportunity_value, notes, created_at",
+  field_reports:
+    "id, project_id, report_date, job_name, weather, weather_pm, temp_low, temp_high, precip, wind, ground, notes, crew_count, man_hours, work_performed, delays, materials, visitors, prepared_by, prepared_title, shift_start, shift_end, status, updated_at",
+  field_jobs: "id, project_id, company_name, job_title, job_number, address, client, superintendent, updated_at",
+  field_rfis: "id, project_id, number, title, description, status, due_date",
+  cost_jobs: "id, project_id, job, budget, committed, actual, created_at",
+  change_orders:
+    "id, project_id, number, title, description, type, amount, status, submitted_date, decided_date, notes",
+  safety_logs:
+    "id, project_id, entry_type, entry_date, location, notes, what_happened, who_involved, corrective_action, attendee_count, created_at",
+  trak_milestones:
+    "id, project_id, activity, start_date, finish_date, percent_complete, milestone_status, owner_name, created_at",
+  bid_chases: "id, project_id, project, due_date, status, estimate_value, created_at",
+};
+
+function asRows(data: unknown): DbRow[] {
+  return (data ?? []) as DbRow[];
+}
+
 function scopedRows(rows: DbRow[], projectId?: string) {
   if (!projectId) {
     return rows;
@@ -294,8 +316,9 @@ async function queryRows(
   options: { orderBy?: string; ascending?: boolean; projectId?: string } = {},
 ): Promise<{ rows: DbRow[]; persist: PersistMode }> {
   const { supabase, user } = await requireUser();
+  const columns = LIST_COLUMNS[table];
   // RLS allows the row owner and Conti staff in the same organization.
-  let query = supabase.from(table).select("*");
+  let query = supabase.from(table).select(columns);
   if (options.projectId) {
     query = query.eq("project_id", options.projectId);
   }
@@ -305,7 +328,7 @@ async function queryRows(
   });
 
   if (!error) {
-    return { rows: data ?? [], persist: "supabase" };
+    return { rows: asRows(data), persist: "supabase" };
   }
 
   if (!isMissingRelation(error)) {
@@ -315,11 +338,11 @@ async function queryRows(
   if (options.projectId) {
     const unscoped = await supabase
       .from(table)
-      .select("*")
+      .select(columns)
       .order(options.orderBy ?? "created_at", { ascending: options.ascending ?? false });
 
     if (!unscoped.error) {
-      return { rows: scopedRows(unscoped.data ?? [], options.projectId), persist: "supabase" };
+      return { rows: scopedRows(asRows(unscoped.data), options.projectId), persist: "supabase" };
     }
 
     if (unscoped.error && !isMissingRelation(unscoped.error)) {
@@ -410,26 +433,38 @@ export async function listProjects(): Promise<ListResult<Project>> {
   return { persist: result.persist, rows: result.rows.map(mapProject) };
 }
 
-export async function getProject(id: string): Promise<Project | null> {
-  const { rows, persist } = await listProjects();
-  const project = rows.find((row) => row.id === id) ?? null;
-  if (project) {
-    return project;
-  }
-  if (persist === "memory") {
-    return null;
-  }
-
-  const { supabase } = await requireUser();
-  const { data, error } = await supabase.from("projects").select("*").eq("id", id).maybeSingle();
+export const getProject = cache(async function getProject(id: string): Promise<Project | null> {
+  const { supabase, user } = await requireUser();
+  const { data, error } = await supabase.from("projects").select(LIST_COLUMNS.projects).eq("id", id).maybeSingle();
 
   if (!error) {
-    return data ? mapProject(data) : null;
+    return data ? mapProject(asRows([data])[0]) : null;
   }
   if (!isMissingRelation(error)) {
     throw new Error(error.message);
   }
-  return null;
+  const row = getMemory("projects", user.id).find((item) => item.id === id);
+  return row ? mapProject(row) : null;
+});
+
+export async function countSuiteRows(
+  table: SuiteTable,
+  projectId?: string,
+): Promise<{ count: number; persist: PersistMode }> {
+  const { supabase } = await requireUser();
+  let query = supabase.from(table).select("id");
+  if (projectId) {
+    query = query.eq("project_id", projectId);
+  }
+  const { data, error } = await query;
+  if (!error) {
+    return { count: data?.length ?? 0, persist: "supabase" };
+  }
+  if (!isMissingRelation(error)) {
+    throw new Error(error.message);
+  }
+  const listed = await queryRows(table, { projectId });
+  return { count: listed.rows.length, persist: listed.persist };
 }
 
 export async function saveProject(input: Omit<Project, "id" | "createdBy">, id?: string) {
@@ -491,7 +526,7 @@ export async function listFieldReports(projectId?: string): Promise<ListResult<F
 
 export async function getFieldReportByDate(date: string, projectId?: string): Promise<FieldReport | null> {
   const { supabase, user } = await requireUser();
-  let query = supabase.from("field_reports").select("*").eq("report_date", date);
+  let query = supabase.from("field_reports").select(LIST_COLUMNS.field_reports).eq("report_date", date);
 
   if (projectId) {
     query = query.eq("project_id", projectId);
@@ -500,7 +535,7 @@ export async function getFieldReportByDate(date: string, projectId?: string): Pr
   const { data, error } = await query.order("updated_at", { ascending: false }).limit(1);
 
   if (!error) {
-    return data?.[0] ? mapField(data[0]) : null;
+    return data?.[0] ? mapField(asRows(data)[0]) : null;
   }
 
   if (!isMissingRelation(error)) {
@@ -510,13 +545,13 @@ export async function getFieldReportByDate(date: string, projectId?: string): Pr
   if (projectId) {
     const unscoped = await supabase
       .from("field_reports")
-      .select("*")
+      .select(LIST_COLUMNS.field_reports)
       .eq("report_date", date)
       .order("updated_at", { ascending: false })
       .limit(8);
 
     if (!unscoped.error) {
-      const match = (unscoped.data ?? []).find((item) => asProjectId(item.project_id) === projectId);
+      const match = asRows(unscoped.data).find((item) => asProjectId(item.project_id) === projectId);
       return match ? mapField(match) : null;
     }
 
@@ -579,6 +614,35 @@ export async function saveFieldJob(input: Omit<FieldJob, "id">, id?: string) {
   return mapFieldJob(row);
 }
 
+export async function listFieldRfiSignals(
+  projectId?: string,
+): Promise<ListResult<{ projectId: string; number: string; status: string }>> {
+  const { supabase } = await requireUser();
+  let query = supabase.from("field_rfis").select("project_id, number, status").order("due_date", { ascending: true });
+  if (projectId) {
+    query = query.eq("project_id", projectId);
+  }
+  const { data, error } = await query;
+  if (!error) {
+    return {
+      persist: "supabase",
+      rows: (data ?? []).map((row) => ({
+        projectId: asProjectId(row.project_id),
+        number: asString(row.number),
+        status: asRfiStatus(row.status),
+      })),
+    };
+  }
+  if (!isMissingRelation(error)) {
+    throw new Error(error.message);
+  }
+  const listed = await listFieldRfis(projectId);
+  return {
+    persist: listed.persist,
+    rows: listed.rows.map((row) => ({ projectId: row.projectId, number: row.number, status: row.status })),
+  };
+}
+
 export async function listFieldRfis(projectId?: string): Promise<ListResult<FieldRfi>> {
   const result = await queryRows("field_rfis", { orderBy: "due_date", ascending: true, projectId });
   const rows = result.rows.map(mapFieldRfi).sort((a, b) => {
@@ -632,6 +696,34 @@ export async function saveCostJob(input: Omit<CostJob, "id">, id?: string) {
 
 export async function deleteCostJob(id: string) {
   await removeRow("cost_jobs", id);
+}
+
+export async function listChangeOrderFigures(
+  projectId?: string,
+): Promise<ListResult<{ amount: number; status: ChangeOrderStatus }>> {
+  const { supabase } = await requireUser();
+  let query = supabase.from("change_orders").select("amount, status").order("number", { ascending: true });
+  if (projectId) {
+    query = query.eq("project_id", projectId);
+  }
+  const { data, error } = await query;
+  if (!error) {
+    return {
+      persist: "supabase",
+      rows: (data ?? []).map((row) => ({
+        amount: asNumber(row.amount),
+        status: asChangeOrderStatus(row.status),
+      })),
+    };
+  }
+  if (!isMissingRelation(error)) {
+    throw new Error(error.message);
+  }
+  const listed = await listChangeOrders(projectId);
+  return {
+    persist: listed.persist,
+    rows: listed.rows.map((row) => ({ amount: row.amount, status: row.status })),
+  };
 }
 
 export async function listChangeOrders(projectId?: string): Promise<ListResult<ChangeOrder>> {
@@ -716,6 +808,34 @@ export async function saveTrakMilestone(input: Omit<TrakMilestone, "id">, id?: s
 
 export async function deleteTrakMilestone(id: string) {
   await removeRow("trak_milestones", id);
+}
+
+export async function listBidChaseSignals(
+  projectId?: string,
+): Promise<ListResult<{ dueDate: string; status: string }>> {
+  const { supabase } = await requireUser();
+  let query = supabase.from("bid_chases").select("due_date, status").order("created_at", { ascending: false });
+  if (projectId) {
+    query = query.eq("project_id", projectId);
+  }
+  const { data, error } = await query;
+  if (!error) {
+    return {
+      persist: "supabase",
+      rows: (data ?? []).map((row) => ({
+        dueDate: asDate(row.due_date),
+        status: asString(row.status),
+      })),
+    };
+  }
+  if (!isMissingRelation(error)) {
+    throw new Error(error.message);
+  }
+  const listed = await listBidChases(projectId);
+  return {
+    persist: listed.persist,
+    rows: listed.rows.map((row) => ({ dueDate: row.dueDate, status: row.status })),
+  };
 }
 
 export async function listBidChases(projectId?: string): Promise<ListResult<BidChase>> {

@@ -1,10 +1,11 @@
 import { createServerClient } from "@supabase/ssr";
 import { cookies, headers } from "next/headers";
+import { cache } from "react";
 import { firstHeaderValue } from "@/lib/site";
 import { getAuthCookieOptions, mergeCookieOptions } from "@/lib/supabase/cookies";
 import { getSupabaseAnonKey, getSupabaseUrl } from "@/lib/supabase/env";
 
-export async function createClient() {
+export const createClient = cache(async function createClient() {
   const cookieStore = await cookies();
   const headerStore = await headers();
   const hostname = firstHeaderValue(headerStore.get("x-forwarded-host")) || firstHeaderValue(headerStore.get("host"));
@@ -27,4 +28,4 @@ export async function createClient() {
       },
     },
   });
-}
+});

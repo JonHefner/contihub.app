@@ -22,6 +22,13 @@ type MemoryBucket = {
 
 const memory = new Map<string, MemoryBucket>();
 
+const CONTRACTOR_COLUMNS =
+  "id, org_id, first_name, last_name, name, email, company, phone, office, cell, street, city, state, zip, categories, notes, source";
+const PACKAGE_COLUMNS =
+  "id, org_id, project_id, project_name, title, due_at, drawings_teams_url, notes, building_connected_sent";
+const INVITEE_COLUMNS =
+  "id, package_id, contractor_id, user_id, email, name, company, trade, status, invited_at, magic_link_sent_at";
+
 function bucket(userId: string) {
   const existing = memory.get(userId);
   if (existing) {
@@ -129,7 +136,9 @@ function contractorPayload(orgId: string, input: Omit<BidContractor, "id" | "org
 
 export async function listContractors(): Promise<ListResult<BidContractor>> {
   const { supabase, user } = await requireUser();
-  const { data, error } = await supabase.from("bid_contractors").select("*").order("company", { ascending: true });
+  const { data, error } = await supabase.from("bid_contractors").select(CONTRACTOR_COLUMNS).order("company", {
+    ascending: true,
+  });
   if (!error) {
     return { persist: "supabase", rows: (data ?? []).map(mapContractor) };
   }
@@ -240,9 +249,26 @@ export async function importContractors(rows: ContractorCsvRow[]) {
   return { created, updated, persist: existing.persist };
 }
 
+export async function listPackageDueDates(projectId?: string): Promise<ListResult<{ dueAt: string }>> {
+  const { supabase, user } = await requireUser();
+  let query = supabase.from("bid_packages").select("due_at").order("due_at", { ascending: true });
+  if (projectId) {
+    query = query.eq("project_id", projectId);
+  }
+  const { data, error } = await query;
+  if (!error) {
+    return { persist: "supabase", rows: (data ?? []).map((row) => ({ dueAt: asString(row.due_at) })) };
+  }
+  if (!isMissingRelation(error)) {
+    throw new Error(error.message);
+  }
+  const rows = bucket(user.id).packages.filter((row) => !projectId || row.projectId === projectId);
+  return { persist: "memory", rows: rows.map((row) => ({ dueAt: row.dueAt })) };
+}
+
 export async function listPackages(projectId?: string): Promise<ListResult<BidPackage>> {
   const { supabase, user } = await requireUser();
-  let query = supabase.from("bid_packages").select("*").order("due_at", { ascending: true });
+  let query = supabase.from("bid_packages").select(PACKAGE_COLUMNS).order("due_at", { ascending: true });
   if (projectId) {
     query = query.eq("project_id", projectId);
   }
@@ -325,7 +351,7 @@ export async function deletePackage(id: string) {
 
 export async function listInvitees(packageId?: string): Promise<ListResult<BidInvitee>> {
   const { supabase, user } = await requireUser();
-  let query = supabase.from("bid_invitees").select("*").order("company", { ascending: true });
+  let query = supabase.from("bid_invitees").select(INVITEE_COLUMNS).order("company", { ascending: true });
   if (packageId) {
     query = query.eq("package_id", packageId);
   }
@@ -399,7 +425,10 @@ export type BidderPackageView = BidPackage & {
 export async function listMyInvitations(): Promise<ListResult<BidderPackageView>> {
   const { supabase, user } = await requireUser();
   const email = (user.email ?? "").toLowerCase();
-  const { data, error } = await supabase.from("bid_invitees").select("*, bid_packages(*)").order("invited_at", {
+  const { data, error } = await supabase
+    .from("bid_invitees")
+    .select(`${INVITEE_COLUMNS}, bid_packages(${PACKAGE_COLUMNS})`)
+    .order("invited_at", {
     ascending: false,
   });
 

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import { RevolvingTiles } from "@/components/revolving-tiles";
 import { LoadSampleButton } from "@/components/suite/load-sample-button";
 import { OpsPulse } from "@/components/suite/ops-pulse";
@@ -15,11 +16,13 @@ export default function HubPage() {
     <SuiteShell>
       <div className="flex items-center gap-5">
         <span className="inline-block h-44 w-44 shrink-0 overflow-hidden sm:h-56 sm:w-56">
-          <img
+          <Image
             src="/brand/conti-way-mark.png"
             alt=""
             width={224}
             height={224}
+            priority
+            sizes="224px"
             className="h-[130%] w-full max-w-none object-cover object-top"
           />
         </span>
