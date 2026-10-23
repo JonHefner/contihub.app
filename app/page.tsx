@@ -1,6 +1,7 @@
 import Link from "next/link";
-import { AppTiles } from "@/components/app-tiles";
 import { PublicHeader } from "@/components/public-header";
+import { RevolvingTiles } from "@/components/revolving-tiles";
+import { hubTiles } from "@/lib/apps";
 
 const pillars = [
   {
@@ -25,38 +26,46 @@ export default function HomePage() {
       <main>
         <section className="relative overflow-hidden">
           <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(30,79,163,0.34),transparent_42%),radial-gradient(circle_at_88%_18%,rgba(201,163,74,0.14),transparent_30%)]" />
-          <div className="relative mx-auto flex max-w-6xl flex-col items-center px-6 py-16 text-center lg:py-24">
-            <img
-              src="/brand/tiles/contihub.png"
-              alt="ContiHub — nested blue and gold CC mark"
-              width={320}
-              height={320}
-              className="aspect-square h-52 w-52 rounded-[2rem] object-contain shadow-[0_24px_48px_-20px_rgba(0,0,0,0.85)] sm:h-64 sm:w-64"
-            />
-            <h1 className="mt-8 text-5xl font-semibold tracking-tight text-ink-strong sm:text-7xl">
-              ContiHub
-            </h1>
-            <span className="mt-5 block h-px w-28 bg-gradient-to-r from-transparent via-gold to-transparent" />
-            <p className="mt-5 text-xs font-semibold uppercase tracking-[0.32em] text-gold">
-              The Conti Way
-            </p>
-            <p className="mt-5 max-w-xl text-lg leading-8 text-muted">
-              The ops portal for Continental Construction of Ohio. Sign in to Projects, ContiReview,
-              Field, Cost, CRM, Safety, TraK, and Bid.
-            </p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
-              <Link
-                href="/login"
-                className="rounded-sm bg-gold px-6 py-2.5 text-sm font-semibold text-page transition hover:bg-gold-soft"
-              >
-                Sign in to ContiHub
-              </Link>
-              <Link
-                href="#suite"
-                className="rounded-sm border border-gold/35 px-6 py-2.5 text-sm font-semibold text-ink transition hover:border-gold"
-              >
-                View the suite
-              </Link>
+          <div className="relative mx-auto max-w-6xl px-6 py-12 lg:py-16">
+            <div className="flex flex-col items-start gap-6 sm:flex-row sm:items-center">
+              <span className="inline-block h-40 w-40 shrink-0 overflow-hidden sm:h-56 sm:w-56">
+                <img
+                  src="/brand/conti-way-mark.png"
+                  alt="Conti Way mark"
+                  width={224}
+                  height={224}
+                  className="h-[130%] w-full max-w-none object-cover object-top"
+                />
+              </span>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">
+                  Continental Construction of Ohio
+                </p>
+                <h1 className="mt-3 font-display text-4xl font-semibold tracking-tight text-ink-strong sm:text-6xl">
+                  Welcome to ContiHub
+                </h1>
+                <p className="mt-4 max-w-xl text-lg leading-8 text-muted">
+                  The ops portal for Continental Construction of Ohio. Sign in to open a project, then
+                  work the Conti suite against that job.
+                </p>
+                <div className="mt-6 flex flex-wrap gap-3">
+                  <Link
+                    href="/login"
+                    className="rounded-sm bg-gold px-6 py-2.5 text-sm font-semibold text-page transition hover:bg-gold-soft"
+                  >
+                    Sign in to ContiHub
+                  </Link>
+                  <Link
+                    href="#suite"
+                    className="rounded-sm border border-gold/35 px-6 py-2.5 text-sm font-semibold text-ink transition hover:border-gold"
+                  >
+                    View the suite
+                  </Link>
+                </div>
+              </div>
+            </div>
+            <div id="suite">
+              <RevolvingTiles tiles={hubTiles} />
             </div>
           </div>
         </section>
@@ -69,21 +78,6 @@ export default function HomePage() {
                 <p className="mt-3 text-sm leading-6 text-muted">{pillar.body}</p>
               </article>
             ))}
-          </div>
-        </section>
-
-        <section id="suite" className="bg-page">
-          <div className="mx-auto max-w-6xl px-6 py-16">
-            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-gold">Conti suite</p>
-            <h2 className="mt-3 text-3xl font-semibold tracking-tight text-ink-strong">
-              Built for how CCO works.
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-              Every app uses the same Conti mark. Open any tile after sign-in.
-            </p>
-            <div className="mt-10">
-              <AppTiles />
-            </div>
           </div>
         </section>
       </main>

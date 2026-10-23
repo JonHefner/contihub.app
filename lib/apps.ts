@@ -74,7 +74,7 @@ export const contiApps: ContiApp[] = [
   },
 ];
 
-/** Front-page reel. Same tile art as the suite, plus ContiReview and Change Orders. */
+/** Front-page reel. Same tile art as the suite, plus ContiReview, Change Orders, and Conti Brand. */
 export const hubTiles: ContiApp[] = [
   ...contiApps,
   {
@@ -93,6 +93,14 @@ export const hubTiles: ContiApp[] = [
     status: "live",
     href: "/app/change-orders",
   },
+  {
+    id: "brand",
+    name: "Conti Brand",
+    shortName: "Brand",
+    description: "Official Conti Way mark, email signature tile, colors, and the marks not to use.",
+    status: "live",
+    href: "/app/brand",
+  },
 ];
 
 export const suiteNav = [
@@ -103,4 +111,5 @@ export const suiteNav = [
   })),
   { name: "ContiReview", href: "/app/rfi", exact: false },
   { name: "COs", href: "/app/change-orders", exact: false },
+  { name: "Brand", href: "/app/brand", exact: false },
 ];

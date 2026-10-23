@@ -17,9 +17,11 @@ describe("hub tile reel", () => {
       "contibid",
       "contireview",
       "changeorders",
+      "brand",
     ]);
     assert.equal(hubTiles.find((tile) => tile.id === "contireview")?.href, "/app/rfi");
     assert.equal(hubTiles.find((tile) => tile.id === "changeorders")?.href, "/app/change-orders");
+    assert.equal(hubTiles.find((tile) => tile.id === "brand")?.href, "/app/brand");
     assert.equal(new Set(hubTiles.map((tile) => tile.href)).size, hubTiles.length);
   });
 
