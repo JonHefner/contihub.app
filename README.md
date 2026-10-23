@@ -177,7 +177,7 @@ This is the week path for Conti Bid invitations, shared Hub access, and a demo t
 
 ### Home reel
 
-After sign-in, `/app` keeps the Conti Way shell and the same tile art as the rest of Hub. The header and the welcome lockup use a tight crop of the Conti marketing hero (`public/brand/conti-way-mark.png`): satin blue chrome around a brushed gold C, filling the lockup. The tiles sit in a cover-flow row: scroll or swipe left and right and the row revolves. Each tile uses that same chrome mark, with the app name on the tile. The front tile opens that app. ContiReview and Change Orders use the same treatment. Suite sub-pages are unchanged. The public marketing page stays a grid of tiles, not this reel.
+The public page and the signed-in `/app` home use the same Conti Way shell. The header and the welcome lockup use a tight crop of the official mark (`public/brand/conti-way-mark.png`): the photographed blue outer C and gold inner C on black. The tiles sit in a cover-flow row: scroll or swipe left and right and the row revolves. Each tile uses that same file, with the app name on the tile. The front tile opens that app. ContiReview, Change Orders, and Conti Brand use the same treatment. Conti Brand (`/app/brand`) is login-only. Suite sub-pages are unchanged.
 
 ### SQL to run
 

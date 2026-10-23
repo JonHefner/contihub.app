@@ -2,7 +2,6 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { CcMark } from "@/components/cc-mark";
 import { ClipboardListIcon, FileQuestionIcon } from "@/components/field/icons";
 
 export function FieldChrome({
@@ -25,9 +24,13 @@ export function FieldChrome({
       <div className="mx-auto flex w-full max-w-3xl flex-col px-4 pt-4 pb-24">
         <header className="no-print flex items-start justify-between gap-3 py-3">
           <div className="flex items-center gap-2.5">
-            <span className="inline-flex size-12 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-field-primary field-shadow">
-              <CcMark id="contifield-header" size={40} />
-            </span>
+            <img
+              src="/brand/conti-way-mark.png"
+              alt=""
+              width={48}
+              height={48}
+              className="size-12 shrink-0 rounded-lg object-cover object-top field-shadow"
+            />
             <div className="leading-none">
               <p className="font-display text-lg leading-none font-semibold tracking-wide text-field-ink sm:text-xl">
                 DAILY CONSTRUCTION LOG
